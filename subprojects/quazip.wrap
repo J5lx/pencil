@@ -1,0 +1,10 @@
+[wrap-file]
+directory = quazip-0.7.3
+
+source_url = https://downloads.sourceforge.net/project/quazip/quazip/0.7.3/quazip-0.7.3.tar.gz
+source_filename = quazip-0.7.3.tar.gz
+source_hash = 2ad4f354746e8260d46036cde1496c223ec79765041ea28eb920ced015e269b5
+
+patch_url = https://repo.j5lx.eu/quazip-0.7.3-wrap.tar.gz
+patch_filename = quazip-0.7.3-wrap.tar.gz
+patch_hash = 3afefaa1636ffc631f0fb376310076edd993c46aff6f82bc59f0c7a5001e940a

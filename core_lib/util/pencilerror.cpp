@@ -1,4 +1,4 @@
-
+#include "config.h"
 #include "pencilerror.h"
 #include <map>
 #include <QObject>

@@ -35,6 +35,11 @@ pencil-buildroot.i386
 Pencil2D.app
 *.zip
 
+# Meson
+
+build/
+subprojects/*/
+
 # QtCreator
 
 *.autosave

@@ -1,0 +1,181 @@
+conf_data = configuration_data()
+conf_data.set('APP_VERSION', '"@0@"'.format(meson.project_version()))
+conf_file = configure_file(output: 'config.h', configuration: conf_data)
+
+core_lib_qresources = [
+  '../pencil.qrc'
+]
+
+core_lib_common_incdir = include_directories(
+  '.',
+  'graphics',
+  'graphics/bitmap',
+  'graphics/vector',
+  'interface',
+  'structure',
+  'tool',
+  'util',
+  'managers'
+)
+
+core_lib_headers = [
+  'graphics/bitmap/bitmapimage.h',
+  'graphics/vector/bezierarea.h',
+  'graphics/vector/beziercurve.h',
+  'graphics/vector/colourref.h',
+  'graphics/vector/vectorimage.h',
+  'graphics/vector/vectorselection.h',
+  'graphics/vector/vertexref.h',
+  'interface/backupelement.h',
+  'interface/editor.h',
+  'interface/flowlayout.h',
+  'interface/keycapturelineedit.h',
+  'interface/recentfilemenu.h',
+  'interface/scribblearea.h',
+  'interface/spinslider.h',
+  'interface/timecontrols.h',
+  'interface/timeline.h',
+  'interface/timelinecells.h',
+  'interface/toolbox.h',
+  'interface/tooloptiondockwidget.h',
+  'interface/basedockwidget.h',
+  'interface/backgroundwidget.h',
+  'managers/basemanager.h',
+  'managers/colormanager.h',
+  'managers/layermanager.h',
+  'managers/toolmanager.h',
+  'managers/playbackmanager.h',
+  'managers/viewmanager.h',
+  'managers/preferencemanager.h',
+  'managers/soundmanager.h',
+  'structure/camera.h',
+  'structure/keyframe.h',
+  'structure/layer.h',
+  'structure/layerbitmap.h',
+  'structure/layercamera.h',
+  'structure/layersound.h',
+  'structure/layervector.h',
+  'structure/keyframefactory.h',
+  'structure/soundclip.h',
+  'structure/object.h',
+  'structure/objectdata.h',
+  'structure/filemanager.h',
+  'tool/basetool.h',
+  'tool/brushtool.h',
+  'tool/buckettool.h',
+  'tool/erasertool.h',
+  'tool/eyedroppertool.h',
+  'tool/handtool.h',
+  'tool/movetool.h',
+  'tool/penciltool.h',
+  'tool/pentool.h',
+  'tool/polylinetool.h',
+  'tool/selecttool.h',
+  'tool/smudgetool.h',
+  'tool/strokemanager.h',
+  'tool/stroketool.h',
+  'util/blitrect.h',
+  'util/fileformat.h',
+  'util/pencildef.h',
+  'util/pencilerror.h',
+  'util/pencilsettings.h',
+  'util/util.h',
+  'util/log.h',
+  'canvasrenderer.h',
+  'soundplayer.h',
+  'movieexporter.h'
+]
+
+core_lib_src = [
+  'graphics/bitmap/bitmapimage.cpp',
+  'graphics/vector/bezierarea.cpp',
+  'graphics/vector/beziercurve.cpp',
+  'graphics/vector/colourref.cpp',
+  'graphics/vector/vectorimage.cpp',
+  'graphics/vector/vectorselection.cpp',
+  'graphics/vector/vertexref.cpp',
+  'interface/backupelement.cpp',
+  'interface/editor.cpp',
+  'interface/flowlayout.cpp',
+  'interface/keycapturelineedit.cpp',
+  'interface/recentfilemenu.cpp',
+  'interface/scribblearea.cpp',
+  'interface/spinslider.cpp',
+  'interface/timecontrols.cpp',
+  'interface/timeline.cpp',
+  'interface/timelinecells.cpp',
+  'interface/toolbox.cpp',
+  'interface/tooloptiondockwidget.cpp',
+  'interface/basedockwidget.cpp',
+  'interface/backgroundwidget.cpp',
+  'managers/basemanager.cpp',
+  'managers/colormanager.cpp',
+  'managers/layermanager.cpp',
+  'managers/toolmanager.cpp',
+  'managers/preferencemanager.cpp',
+  'managers/playbackmanager.cpp',
+  'managers/viewmanager.cpp',
+  'structure/camera.cpp',
+  'structure/keyframe.cpp',
+  'structure/layer.cpp',
+  'structure/layerbitmap.cpp',
+  'structure/layercamera.cpp',
+  'structure/layersound.cpp',
+  'structure/layervector.cpp',
+  'structure/object.cpp',
+  'structure/keyframefactory.cpp',
+  'structure/soundclip.cpp',
+  'structure/objectdata.cpp',
+  'structure/filemanager.cpp',
+  'tool/basetool.cpp',
+  'tool/brushtool.cpp',
+  'tool/buckettool.cpp',
+  'tool/erasertool.cpp',
+  'tool/eyedroppertool.cpp',
+  'tool/handtool.cpp',
+  'tool/movetool.cpp',
+  'tool/penciltool.cpp',
+  'tool/pentool.cpp',
+  'tool/polylinetool.cpp',
+  'tool/selecttool.cpp',
+  'tool/smudgetool.cpp',
+  'tool/strokemanager.cpp',
+  'tool/stroketool.cpp',
+  'util/blitrect.cpp',
+  'util/fileformat.cpp',
+  'util/pencilerror.cpp',
+  'util/pencilsettings.cpp',
+  'util/util.cpp',
+  'canvasrenderer.cpp',
+  'soundplayer.cpp',
+  'managers/soundmanager.cpp',
+  'movieexporter.cpp'
+]
+
+if host_machine.system() == 'windows'
+  core_lib_external_incdir = include_directories('external/win32')
+  core_lib_src += 'external/win32/win32.cpp'
+endif
+if host_machine.system() == 'darwin'
+  core_lib_external_incdir = include_directories('external/macosx')
+  core_lib_src += 'external/macosx/macosx.cpp'
+endif
+if host_machine.system() == 'linux'
+  core_lib_external_incdir = include_directories('external/linux')
+  core_lib_src += 'external/linux/linux.cpp'
+endif
+core_lib_incdir = [core_lib_common_incdir, core_lib_external_incdir]
+
+core_lib_pp = qt5.preprocess(
+  qresources: core_lib_qresources,
+  moc_headers: core_lib_headers
+)
+
+core_lib = static_library(
+  'core_lib',
+  core_lib_src,
+  core_lib_pp,
+  conf_file,
+  include_directories: core_lib_incdir,
+  dependencies: [qt5_dep, zlib_dep, quazip_dep]
+)

@@ -1,6 +1,7 @@
 #include <QFileOpenEvent>
 #include <QIcon>
 
+#include "config.h"
 #include "pencilapplication.h"
 
 PencilApplication::PencilApplication(int& argc, char** argv) :
