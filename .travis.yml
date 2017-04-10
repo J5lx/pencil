@@ -39,8 +39,14 @@ before_install:
     brew update;
     brew install p7zip;
     brew install python3;
+    brew install ninja;
     brew install qt@5.7;
     brew link qt@5.7 --force;
+  fi'
+  - 'if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+    curl -LOJ https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-linux.zip;
+    unzip ninja-linux.zip;
+    export PATH="$PWD:$PATH";
   fi'
 
 install:
@@ -49,6 +55,7 @@ install:
   - pip install -U setuptools
   - pip install -U virtualenvwrapper
   - pip install -U google-api-python-client
+  - pip3 install -U meson
   - python3 -V
   - pip -V
 
@@ -63,9 +70,8 @@ before_script:
 
 
 script:
-  - mkdir "build" && cd build
-  - qmake ../
-  - make
+  - meson build
+  - ninja -C build
 
 after_success:
   - echo "look for build folder and zip file"
