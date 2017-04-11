@@ -70,25 +70,19 @@ before_script:
 
 
 script:
-  - meson build
+  - meson --prefix /Pencil2D build
   - ninja -C build
 
 after_success:
   - echo "look for build folder and zip file"
   - ls
-  - echo "cleaning..."
-  - make clean
+  - DESTDIR="$PWD/install" ninja -C build install
+  - cd install
   - 'if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      mv app Pencil2D;
-      cd Pencil2D;
-      echo "Removing Makefile";
-      rm Makefile;
-      cd ..;
       echo "Archiving...";
       bsdtar cvzfs "pencil2d-linux-$(date +"%Y-%m-%d").tar.gz" "/Pencil2D/pencil2d-linux-$(date +"%Y-%m-%d")/" Pencil2D;
      fi'
   - 'if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-      mv app Pencil2D;
       echo "Fixing info.plist";
       cd Pencil2D;
       plutil -replace CFBundleExecutable -string Pencil2D Pencil2D.app/Contents/Info.plist;
@@ -102,8 +96,6 @@ after_success:
 
       echo "Copying necessary Qt frameworks";
       macdeployqt Pencil2D.app;
-      echo "Removing Makefile";
-      rm Makefile;
       cd ..;
       echo "Zipping...";
       zip -r "pencil2d-mac-$(date +"%Y-%m-%d").zip" Pencil2D/;

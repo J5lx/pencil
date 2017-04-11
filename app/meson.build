@@ -84,5 +84,6 @@ executable(
   gui_app: true,
   include_directories: core_lib_incdir,
   link_with: core_lib,
-  dependencies: [qt5_dep, zlib_dep, quazip_dep]
+  dependencies: [qt5_dep, zlib_dep, quazip_dep],
+  install: true
 )
