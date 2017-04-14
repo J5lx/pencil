@@ -5,6 +5,6 @@ source_url = https://downloads.sourceforge.net/project/quazip/quazip/0.7.3/quazi
 source_filename = quazip-0.7.3.tar.gz
 source_hash = 2ad4f354746e8260d46036cde1496c223ec79765041ea28eb920ced015e269b5
 
-patch_url = https://repo.j5lx.eu/quazip-0.7.3-wrap.tar.gz
-patch_filename = quazip-0.7.3-wrap.tar.gz
-patch_hash = 3afefaa1636ffc631f0fb376310076edd993c46aff6f82bc59f0c7a5001e940a
+patch_url = https://wrapdb.mesonbuild.com/v1/projects/quazip/0.7.3/1/get_zip
+patch_filename = quazip-0.7.3-1-wrap.zip
+patch_hash = a615029542d67130e6197c81ca6b5e3a6311e495da7cf6565f1c0790fc377e07
