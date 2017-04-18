@@ -177,5 +177,5 @@ core_lib = static_library(
   core_lib_pp,
   conf_file,
   include_directories: core_lib_incdir,
-  dependencies: [qt5_dep, zlib_dep, quazip_dep]
+  dependencies: [sys_dep, qt5_dep, zlib_dep, quazip_dep]
 )

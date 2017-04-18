@@ -68,7 +68,20 @@ app_ui_files = [
   'ui/errordialog.ui'
 ]
 
-# TODO: macx, win32
+app_rc = []
+if host_machine.system() == 'darwin'
+  # TODO: ../pencil.icns (Couldn’t quite figure that out myself (yet))
+  install_data('../Info.plist', install_dir: 'Contents')
+  install_data(
+    '../icons/mac_pcl_icon.icns',
+    '../icons/mac_pclx_icon.icns',
+    install_dir: 'Contents/Resources'
+  )
+endif
+if host_machine.system() == 'windows'
+  windows = import('windows')
+  app_rc = windows.compile_resources('../pencil.rc')
+endif
 
 app_pp = qt5.preprocess(
   qresources: app_qresources,
@@ -79,6 +92,7 @@ app_pp = qt5.preprocess(
 executable(
   'Pencil2D',
   app_src,
+  app_rc,
   app_pp,
   conf_file,
   gui_app: true,

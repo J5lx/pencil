@@ -1,7 +1,13 @@
 project('pencil2d', 'cpp', version: '0.5.4', default_options: ['cpp_std=c++11', 'default_library=static'])
 
-# MSVC TODO: /MP
-# MACX TODO: libc++, objc, frameworks
+if meson.get_compiler('cpp').get_id() == 'msvc'
+  add_project_arguments('/MP', language: 'cpp')
+endif
+
+sys_dep = []
+if host_machine.system() == 'darwin'
+  sys_dep = dependency('appleframeworks', modules: ['AppKit', 'Carbon'])
+endif
 
 qt5 = import('qt5')
 qt5_dep = dependency('qt5', modules: [
