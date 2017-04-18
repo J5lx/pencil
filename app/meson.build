@@ -1,5 +1,32 @@
+git = find_program('git', required: false)
+git_current_sha1 = ''
+git_timestamp = ''
+if git.found()
+  git_current_sha1 = run_command(git, [
+    '--git-dir=.git',
+    '--work-tree=.',
+    '-C',
+    meson.source_root(),
+    'rev-parse',
+    'HEAD'
+  ]).stdout().strip()
+  git_timestamp = run_command(git, [
+    '--git-dir=.git',
+    '--work-tree=.',
+    '-C',
+    meson.source_root(),
+    'log',
+    '-1',
+    '--format=%cd',
+    '--date=local'
+  ]).stdout().strip()
+endif
+
 conf_data = configuration_data()
 conf_data.set('APP_VERSION', '"@0@"'.format(meson.project_version()))
+conf_data.set('GIT_EXISTS', git.found())
+conf_data.set('GIT_CURRENT_SHA1', '"@0@"'.format(git_current_sha1))
+conf_data.set('GIT_TIMESTAMP', '"@0@"'.format(git_timestamp))
 conf_file = configure_file(output: 'config.h', configuration: conf_data)
 
 app_qresources = [
@@ -29,7 +56,8 @@ app_headers = [
   'exportmoviedialog.h',
   'app_util.h',
   'errordialog.h',
-  'imageseqdialog.h'
+  'imageseqdialog.h',
+  'aboutdialog.h'
 ]
 
 app_src = [
@@ -53,7 +81,8 @@ app_src = [
   'pencilapplication.cpp',
   'exportmoviedialog.cpp',
   'errordialog.cpp',
-  'imageseqdialog.cpp'
+  'imageseqdialog.cpp',
+  'aboutdialog.cpp'
 ]
 
 app_ui_files = [
