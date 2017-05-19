@@ -34,9 +34,10 @@ public:
 
     void setCore(Editor* e) { mEditor = e; }
 
-    // file 
+    // file
     Status importSound();
     Status exportMovie();
+    Status exportMovie2();
     Status exportImageSequence();
     Status exportImage();
 

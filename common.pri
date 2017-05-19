@@ -14,6 +14,7 @@ win32-g++ {
 
 win32-msvc* {
     QMAKE_CXXFLAGS += /MP
+    QMAKE_LFLAGS += /SAFESEH:NO
 }
 
 macx {
@@ -37,3 +38,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050600    # disables all the APIs deprecated before Qt 5.6.0
+
+EXPORT_LAV {
+    win32:defined(LAV_DIR, var) {
+        INCLUDEPATH += $${LAV_DIR}\include
+        LIBS += $${LAV_DIR}\lib\avcodec.lib $${LAV_DIR}\lib\avutil.lib $${LAV_DIR}\lib\swscale.lib
+        DEFINES += EXPORT_LAV
+    } else:packagesExist(libavcodec libavutil libswscale) {
+        CONFIG += link_pkgconfig
+        PKGCONFIG += libavcodec libavutil libswscale
+        DEFINES += EXPORT_LAV
+    } else {
+        message("FFmpeg libraries not available")
+    }
+}

@@ -42,6 +42,9 @@ GNU General Public License for more details.
 #include "camera.h"
 
 #include "movieexporter.h"
+#ifdef EXPORT_LAV
+#   include "movieexporter2.h"
+#endif // EXPORT_LAV
 #include "filedialogex.h"
 #include "exportmoviedialog.h"
 #include "exportimagedialog.h"
@@ -371,6 +374,97 @@ Status ActionCommands::exportImage()
     }
     return Status::OK;
 }
+
+#ifdef EXPORT_LAV
+Status ActionCommands::exportMovie2()
+{
+    auto dialog = new ExportMovieDialog(mParent);
+    OnScopeExit(dialog->deleteLater());
+
+    dialog->init();
+
+    std::vector< std::pair<QString, QSize > > camerasInfo;
+    auto cameraLayers = mEditor->object()->getLayersByType< LayerCamera >();
+    for (LayerCamera* i : cameraLayers)
+    {
+        camerasInfo.push_back(std::make_pair(i->name(), i->getViewSize()));
+    }
+
+    auto currLayer = mEditor->layers()->currentLayer();
+    if (currLayer->type() == Layer::CAMERA)
+    {
+        QString strName = currLayer->name();
+        auto it = std::find_if(camerasInfo.begin(), camerasInfo.end(),
+            [strName](std::pair<QString, QSize> p)
+        {
+            return p.first == strName;
+        } );
+
+        Q_ASSERT(it != camerasInfo.end());
+
+        std::swap(camerasInfo[0], *it);
+    }
+
+    dialog->setCamerasInfo(camerasInfo);
+
+    int lengthWithSounds = mEditor->layers()->animationLength(true);
+    int length = mEditor->layers()->animationLength(false);
+
+    dialog->setDefaultRange(1, length, lengthWithSounds);
+    dialog->exec();
+
+    if (dialog->result() == QDialog::Rejected)
+    {
+        return Status::SAFE;
+    }
+    QString strMoviePath = dialog->getFilePath();
+
+    ExportMovieDesc2 desc;
+    desc.strFileName = strMoviePath;
+    desc.startFrame = dialog->getStartFrame();
+    desc.endFrame = dialog->getEndFrame();
+    desc.fps = mEditor->playback()->fps();
+    desc.exportSize = dialog->getExportSize();
+    desc.strCameraName = dialog->getSelectedCameraName();
+    desc.loop = dialog->getLoop();
+
+    QProgressDialog progressDlg;
+    progressDlg.setWindowModality(Qt::WindowModal);
+    progressDlg.setLabelText(tr("Exporting movie..."));
+    Qt::WindowFlags eFlags = Qt::Dialog | Qt::WindowTitleHint;
+    progressDlg.setWindowFlags(eFlags);
+    progressDlg.show();
+
+    MovieExporter2 ex(mEditor->object(), desc);
+
+    connect(&progressDlg, &QProgressDialog::canceled, &ex, &MovieExporter2::cancel);
+    connect(&ex, &MovieExporter2::progress, [&progressDlg](int progress)
+    {
+        progressDlg.setValue(progress);
+        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+    });
+
+    Status st = ex.run();
+
+    if (st.ok() && QFile::exists(strMoviePath))
+    {
+        auto btn = QMessageBox::question(mParent, "Pencil2D",
+                                         tr("Finished. Open movie now?", "When movie export done."));
+        if (btn == QMessageBox::Yes)
+        {
+            QDesktopServices::openUrl(QUrl::fromLocalFile(strMoviePath));
+        }
+
+        return Status::OK;
+    }
+
+    QMessageBox::critical(mParent,
+                          tr("Movie export error"),
+                          tr("An error has occurred during export. See standard error for details."));
+
+    return Status::FAIL;
+}
+#endif // EXPORT_LAV
 
 void ActionCommands::flipSelectionX()
 {

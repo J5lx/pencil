@@ -214,6 +214,10 @@ void MainWindow2::createDockWidgets()
 
 void MainWindow2::createMenus()
 {
+#   ifdef EXPORT_LAV
+    ui->actionExport_Movie2->setVisible( true );
+#   endif // EXPORT_LAV
+
     // ---------- File Menu -------------
     connect(ui->actionNew, &QAction::triggered, this, &MainWindow2::newDocument);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow2::openDocument);
@@ -225,6 +229,9 @@ void MainWindow2::createMenus()
     //connect( ui->actionExport_X_sheet, &QAction::triggered, mEditor, &Editor::exportX );
     connect(ui->actionExport_Image, &QAction::triggered, mCommands, &ActionCommands::exportImage);
     connect(ui->actionExport_ImageSeq, &QAction::triggered, mCommands, &ActionCommands::exportImageSequence);
+    #ifdef EXPORT_LAV
+    connect(ui->actionExport_Movie2, &QAction::triggered, mCommands, &ActionCommands::exportMovie2);
+    #endif // EXPORT_LAV
     connect(ui->actionExport_Movie, &QAction::triggered, mCommands, &ActionCommands::exportMovie);
 
     connect(ui->actionExport_Palette, &QAction::triggered, this, &MainWindow2::exportPalette);

@@ -24,6 +24,11 @@ GNU General Public License for more details.
 #include "pencilapplication.h"
 #include "layermanager.h"
 #include "layercamera.h"
+#ifdef EXPORT_LAV
+extern "C" {
+#   include <libavcodec/avcodec.h>
+}
+#endif // EXPORT_LAV
 
 
 void installTranslator( PencilApplication& app )
@@ -306,6 +311,10 @@ int main(int argc, char* argv[])
 {
     Q_INIT_RESOURCE(core_lib);
 
+#   ifdef EXPORT_LAV
+    avcodec_register_all();
+#   endif // EXPORT_LAV
+
     QSettings settings(PENCIL2D, PENCIL2D);
     if (settings.value("EnableHighDpiScaling", "true").toBool())
     {
@@ -314,7 +323,7 @@ int main(int argc, char* argv[])
         // Only work in Windows & X11
         PencilApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     }
-    
+
     PencilApplication app( argc, argv );
 
     installTranslator( app );

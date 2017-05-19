@@ -40,6 +40,29 @@ addons:
       - qt59xmlpatterns
       - bsdtar
       - ffmpeg
+      # ffmpeg package doesn’t list dev dependencies so we have to do that ourselves
+      - libxv-dev
+      - libvdpau-dev
+      - libva-dev
+      - libasound2-dev
+      - libsdl2-dev
+      - libxvidcore-dev
+      - libx264-dev
+      - libx265-dev
+      - libwavpack-dev
+      - libvpx-dev
+      - libvorbis-dev
+      - libogg-dev
+      - libvidstab-dev
+      - libspeex-dev
+      - libpulse-dev
+      - libopus-dev
+      - libopencore-amrwb-dev
+      - libopencore-amrnb-dev
+      - libmp3lame-dev
+      - libfdk-aac-dev
+      - libass-dev
+      - libsoxr-dev
       - doxygen
       - doxygen-doc
       - doxygen-latex
@@ -47,6 +70,9 @@ addons:
       - graphviz
       - python3
       - python3-pip
+env:
+  global:
+    - PKG_CONFIG_PATH=/opt/ffmpeg/lib/pkgconfig:/usr/local/lib/pkgconfig
 
 before_install:
   - | 
@@ -59,6 +85,7 @@ before_install:
         fi
         brew install p7zip;
         brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/13d52537d1e0e5f913de46390123436d220035f6/Formula/qt.rb;
+        brew install ffmpeg;
         brew link qt --force;
     fi
 
@@ -75,6 +102,7 @@ before_script:
     bash $TRAVIS_BUILD_DIR/util/checkchanges.sh;
   fi'
   - 'if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+    sudo sed -i "/^Libs:/ s/\$/ -lX11 -lvdpau -lva-x11 -lva-drm/" /opt/ffmpeg/lib/pkgconfig/libavutil.pc;
     . /opt/qt59/bin/qt59-env.sh;
     export DISPLAY=:99.0;
     sh -e /etc/init.d/xvfb start;
@@ -87,9 +115,9 @@ before_script:
 script:
   - mkdir "build" && cd build
   - 'if [ "$TRAVIS_BRANCH" == "release" ]; then
-    qmake ../ PREFIX=/usr CONFIG+=release DEFINES+=QT_NO_DEBUG_OUTPUT DEFINES+=PENCIL2D_RELEASE;
+    qmake ../ CONFIG+=EXPORT_LAV PREFIX=/usr CONFIG+=release DEFINES+=QT_NO_DEBUG_OUTPUT DEFINES+=PENCIL2D_RELEASE;
   else
-    qmake ../ PREFIX=/usr CONFIG+=GIT CONFIG+=NIGHTLY;
+    qmake ../ CONFIG+=EXPORT_LAV PREFIX=/usr CONFIG+=GIT CONFIG+=NIGHTLY;
   fi'
   - make;
   - "$TRAVIS_BUILD_DIR/build/tests/tests"
@@ -118,6 +146,7 @@ after_success:
       plutil -replace CFBundleIdentifier -string org.pencil2d.Pencil2D Pencil2D.app/Contents/Info.plist;
 
       echo "Copying ffmpeg plugin";
+      # TODO: Might be a good idea to use homebrewed FFmpeg here as well
       mkdir Pencil2D.app/Contents/MacOS/plugins;
       wget -P Pencil2D.app/Contents/MacOS/plugins https://evermeet.cx/ffmpeg/ffmpeg-3.2.4.7z;
       7z x Pencil2D.app/Contents/MacOS/plugins/ffmpeg-3.2.4.7z -o"Pencil2D.app/Contents/MacOS/plugins";

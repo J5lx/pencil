@@ -156,6 +156,11 @@ SOURCES +=  src/graphics/bitmap/bitmapimage.cpp \
     src/qminiz.cpp \
     src/activeframepool.cpp
 
+contains(DEFINES, EXPORT_LAV) {
+    SOURCES += src/movieexporter2.cpp
+    HEADERS += src/movieexporter2.h
+}
+
 win32 {
     CONFIG -= flat
 
