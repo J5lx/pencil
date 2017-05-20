@@ -69,8 +69,7 @@ Status MovieExporter2::run()
 
     emit progress( 0 );
 
-    // TODO: strdup <> free?
-    mF = fopen( strdup( mDesc.strFileName.toLocal8Bit().data() ), "wb" );
+    mF = fopen( mDesc.strFileName.toLocal8Bit().data(), "wb" );
     ALLOC_CHECK( mF, "Unable to open output file" );
 
     // TODO: audio
@@ -239,6 +238,4 @@ int MovieExporter2::encodeFrame(AVFrame *frame)
         }
         av_packet_unref( mPkt );
     }
-    Q_ASSERT( false );
-    return -1;
 }
