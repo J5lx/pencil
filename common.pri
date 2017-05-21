@@ -42,11 +42,15 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050600    # disables all the APIs depr
 EXPORT_LAV {
     win32:defined(LAV_DIR, var) {
         INCLUDEPATH += $${LAV_DIR}\include
-        LIBS += $${LAV_DIR}\lib\avcodec.lib $${LAV_DIR}\lib\avutil.lib $${LAV_DIR}\lib\swscale.lib
+        LIBS += \
+            $${LAV_DIR}\lib\avformat.lib \
+            $${LAV_DIR}\lib\avcodec.lib \
+            $${LAV_DIR}\lib\avutil.lib \
+            $${LAV_DIR}\lib\swscale.lib
         DEFINES += EXPORT_LAV
-    } else:packagesExist(libavcodec libavutil libswscale) {
+    } else:packagesExist(libavformat libavcodec libavutil libswscale) {
         CONFIG += link_pkgconfig
-        PKGCONFIG += libavcodec libavutil libswscale
+        PKGCONFIG += libavformat libavcodec libavutil libswscale
         DEFINES += EXPORT_LAV
     } else {
         message("FFmpeg libraries not available")

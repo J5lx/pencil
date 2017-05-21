@@ -435,18 +435,31 @@ Status ActionCommands::exportMovie2()
     progressDlg.setWindowFlags(eFlags);
     progressDlg.show();
 
-    MovieExporter2 ex(mEditor->object(), desc);
+    Status status;
+    try {
+        MovieExporter2 ex(mEditor->object(), desc);
 
-    connect(&progressDlg, &QProgressDialog::canceled, &ex, &MovieExporter2::cancel);
-    connect(&ex, &MovieExporter2::progress, [&progressDlg](int progress)
+        connect(&progressDlg, &QProgressDialog::canceled, &ex, &MovieExporter2::cancel);
+        connect(&ex, &MovieExporter2::progress, [&progressDlg](int progress)
+        {
+            progressDlg.setValue(progress);
+            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+        });
+
+        status = ex.run();
+    }
+    catch(std::runtime_error e)
     {
-        progressDlg.setValue(progress);
-        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-    });
 
-    Status st = ex.run();
+        QMessageBox::critical(mParent,
+                              tr("Movie export error"),
+                              tr("An error has occurred during movie export. "
+                                 "The error message was:\n\n%1").arg(e.what()));
 
-    if (st.ok() && QFile::exists(strMoviePath))
+        return Status::FAIL;
+    }
+
+    if (status.ok() && QFile::exists(strMoviePath))
     {
         auto btn = QMessageBox::question(mParent, "Pencil2D",
                                          tr("Finished. Open movie now?", "When movie export done."));
@@ -454,15 +467,9 @@ Status ActionCommands::exportMovie2()
         {
             QDesktopServices::openUrl(QUrl::fromLocalFile(strMoviePath));
         }
-
-        return Status::OK;
     }
 
-    QMessageBox::critical(mParent,
-                          tr("Movie export error"),
-                          tr("An error has occurred during export. See standard error for details."));
-
-    return Status::FAIL;
+    return Status::OK;
 }
 #endif // EXPORT_LAV
 

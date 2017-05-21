@@ -8,6 +8,7 @@
 #include "pencilerror.h"
 #include "layercamera.h"
 extern "C" {
+#   include <libavformat/avformat.h>
 #   include <libavcodec/avcodec.h>
 }
 
@@ -42,17 +43,30 @@ public slots:
     void cancel() { mCanceled = true; }
 
 private:
-    Status checkInputParameters();
+    void createFormatContext( const char *filename );
+    void destroyFormatContext();
+    AVStream *createStream( AVCodecContext *codecContext );
+    AVCodecContext *createCodecContext( AVCodecID codecId );
+    void createVideoCodecContext( AVCodecID codecId );
+    void destroyCodecContext( AVCodecContext *&codecContext );
+    void openCodec( AVCodecContext *codecContext, AVCodec *codec );
+    AVFrame *createFrame( int format );
+    void destroyFrame( AVFrame *&frame );
+    void createPacket();
+    void destroyPacket();
     void paintAvFrame( AVFrame *avFrame, int frameNumber );
-    int convertPixFmt( AVFrame *dst, AVFrame *src );
-    int encodeFrame( AVFrame *frame );
+    void convertPixFmt( AVFrame *dst, AVFrame *src );
+    void encodeFrame( AVStream *stream, AVCodecContext *codecContext, AVFrame *frame );
+    void writePacket( AVStream *stream, AVCodecContext *codecContext );
 
     bool mCanceled = false;
     Object *mObj;
     ExportMovieDesc2 mDesc;
     LayerCamera *mCameraLayer;
-    FILE *mF;
-    AVCodecContext *mCodecCtx;
+    AVFormatContext *mFormatCtx;
+    AVStream *mVideoStream;
+    AVFrame *mArgbFrame, *mYuv420pFrame;
+    AVCodecContext *mVideoCodecCtx;
     AVPacket *mPkt;
 };
 

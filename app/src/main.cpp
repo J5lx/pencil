@@ -26,7 +26,7 @@ GNU General Public License for more details.
 #include "layercamera.h"
 #ifdef EXPORT_LAV
 extern "C" {
-#   include <libavcodec/avcodec.h>
+#   include <libavformat/avformat.h>
 }
 #endif // EXPORT_LAV
 
@@ -312,7 +312,7 @@ int main(int argc, char* argv[])
     Q_INIT_RESOURCE(core_lib);
 
 #   ifdef EXPORT_LAV
-    avcodec_register_all();
+    av_register_all();
 #   endif // EXPORT_LAV
 
     QSettings settings(PENCIL2D, PENCIL2D);

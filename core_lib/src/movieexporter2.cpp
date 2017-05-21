@@ -12,41 +12,53 @@ extern "C" {
 #include "layersound.h"
 #include "soundclip.h"
 
-// TODO: Right now we are using gotos to ensure proper cleanup which is the C way (as libav* have C APIs).
-//       Eventually we should probably use something more idiomatic instead.
-#define ENDMSG(s, m) do { \
-    status = ( s ); \
-    if ( m ) qDebug() << ( m ); \
-    goto end; \
-} while ( 0 )
-#define END(s) ENDMSG( ( s ), 0 )
-#define ALLOC_CHECK(p, m) do { \
-    if ( !( p ) ) { \
-        ENDMSG( Status::FAIL, ( m ) ); \
+using std::runtime_error;
+
+#define ALLOC_CHECK(ptr, msg) do { \
+    if ( !( ptr ) ) { \
+        throw runtime_error( msg ); \
     } \
 } while ( 0 )
-#define FFRET_CHECK(r, m) do { \
-    if ( ( r ) < 0 ) { \
-        ENDMSG( Status::FAIL, ( m ) ); \
+#define AVERR_CHECK(ret, msg) do { \
+    if ( ( ret ) < 0 ) { \
+        throw runtime_error( msg ); \
     } \
 } while ( 0 )
 
-// Pixel formats of QImage depend on endianness, those of lavutil don’t
+// Pixel formats of QImage rely on endianness, those of lavutil don’t
 #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
-#define QIMAGE_ARGB32_PIX_FMT AV_PIX_FMT_BGRA
+#define PIX_FMT_QIMAGE_ARGB32 AV_PIX_FMT_BGRA
 #else
-#define QIMAGE_ARGB32_PIX_FMT AV_PIX_FMT_ARGB
+#define PIX_FMT_QIMAGE_ARGB32 AV_PIX_FMT_ARGB
 #endif // Q_BYTE_ORDER == Q_LITTLE_ENDIAN
 
 MovieExporter2::MovieExporter2(Object* obj, ExportMovieDesc2& desc) :
     mObj(obj),
     mDesc(desc)
 {
+    // Proconditions, the UI should prevent invalid values
+    Q_ASSERT( !mDesc.strFileName.isEmpty() );
+    Q_ASSERT( mDesc.startFrame > 0 );
+    Q_ASSERT( mDesc.endFrame >= mDesc.startFrame );
+    Q_ASSERT( mDesc.fps > 0 );
+    Q_ASSERT( !mDesc.strCameraName.isEmpty() );
+    // TODO: This is not currently reflected in the UI
+    Q_ASSERT( mDesc.exportSize.width() % 2 == 0 );
+    Q_ASSERT( mDesc.exportSize.height() % 2 == 0 );
+
     mCameraLayer = static_cast< LayerCamera* >( mObj->findLayerByName( mDesc.strCameraName, Layer::CAMERA ) );
     if ( mCameraLayer == nullptr )
     {
         mCameraLayer = mObj->getLayersByType< LayerCamera >().front();
     }
+    createVideoCodecContext( AV_CODEC_ID_H264 );
+    createFormatContext( mDesc.strFileName.toLocal8Bit().data() );
+    mVideoStream = createStream( mVideoCodecCtx );
+
+    mArgbFrame = createFrame( PIX_FMT_QIMAGE_ARGB32 );
+    mYuv420pFrame = createFrame( AV_PIX_FMT_YUV420P );
+
+    createPacket();
 
     // Qt Multimedia can use GStreamer which insists on screwing up lav logging
     av_log_set_callback( &av_log_default_callback );
@@ -54,112 +66,146 @@ MovieExporter2::MovieExporter2(Object* obj, ExportMovieDesc2& desc) :
 
 MovieExporter2::~MovieExporter2()
 {
+    destroyFormatContext();
+    destroyCodecContext( mVideoCodecCtx );
+    destroyFrame( mArgbFrame );
+    destroyFrame( mYuv420pFrame );
+    destroyPacket();
 }
 
 Status MovieExporter2::run()
 {
-    Status status = Status::OK;
-    AVCodec *codec;
-    AVFrame *argbFrame, *yuv420pFrame;
-    uint8_t endcode[] = { 0, 0, 1, 0xb7 };
-
-    STATUS_CHECK( checkInputParameters() );
-
-    qDebug() << "Exporting as movie to " << mDesc.strFileName;
+    AVERR_CHECK( avformat_write_header( mFormatCtx, nullptr), "Unable to write format header" );
 
     emit progress( 0 );
-
-    mF = fopen( mDesc.strFileName.toLocal8Bit().data(), "wb" );
-    ALLOC_CHECK( mF, "Unable to open output file" );
-
-    // TODO: audio
-
-    ALLOC_CHECK( codec = avcodec_find_encoder( AV_CODEC_ID_H264 ), "Unable to find codec" );
-
-    mCodecCtx = avcodec_alloc_context3( codec );
-    ALLOC_CHECK( mCodecCtx, "Unable to allocate video codec context" );
-
-    mCodecCtx->bit_rate = 400000;
-    Q_ASSERT( mDesc.exportSize.width() % 2 == 0 );
-    Q_ASSERT( mDesc.exportSize.height() % 2 == 0 );
-    mCodecCtx->width = mDesc.exportSize.width();
-    mCodecCtx->height = mDesc.exportSize.height();
-    mCodecCtx->time_base = { 1, mDesc.fps };
-    mCodecCtx->framerate = { mDesc.fps, 1 };
-    mCodecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
-    av_opt_set( mCodecCtx->priv_data, "preset", "slow", 0 ); // NOTE: H.264-specific
-
-    FFRET_CHECK( avcodec_open2( mCodecCtx, codec, nullptr ), "Unable to open codec" );
-
-    argbFrame = av_frame_alloc();
-    ALLOC_CHECK( argbFrame, "Unable to allocate ARGB frame" );
-    argbFrame->format = QIMAGE_ARGB32_PIX_FMT;
-    argbFrame->width = mCodecCtx->width;
-    argbFrame->height = mCodecCtx->height;
-    FFRET_CHECK( av_frame_get_buffer( argbFrame, 32 ), "Unable to allocate ARGB frame data" );
-
-    yuv420pFrame = av_frame_alloc();
-    ALLOC_CHECK( yuv420pFrame, "Unable to allocate YUV420p frame" );
-    yuv420pFrame->format = AV_PIX_FMT_YUV420P;
-    yuv420pFrame->width = mCodecCtx->width;
-    yuv420pFrame->height = mCodecCtx->height;
-    FFRET_CHECK( av_frame_get_buffer( yuv420pFrame, 32 ), "Unable to allocate YUV420p frame data" );
-
-    mPkt = av_packet_alloc();
-    ALLOC_CHECK( mPkt, "Unable to allocate video packet" );
 
     for ( int currentFrame = mDesc.startFrame; currentFrame <= mDesc.endFrame; currentFrame++ )
     {
         if ( mCanceled )
         {
-            END( Status::CANCELED );
+            return Status::CANCELED;
         }
 
-        FFRET_CHECK( av_frame_make_writable( argbFrame ), "Unable to make ARGB frame writable" );
-        FFRET_CHECK( av_frame_make_writable( yuv420pFrame ), "Unable to make YUV420p frame writable" );
+        paintAvFrame( mArgbFrame, currentFrame );
+        convertPixFmt( mYuv420pFrame, mArgbFrame );
 
-        paintAvFrame( argbFrame, currentFrame );
+        mYuv420pFrame->pts = currentFrame - mDesc.startFrame;
 
-        FFRET_CHECK( convertPixFmt( yuv420pFrame, argbFrame ), "Unable to convert frame to YUV420p" );
-
-        yuv420pFrame->pts = currentFrame - mDesc.startFrame;
-
-        FFRET_CHECK( encodeFrame( yuv420pFrame ), "Unable to encode frame" );
+        encodeFrame( mVideoStream, mVideoCodecCtx, mYuv420pFrame );
 
         emit progress( 100 * ( currentFrame - mDesc.startFrame ) / ( mDesc.endFrame - mDesc.startFrame ) );
     }
 
-    // TODO: format
+    encodeFrame( mVideoStream, mVideoCodecCtx, nullptr );
+    AVERR_CHECK( av_write_trailer( mFormatCtx ), "Unable to write format trailer" );
 
-    encodeFrame( nullptr );
-
-    fwrite( endcode, 1, sizeof( endcode ), mF );
-
-    emit progress( 100 );
-
-    end:
-    fclose( mF );
-    avcodec_free_context( &mCodecCtx );
-    av_frame_free( &argbFrame );
-    av_frame_free( &yuv420pFrame );
-    av_packet_free( &mPkt );
-    return status;
+    return Status::OK;
 }
 
-Status MovieExporter2::checkInputParameters()
+void MovieExporter2::createFormatContext(const char *filename)
 {
-    bool b = true;
-    b &= ( !mDesc.strFileName.isEmpty() );
-    b &= ( mDesc.startFrame > 0 );
-    b &= ( mDesc.endFrame >= mDesc.startFrame );
-    b &= ( mDesc.fps > 0 );
-    b &= ( !mDesc.strCameraName.isEmpty() );
+    AVERR_CHECK( avformat_alloc_output_context2( &mFormatCtx, NULL, "mp4", filename ),
+                 "Unable to allocate format context" );
 
-    return b ? Status::OK : Status::INVALID_ARGUMENT;
+    if ( !( mFormatCtx->oformat->flags & AVFMT_NOFILE ) )
+    {
+        AVERR_CHECK( avio_open( &mFormatCtx->pb, filename, AVIO_FLAG_WRITE ),
+                     "Unable to open output file" );
+    }
+}
+
+void MovieExporter2::destroyFormatContext()
+{
+    if ( !mFormatCtx )
+    {
+        return;
+    }
+
+
+    if ( !( mFormatCtx->oformat->flags & AVFMT_NOFILE ) )
+    {
+        avio_close( mFormatCtx->pb );
+    }
+    avformat_free_context( mFormatCtx );
+}
+
+AVStream *MovieExporter2::createStream(AVCodecContext *codecContext)
+{
+    AVStream *stream = avformat_new_stream( mFormatCtx, nullptr );
+    ALLOC_CHECK( stream, "Unable to create stream" );
+    stream->id = mFormatCtx->nb_streams - 1;
+
+    if ( mFormatCtx->oformat->flags & AVFMT_GLOBALHEADER )
+    {
+        codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+    }
+
+    AVERR_CHECK( avcodec_parameters_from_context( stream->codecpar, codecContext ),
+                 "Unable to copy codec parameters to stream" );
+    return stream;
+}
+
+AVCodecContext *MovieExporter2::createCodecContext(AVCodecID codecId)
+{
+    AVCodec *codec = avcodec_find_encoder( codecId );
+    ALLOC_CHECK( codec, "Unable to find codec" );
+
+    AVCodecContext *codecCtx = avcodec_alloc_context3( codec );
+    ALLOC_CHECK( codecCtx, "Unable to allocate codec context" );
+
+    return codecCtx;
+}
+
+void MovieExporter2::createVideoCodecContext(AVCodecID codecId)
+{
+    mVideoCodecCtx = createCodecContext( codecId );
+
+    mVideoCodecCtx->bit_rate = 400000;
+    mVideoCodecCtx->width = mDesc.exportSize.width();
+    mVideoCodecCtx->height = mDesc.exportSize.height();
+    mVideoCodecCtx->time_base = { 1, mDesc.fps };
+    mVideoCodecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
+    av_opt_set( mVideoCodecCtx->priv_data, "preset", "slow", 0 ); // NOTE: H.264-specific
+
+    AVERR_CHECK( avcodec_open2( mVideoCodecCtx, mVideoCodecCtx->codec, nullptr ), "Unable to open codec" );
+}
+
+void MovieExporter2::destroyCodecContext(AVCodecContext *&codecContext)
+{
+    avcodec_free_context( &codecContext );
+}
+
+AVFrame *MovieExporter2::createFrame(int format)
+{
+    AVFrame *frame = av_frame_alloc();
+    ALLOC_CHECK( frame, "Unable to allocate frame" );
+    frame->format = format;
+    frame->width = mVideoCodecCtx->width;
+    frame->height = mVideoCodecCtx->height;
+    AVERR_CHECK( av_frame_get_buffer( frame, 32 ), "Unable to allocate frame data" );
+    return frame;
+}
+
+void MovieExporter2::destroyFrame(AVFrame *&frame )
+{
+    av_frame_free( &frame );
+}
+
+void MovieExporter2::createPacket()
+{
+    mPkt = av_packet_alloc();
+    ALLOC_CHECK( mPkt, "Unable to allocate video packet" );
+}
+
+void MovieExporter2::destroyPacket()
+{
+    av_packet_free( &mPkt );
 }
 
 void MovieExporter2::paintAvFrame(AVFrame *avFrame, int frame)
 {
+    AVERR_CHECK( av_frame_make_writable( avFrame ), "Unable to make frame writable" );
+
     QImage imageToExport( mDesc.exportSize, QImage::Format_ARGB32_Premultiplied );
     imageToExport.fill( Qt::white );
 
@@ -176,66 +222,56 @@ void MovieExporter2::paintAvFrame(AVFrame *avFrame, int frame)
 
     mObj->paintImage( painter, frame, false, true );
 
-    Q_ASSERT( avFrame->format == QIMAGE_ARGB32_PIX_FMT );
-    // ARGB pixel format stores the entire data of all components on plane 0 (packed)
+    Q_ASSERT( avFrame->format == PIX_FMT_QIMAGE_ARGB32 );
+    // ARGB pixel format stores all components on plane 0
     Q_ASSERT( avFrame->height * avFrame->linesize[0] == imageToExport.byteCount() );
     memcpy( avFrame->data[0], imageToExport.constBits(), avFrame->height * avFrame->linesize[0] );
 }
 
-int MovieExporter2::convertPixFmt(AVFrame *dst, AVFrame *src)
+void MovieExporter2::convertPixFmt(AVFrame *dst, AVFrame *src)
 {
-    SwsContext *sws;
+    AVERR_CHECK( av_frame_make_writable( dst ), "Unable to make frame writable" );
 
-    sws = sws_getContext( src->width,
-                          src->height,
-                          static_cast< AVPixelFormat >( src->format ),
-                          dst->width,
-                          dst->height,
-                          static_cast< AVPixelFormat >( dst->format ),
-                          0,
-                          NULL,
-                          NULL,
-                          NULL );
-    if ( !sws )
-    {
-        qDebug() << "Unable to allocate swscaler context";
-        return -1;
-    }
+    SwsContext *sws = sws_getContext( src->width,
+                                      src->height,
+                                      static_cast< AVPixelFormat >( src->format ),
+                                      dst->width,
+                                      dst->height,
+                                      static_cast< AVPixelFormat >( dst->format ),
+                                      0,
+                                      NULL,
+                                      NULL,
+                                      NULL );
+    ALLOC_CHECK( sws, "Unable to allocate swscaler context" );
 
     sws_scale( sws, src->data, src->linesize, 0, src->height, dst->data, dst->linesize );
 
     sws_freeContext( sws );
-
-    return 0;
 }
 
-int MovieExporter2::encodeFrame(AVFrame *frame)
+void MovieExporter2::encodeFrame(AVStream *stream, AVCodecContext *codecContext, AVFrame *frame)
 {
-    if ( avcodec_send_frame( mCodecCtx, frame ) < 0 )
-    {
-        qDebug() << "Unable to send frame" << frame->pts << "for encoding";
-        return -1;
-    }
+    AVERR_CHECK( avcodec_send_frame( codecContext, frame ),
+                 "Unable to send frame" + std::to_string(frame->pts) + "for encoding" );
 
-    int ret = 0;
     while ( true )
     {
-        ret = avcodec_receive_packet( mCodecCtx, mPkt );
+        int ret = avcodec_receive_packet( codecContext, mPkt );
         if ( ret == AVERROR( EAGAIN ) || ret == AVERROR_EOF )
         {
-            return 0;
+            return;
         }
-        else if ( ret < 0 )
-        {
-            return -1;
-        }
+        AVERR_CHECK( ret, "Error during encoding" );
 
-        fwrite( mPkt->data, 1, mPkt->size, mF );
-        if ( ferror( mF ) )
-        {
-            qDebug() << "Error while writing output";
-            return -1;
-        }
+        writePacket( stream, codecContext );
         av_packet_unref( mPkt );
     }
+}
+
+void MovieExporter2::writePacket(AVStream *stream, AVCodecContext *codecContext)
+{
+    av_packet_rescale_ts( mPkt, codecContext->time_base , stream->time_base);
+    mPkt->stream_index = stream->index;
+
+    AVERR_CHECK( av_interleaved_write_frame( mFormatCtx, mPkt ), "Unable to write packet to file" );
 }
