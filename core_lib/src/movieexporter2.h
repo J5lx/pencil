@@ -7,6 +7,7 @@
 #include <QTemporaryDir>
 #include "pencilerror.h"
 #include "layercamera.h"
+#include "soundclip.h"
 extern "C" {
 #   include <libavformat/avformat.h>
 #   include <libavcodec/avcodec.h>
@@ -48,13 +49,16 @@ private:
     AVStream *createStream( AVCodecContext *codecContext );
     AVCodecContext *createCodecContext( AVCodecID codecId );
     void createVideoCodecContext( AVCodecID codecId );
+    void createAudioCodecContext( AVCodecID codecId );
     void destroyCodecContext( AVCodecContext *&codecContext );
     void openCodec( AVCodecContext *codecContext, AVCodec *codec );
-    AVFrame *createFrame( int format );
+    AVFrame *createVideoFrame( int format );
+    AVFrame *createAudioFrame();
     void destroyFrame( AVFrame *&frame );
     void createPacket();
     void destroyPacket();
-    void paintAvFrame( AVFrame *avFrame, int frameNumber );
+    void writeVideoFrame( AVFrame *avFrame, int frameNumber );
+    void writeAudioFrame( AVFrame *avFrame, int frameNumber );
     void convertPixFmt( AVFrame *dst, AVFrame *src );
     void encodeFrame( AVStream *stream, AVCodecContext *codecContext, AVFrame *frame );
     void writePacket( AVStream *stream, AVCodecContext *codecContext );
@@ -63,10 +67,14 @@ private:
     Object *mObj;
     ExportMovieDesc2 mDesc;
     LayerCamera *mCameraLayer;
+    std::vector< SoundClip* > mSoundClips;
     AVFormatContext *mFormatCtx;
     AVStream *mVideoStream;
+    AVStream *mAudioStream;
     AVFrame *mArgbFrame, *mYuv420pFrame;
+    AVFrame *mAudioFrame;
     AVCodecContext *mVideoCodecCtx;
+    AVCodecContext *mAudioCodecCtx;
     AVPacket *mPkt;
 };
 

@@ -10,7 +10,6 @@ extern "C" {
 }
 #include "object.h"
 #include "layersound.h"
-#include "soundclip.h"
 
 using std::runtime_error;
 
@@ -51,12 +50,27 @@ MovieExporter2::MovieExporter2(Object* obj, ExportMovieDesc2& desc) :
     {
         mCameraLayer = mObj->getLayersByType< LayerCamera >().front();
     }
-    createVideoCodecContext( AV_CODEC_ID_H264 );
-    createFormatContext( mDesc.strFileName.toLocal8Bit().data() );
-    mVideoStream = createStream( mVideoCodecCtx );
+    for ( LayerSound* layer : mObj->getLayersByType< LayerSound >() )
+    {
+        layer->foreachKeyFrame( [this]( KeyFrame* key )
+        {
+            mSoundClips.push_back( static_cast< SoundClip* >( key ) );
+        } );
+    }
 
-    mArgbFrame = createFrame( PIX_FMT_QIMAGE_ARGB32 );
-    mYuv420pFrame = createFrame( AV_PIX_FMT_YUV420P );
+    createFormatContext( mDesc.strFileName.toLocal8Bit().data() );
+
+    createVideoCodecContext( AV_CODEC_ID_H264 );
+    mVideoStream = createStream( mVideoCodecCtx );
+    mArgbFrame = createVideoFrame( PIX_FMT_QIMAGE_ARGB32 );
+    mYuv420pFrame = createVideoFrame( AV_PIX_FMT_YUV420P );
+
+    if ( !mSoundClips.empty() )
+    {
+        createAudioCodecContext( AV_CODEC_ID_AAC );
+        mAudioStream = createStream( mAudioCodecCtx );
+        mAudioFrame = createAudioFrame();
+    }
 
     createPacket();
 
@@ -68,8 +82,10 @@ MovieExporter2::~MovieExporter2()
 {
     destroyFormatContext();
     destroyCodecContext( mVideoCodecCtx );
+    destroyCodecContext( mAudioCodecCtx );
     destroyFrame( mArgbFrame );
     destroyFrame( mYuv420pFrame );
+    destroyFrame( mAudioFrame );
     destroyPacket();
 }
 
@@ -86,17 +102,30 @@ Status MovieExporter2::run()
             return Status::CANCELED;
         }
 
-        paintAvFrame( mArgbFrame, currentFrame );
+        writeVideoFrame( mArgbFrame, currentFrame );
         convertPixFmt( mYuv420pFrame, mArgbFrame );
 
         mYuv420pFrame->pts = currentFrame - mDesc.startFrame;
 
         encodeFrame( mVideoStream, mVideoCodecCtx, mYuv420pFrame );
 
+        if ( !mSoundClips.empty() )
+        {
+            writeAudioFrame( mAudioFrame, currentFrame );
+
+            mAudioFrame->pts = currentFrame - mDesc.startFrame;
+
+            encodeFrame( mAudioStream, mAudioCodecCtx, mAudioFrame );
+        }
+
         emit progress( 100 * ( currentFrame - mDesc.startFrame ) / ( mDesc.endFrame - mDesc.startFrame ) );
     }
 
     encodeFrame( mVideoStream, mVideoCodecCtx, nullptr );
+    if ( !mSoundClips.empty() )
+    {
+        encodeFrame( mAudioStream, mAudioCodecCtx, nullptr );
+    }
     AVERR_CHECK( av_write_trailer( mFormatCtx ), "Unable to write format trailer" );
 
     return Status::OK;
@@ -163,6 +192,10 @@ void MovieExporter2::createVideoCodecContext(AVCodecID codecId)
     mVideoCodecCtx->bit_rate = 400000;
     mVideoCodecCtx->width = mDesc.exportSize.width();
     mVideoCodecCtx->height = mDesc.exportSize.height();
+    // We have to use a temporary QImage to obtain the pixel aspect ratio used by Qt
+    // The only alternative is using private, unsupported functions
+    QImage tmp( 1, 1, QImage::Format_ARGB32_Premultiplied );
+    mVideoCodecCtx->sample_aspect_ratio = { tmp.dotsPerMeterX(), tmp.dotsPerMeterY() };
     mVideoCodecCtx->time_base = { 1, mDesc.fps };
     mVideoCodecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
     av_opt_set( mVideoCodecCtx->priv_data, "preset", "slow", 0 ); // NOTE: H.264-specific
@@ -170,12 +203,25 @@ void MovieExporter2::createVideoCodecContext(AVCodecID codecId)
     AVERR_CHECK( avcodec_open2( mVideoCodecCtx, mVideoCodecCtx->codec, nullptr ), "Unable to open codec" );
 }
 
+void MovieExporter2::createAudioCodecContext(AVCodecID codecId)
+{
+    mAudioCodecCtx = createCodecContext( codecId );
+
+    mAudioCodecCtx->bit_rate = 64000;
+    mAudioCodecCtx->sample_fmt = AV_SAMPLE_FMT_FLTP; // TODO: proper selection / check support in codec
+    mAudioCodecCtx->sample_rate = 44100; // TODO: proper selection / check support in codec
+    mAudioCodecCtx->channel_layout = AV_CH_LAYOUT_STEREO; // TODO: proper selection / check support in codec
+    mAudioCodecCtx->channels = av_get_channel_layout_nb_channels( mAudioCodecCtx->channel_layout );
+
+    AVERR_CHECK( avcodec_open2( mAudioCodecCtx, mAudioCodecCtx->codec, nullptr ), "Unable to open codec" );
+}
+
 void MovieExporter2::destroyCodecContext(AVCodecContext *&codecContext)
 {
     avcodec_free_context( &codecContext );
 }
 
-AVFrame *MovieExporter2::createFrame(int format)
+AVFrame *MovieExporter2::createVideoFrame(int format)
 {
     AVFrame *frame = av_frame_alloc();
     ALLOC_CHECK( frame, "Unable to allocate frame" );
@@ -183,6 +229,17 @@ AVFrame *MovieExporter2::createFrame(int format)
     frame->width = mVideoCodecCtx->width;
     frame->height = mVideoCodecCtx->height;
     AVERR_CHECK( av_frame_get_buffer( frame, 32 ), "Unable to allocate frame data" );
+    return frame;
+}
+
+AVFrame *MovieExporter2::createAudioFrame()
+{
+    AVFrame *frame = av_frame_alloc();
+    ALLOC_CHECK( frame, "Unable to allocate audio frame" );
+    frame->nb_samples = mAudioCodecCtx->frame_size;
+    frame->format = mAudioCodecCtx->sample_fmt;
+    frame->channel_layout = mAudioCodecCtx->channel_layout;
+    AVERR_CHECK( av_frame_get_buffer( frame, 0 ), "Unable to allocate audio frame data" );
     return frame;
 }
 
@@ -202,16 +259,16 @@ void MovieExporter2::destroyPacket()
     av_packet_free( &mPkt );
 }
 
-void MovieExporter2::paintAvFrame(AVFrame *avFrame, int frame)
+void MovieExporter2::writeVideoFrame(AVFrame *avFrame, int frameNumber)
 {
-    AVERR_CHECK( av_frame_make_writable( avFrame ), "Unable to make frame writable" );
+    AVERR_CHECK( av_frame_make_writable( avFrame ), "Unable to make video frame writable" );
 
     QImage imageToExport( mDesc.exportSize, QImage::Format_ARGB32_Premultiplied );
     imageToExport.fill( Qt::white );
 
     QPainter painter( &imageToExport );
 
-    QTransform view = mCameraLayer->getViewAtFrame( frame );
+    QTransform view = mCameraLayer->getViewAtFrame( frameNumber );
 
     QSize camSize = mCameraLayer->getViewSize();
     QTransform centralizeCamera;
@@ -220,12 +277,23 @@ void MovieExporter2::paintAvFrame(AVFrame *avFrame, int frame)
     painter.setWorldTransform( view * centralizeCamera );
     painter.setWindow( QRect( 0, 0, camSize.width(), camSize.height() ) );
 
-    mObj->paintImage( painter, frame, false, true );
+    mObj->paintImage( painter, frameNumber, false, true );
 
     Q_ASSERT( avFrame->format == PIX_FMT_QIMAGE_ARGB32 );
     // ARGB pixel format stores all components on plane 0
     Q_ASSERT( avFrame->height * avFrame->linesize[0] == imageToExport.byteCount() );
     memcpy( avFrame->data[0], imageToExport.constBits(), avFrame->height * avFrame->linesize[0] );
+}
+
+void MovieExporter2::writeAudioFrame(AVFrame *avFrame, int frameNumber)
+{
+    AVERR_CHECK( av_frame_make_writable( avFrame ), "Unable to make audio frame writable" );
+
+    // TODO: write sound clips rather than silence
+    for ( int i = 0; i < 4; i++ )
+    {
+        memset( avFrame->data[i], 0, avFrame->linesize[i] );
+    }
 }
 
 void MovieExporter2::convertPixFmt(AVFrame *dst, AVFrame *src)
