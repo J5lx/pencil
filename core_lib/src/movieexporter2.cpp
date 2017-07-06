@@ -102,12 +102,16 @@ MovieExporter2::~MovieExporter2()
 {
     destroyFormatContext();
     destroyCodecContext( mVideoCodecCtx );
-    destroyCodecContext( mAudioCodecCtx );
-    clearInputAudioStreams();
     destroyFrame( mArgbFrame );
     destroyFrame( mYuv420pFrame );
-    destroyFrame( mAudioFrame );
     destroyPacket();
+
+    if ( !mInputAudioStreams.empty() )
+    {
+        destroyCodecContext( mAudioCodecCtx );
+        destroyFrame( mAudioFrame );
+        clearInputAudioStreams();
+    }
 }
 
 Status MovieExporter2::run()
@@ -302,7 +306,6 @@ void MovieExporter2::createAudioCodecContext(AVCodecID codecId)
 
 void MovieExporter2::destroyCodecContext(AVCodecContext *&codecContext)
 {
-    // FIXME: can produce SIGSEGV
     avcodec_free_context( &codecContext );
 }
 
