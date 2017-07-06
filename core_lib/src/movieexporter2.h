@@ -25,6 +25,7 @@ struct ExportMovieDesc2
     QString strCameraName;
     bool loop = false;
 };
+struct InputAudioStream;
 
 class MovieExporter2 : public QObject
 {
@@ -44,6 +45,8 @@ public slots:
     void cancel() { mCanceled = true; }
 
 private:
+    void addInputAudioStream( SoundClip *soundClip );
+    void clearInputAudioStreams();
     void createFormatContext( const char *filename );
     void destroyFormatContext();
     AVStream *createStream( AVCodecContext *codecContext );
@@ -57,6 +60,7 @@ private:
     void destroyFrame( AVFrame *&frame );
     void createPacket();
     void destroyPacket();
+    void readAudioFrame( InputAudioStream &stream, AVPacket *&mPkt );
     void writeVideoFrame( AVFrame *avFrame, int frameNumber );
     void writeAudioFrame( AVFrame *avFrame, int frameNumber );
     void convertPixFmt( AVFrame *dst, AVFrame *src );
@@ -67,7 +71,7 @@ private:
     Object *mObj;
     ExportMovieDesc2 mDesc;
     LayerCamera *mCameraLayer;
-    std::vector< SoundClip* > mSoundClips;
+    std::vector< InputAudioStream > mInputAudioStreams;
     AVFormatContext *mFormatCtx;
     AVStream *mVideoStream;
     AVStream *mAudioStream;

@@ -46,11 +46,12 @@ EXPORT_LAV {
             $${LAV_DIR}\lib\avformat.lib \
             $${LAV_DIR}\lib\avcodec.lib \
             $${LAV_DIR}\lib\avutil.lib \
+            $${LAV_DIR}\lib\swresample.lib \
             $${LAV_DIR}\lib\swscale.lib
         DEFINES += EXPORT_LAV
-    } else:packagesExist(libavformat libavcodec libavutil libswscale) {
+    } else:packagesExist(libavformat libavcodec libavutil libswresample libswscale) {
         CONFIG += link_pkgconfig
-        PKGCONFIG += libavformat libavcodec libavutil libswscale
+        PKGCONFIG += libavformat libavcodec libavutil libswresample libswscale
         DEFINES += EXPORT_LAV
     } else {
         message("FFmpeg libraries not available")
