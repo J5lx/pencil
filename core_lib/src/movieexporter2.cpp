@@ -23,7 +23,7 @@ using std::runtime_error;
     int _ret = ( ret ); \
     if ( _ret < 0 ) { \
         /* TODO: this works, but it doesn’t feel quite right */ \
-        throw runtime_error( QString( "%1: %2" ).arg( QString::fromUtf8( msg ) ).arg( av_err2str( _ret ) ).toStdString() ); \
+        throw runtime_error( QString( "%1: %2" ).arg( QString::fromUtf8( msg ) ).arg( QString( av_err2str( _ret ) ) ).toStdString() ); \
     } \
 } while ( 0 )
 
@@ -43,11 +43,14 @@ struct InputAudioStream {
     SwrContext      *swrContext;
 };
 
+QFile postDecFile("/tmp/postDec.dat");
+QFile postResampleFile("/tmp/postResample.dat");
+
 MovieExporter2::MovieExporter2(Object* obj, ExportMovieDesc2& desc) :
     mObj(obj),
     mDesc(desc)
 {
-    // Proconditions, the UI should prevent invalid values
+    // Preconditions, the UI should prevent invalid values
     Q_ASSERT( !mDesc.strFileName.isEmpty() );
     Q_ASSERT( mDesc.startFrame > 0 );
     Q_ASSERT( mDesc.endFrame >= mDesc.startFrame );
@@ -57,7 +60,10 @@ MovieExporter2::MovieExporter2(Object* obj, ExportMovieDesc2& desc) :
     Q_ASSERT( mDesc.exportSize.width() % 2 == 0 );
     Q_ASSERT( mDesc.exportSize.height() % 2 == 0 );
 
-    mCameraLayer = static_cast< LayerCamera* >( mObj->findLayerByName( mDesc.strCameraName, Layer::CAMERA ) );
+    postDecFile.open(QIODevice::WriteOnly | QIODevice::Truncate);
+    postResampleFile.open(QIODevice::WriteOnly | QIODevice::Truncate);
+
+    mCameraLayer = (LayerCamera*)mObj->findLayerByName( mDesc.strCameraName, Layer::CAMERA );
     if ( mCameraLayer == nullptr )
     {
         mCameraLayer = mObj->getLayersByType< LayerCamera >().front();
@@ -67,12 +73,13 @@ MovieExporter2::MovieExporter2(Object* obj, ExportMovieDesc2& desc) :
     {
         layer->foreachKeyFrame( [&soundClips]( KeyFrame* key )
         {
-            soundClips.push_back( static_cast< SoundClip* >( key ) );
+            soundClips.push_back( dynamic_cast< SoundClip* >( key ) );
         } );
     }
 
     // Qt Multimedia can use GStreamer which insists on screwing up lav logging
     av_log_set_callback( &av_log_default_callback );
+    av_log_set_level(AV_LOG_TRACE);
 
     createFormatContext( mDesc.strFileName.toLocal8Bit().data() );
 
@@ -112,15 +119,20 @@ MovieExporter2::~MovieExporter2()
         destroyFrame( mAudioFrame );
         clearInputAudioStreams();
     }
+
+    postDecFile.close();
+    postResampleFile.close();
 }
 
 Status MovieExporter2::run()
 {
     emit progress( 0 );
 
-    AVERR_CHECK( avformat_write_header( mFormatCtx, nullptr), "Unable to write format header" );
+    AVERR_CHECK( avformat_write_header( mFormatCtx, nullptr ), "Unable to write format header" );
 
     emit progress( 100 / ( mDesc.endFrame - mDesc.startFrame + 3 ) );
+
+    int audioPts = 0;
 
     for ( int currentFrame = mDesc.startFrame; currentFrame <= mDesc.endFrame; currentFrame++ )
     {
@@ -138,11 +150,14 @@ Status MovieExporter2::run()
 
         if ( !mInputAudioStreams.empty() )
         {
-            writeAudioFrame( mAudioFrame, currentFrame );
+            while (av_compare_ts(currentFrame - mDesc.startFrame + 1, mVideoCodecCtx->time_base, audioPts, mAudioCodecCtx->time_base) >= 0) {
+                writeAudioFrame( mAudioFrame, currentFrame );
 
-            mAudioFrame->pts = currentFrame - mDesc.startFrame;
+                mAudioFrame->pts = audioPts;
+                audioPts += mAudioFrame->nb_samples;
 
-            encodeFrame( mAudioStream, mAudioCodecCtx, mAudioFrame );
+                encodeFrame( mAudioStream, mAudioCodecCtx, mAudioFrame );
+            }
         }
 
         emit progress( 100 * ( 2 + currentFrame   - mDesc.startFrame ) /
@@ -221,7 +236,7 @@ void MovieExporter2::clearInputAudioStreams()
 
 void MovieExporter2::createFormatContext(const char *filename)
 {
-    AVERR_CHECK( avformat_alloc_output_context2( &mFormatCtx, NULL, "mp4", filename ),
+    AVERR_CHECK( avformat_alloc_output_context2( &mFormatCtx, nullptr, "mp4", filename ),
                  "Unable to allocate format context" );
 
     if ( !( mFormatCtx->oformat->flags & AVFMT_NOFILE ) )
@@ -229,6 +244,7 @@ void MovieExporter2::createFormatContext(const char *filename)
         AVERR_CHECK( avio_open( &mFormatCtx->pb, filename, AVIO_FLAG_WRITE ),
                      "Unable to open output file" );
     }
+    // TODO: currently H.264 and AAC are hard-coded. They appear to be the defaults for MP4 but what if not?
 }
 
 void MovieExporter2::destroyFormatContext()
@@ -316,6 +332,7 @@ AVFrame *MovieExporter2::createVideoFrame(int format)
     frame->format = format;
     frame->width = mVideoCodecCtx->width;
     frame->height = mVideoCodecCtx->height;
+    // TODO: Document magic number
     AVERR_CHECK( av_frame_get_buffer( frame, 32 ), "Unable to allocate frame data" );
     return frame;
 }
@@ -390,6 +407,7 @@ void MovieExporter2::writeVideoFrame(AVFrame *avFrame, int frameNumber)
 
 // TODO: probably split this method up cause it’s too big
 // FIXME: We really need to support sample rate conversions (i.e. flush libswr internal buffer when necessary)
+// NOTE: frameNumber currently only used to calculate which input streams to read from, not which position to read from
 void MovieExporter2::writeAudioFrame(AVFrame *avFrame, int frameNumber)
 {
     // TODO: support for more than one sound clip
@@ -404,24 +422,33 @@ void MovieExporter2::writeAudioFrame(AVFrame *avFrame, int frameNumber)
         return;
     }
 
-    readAudioFrame( stream, mPkt );
-
-    AVERR_CHECK( avcodec_send_packet( stream.codecContext, mPkt ), "Unable to send packet from sound clip to decoder" );
-    av_packet_unref( mPkt );
-
-    while ( true )
-    {
-        // FIXME: currently processing only some frames
+    do {
         int ret = avcodec_receive_frame( stream.codecContext, stream.recvFrame );
-        if ( ret == AVERROR( EAGAIN ) || ret == AVERROR_EOF )
-        {
+        if ( ret == AVERROR_EOF ) {
+            stream.recvFrame = nullptr;
             break;
         }
-        AVERR_CHECK( ret, "Unable to receive frame from sound clip decoder" );
+        if ( ret == AVERROR( EAGAIN ) ) {
+            readAudioFrame(stream, mPkt); // TODO: break when no more data available
 
-        AVERR_CHECK( av_frame_make_writable( avFrame ), "Unable to make audio frame writable" );
-        AVERR_CHECK( swr_convert_frame( stream.swrContext, avFrame, stream.recvFrame ), "Unable to resample audio frame" );
+            AVERR_CHECK( avcodec_send_packet( stream.codecContext, mPkt ), "Unable to send packet from sound clip to decoder" );
+            av_packet_unref( mPkt );
+
+            continue;
+        }
+        for (int i = 0; i < stream.recvFrame->channels; i++) {
+            postDecFile.write((const char *) (stream.recvFrame->extended_data[i]), stream.recvFrame->linesize[0]);
+        }
+        AVERR_CHECK( ret, "Unable to receive frame from sound clip decoder" );
+        swr_convert_frame(stream.swrContext, nullptr, stream.recvFrame);
+    } while (stream.recvFrame->nb_samples == 0 || swr_get_out_samples(stream.swrContext, stream.recvFrame->nb_samples) < avFrame->nb_samples);
+
+    AVERR_CHECK( av_frame_make_writable( avFrame ), "Unable to make audio frame writable" );
+    AVERR_CHECK( swr_convert_frame( stream.swrContext, avFrame, stream.recvFrame ), "Unable to resample audio frame" );
+    for (int i = 0; i < avFrame->channels; i++) {
+        postResampleFile.write((const char *) (avFrame->extended_data[i]), avFrame->linesize[0]);
     }
+    return;
 }
 
 void MovieExporter2::convertPixFmt(AVFrame *dst, AVFrame *src)
@@ -435,9 +462,9 @@ void MovieExporter2::convertPixFmt(AVFrame *dst, AVFrame *src)
                                       dst->height,
                                       static_cast< AVPixelFormat >( dst->format ),
                                       0,
-                                      NULL,
-                                      NULL,
-                                      NULL );
+                                      nullptr,
+                                      nullptr,
+                                      nullptr );
     ALLOC_CHECK( sws, "Unable to allocate swscaler context" );
 
     sws_scale( sws, src->data, src->linesize, 0, src->height, dst->data, dst->linesize );
