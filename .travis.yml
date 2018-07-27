@@ -96,18 +96,19 @@ script:
   - "$TRAVIS_BUILD_DIR/build/tests/tests"
 
 after_success:
+  - 'if [ "$TRAVIS_BRANCH" == "release" ]; then
+    export BAREVERSION="$(git describe --tags)";
+    export VERSION="$BAREVERSION";
+  else
+    export BAREVERSION="$(date +"%Y-%m-%d")";
+    export VERSION="Nightly Build $BAREVERSION";
+  fi'
   - echo "look for build folder and zip file"
   - ls
   - 'if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      make INSTALL_ROOT="${PWD}/Pencil2D" install;
-      rm -rf Pencil2D/usr/lib;
-      echo "Creating AppImage...";
-      sed -i "/^Keywords\(\[[a-zA-Z_.@]\+\]\)\?=/d;/^Version=/cVersion=1.0" Pencil2D/usr/share/applications/pencil2d.desktop;
-      install -Dm755 /usr/bin/ffmpeg Pencil2D/usr/plugins/ffmpeg;
       curl -fsSLO https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage;
       chmod 755 linuxdeployqt-continuous-x86_64.AppImage;
-      LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/pulseaudio" ./linuxdeployqt-continuous-x86_64.AppImage Pencil2D/usr/share/applications/pencil2d.desktop -executable=Pencil2D/usr/plugins/ffmpeg -extra-plugins=iconengines/libqsvgicon.so -appimage;
-      mv "Pencil2D-x86_64.AppImage" "pencil2d-linux-$(date +"%Y-%m-%d").AppImage";
+      "$TRAVIS_BUILD_DIR/util/mkappimage.sh" "$PWD" "$VERSION" "pencil2d-linux-$BAREVERSION.AppImage";
      fi'
   - 'if [ "$TRAVIS_OS_NAME" == "osx" ]; then
       echo "cleaning...";
@@ -133,7 +134,7 @@ after_success:
       rm master.zip;
       cd ..;
       echo "Zipping...";
-      zip -r "pencil2d-mac-$(date +"%Y-%m-%d").zip" Pencil2D/;
+      zip -r "pencil2d-mac-$BAREVERSION.zip" Pencil2D/;
     fi'
   - echo "zipping done"
   - ls
@@ -143,10 +144,10 @@ after_success:
     echo "Initiate deployment on Google Drive";
     cd "$TRAVIS_BUILD_DIR/util";
     if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      python3 nightly-build-upload.py "$LINUX_NIGHTLY_PARENT" "$TRAVIS_BUILD_DIR/build/pencil2d-linux-$(date +"%Y-%m-%d").AppImage";
+      python3 nightly-build-upload.py "$LINUX_NIGHTLY_PARENT" "$TRAVIS_BUILD_DIR/build/pencil2d-linux-$BAREVERSION.AppImage";
     fi;
     if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-      python3 nightly-build-upload.py "$OSX_NIGHTLY_PARENT" "$TRAVIS_BUILD_DIR/build/pencil2d-mac-$(date +"%Y-%m-%d").zip";
+      python3 nightly-build-upload.py "$OSX_NIGHTLY_PARENT" "$TRAVIS_BUILD_DIR/build/pencil2d-mac-$BAREVERSION.zip";
     fi;
     echo "Operation done";
   fi'
