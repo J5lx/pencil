@@ -1,9 +1,9 @@
 #ifndef IMPORTLAYERSDIALOG_H
 #define IMPORTLAYERSDIALOG_H
 
-#include <QDialog>
-#include "object.h"
 #include "editor.h"
+#include "object.h"
+#include <QDialog>
 
 namespace Ui
 {

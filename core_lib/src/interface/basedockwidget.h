@@ -22,13 +22,12 @@ GNU General Public License for more details.
 
 class Editor;
 
-
 class BaseDockWidget : public QDockWidget
 {
     Q_OBJECT
 protected:
     explicit BaseDockWidget(QWidget *pParent);
-    virtual  ~BaseDockWidget();
+    virtual ~BaseDockWidget();
 
     void resizeEvent(QResizeEvent *event) override;
 

@@ -18,10 +18,10 @@ GNU General Public License for more details.
 #ifndef TOOLMANAGER_H
 #define TOOLMANAGER_H
 
-#include <QObject>
-#include <QHash>
-#include "basetool.h"
 #include "basemanager.h"
+#include "basetool.h"
+#include <QHash>
+#include <QObject>
 
 class ScribbleArea;
 
@@ -72,12 +72,11 @@ public slots:
 
 private:
     BaseTool *mCurrentTool = nullptr;
-    ToolType  meTabletBackupTool = PENCIL;
+    ToolType meTabletBackupTool = PENCIL;
     bool mIsSwitchedToEraser = false;
     QHash<ToolType, BaseTool *> mToolSetHash;
 
     int mOldValue = 0;
-
 };
 
 #endif // TOOLMANAGER_H

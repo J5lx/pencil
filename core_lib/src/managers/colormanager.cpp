@@ -17,17 +17,12 @@ GNU General Public License for more details.
 
 #include "colormanager.h"
 
-#include "object.h"
 #include "editor.h"
+#include "object.h"
 
+ColorManager::ColorManager(Editor *editor) : BaseManager(editor) {}
 
-ColorManager::ColorManager(Editor *editor) : BaseManager(editor)
-{
-}
-
-ColorManager::~ColorManager()
-{
-}
+ColorManager::~ColorManager() {}
 
 bool ColorManager::init()
 {
@@ -60,7 +55,6 @@ void ColorManager::workingLayerChanged(Layer *layer)
 
 QColor ColorManager::frontColor()
 {
-
     if (mIsWorkingOnVectorLayer)
     {
         return object()->getColor(mCurrentColorIndex).color;

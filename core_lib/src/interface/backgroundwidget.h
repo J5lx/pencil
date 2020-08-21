@@ -18,9 +18,8 @@ GNU General Public License for more details.
 #ifndef BACKGROUNDWIDGET_H
 #define BACKGROUNDWIDGET_H
 
-#include <QWidget>
 #include "preferencemanager.h"
-
+#include <QWidget>
 
 class BackgroundWidget : public QWidget
 {
@@ -34,16 +33,13 @@ public:
 public slots:
 
 protected:
-
     void paintEvent(QPaintEvent *) override;
-
 
 private slots:
 
     void settingUpdated(SETTING setting);
 
 private:
-
     void drawShadow(QPainter &painter);
     void loadBackgroundStyle();
 
@@ -51,7 +47,6 @@ private:
 
     QString mStyle;
     bool mHasShadow = false;
-
 };
 
 #endif // BACKGROUNDWIDGET_H

@@ -16,26 +16,31 @@ GNU General Public License for more details.
 */
 
 #include "importimageseqdialog.h"
+#include "app_util.h"
 #include "ui_importimageseqoptions.h"
 #include "ui_importimageseqpreview.h"
 #include "util.h"
-#include "app_util.h"
 
 #include "editor.h"
 #include "predefinedsetmodel.h"
 #include "viewmanager.h"
 
-#include <QProgressDialog>
-#include <QMessageBox>
-#include <QDir>
-#include <QtDebug>
 #include <QDialogButtonBox>
+#include <QDir>
+#include <QMessageBox>
+#include <QProgressDialog>
 #include <QPushButton>
+#include <QtDebug>
 
-ImportImageSeqDialog::ImportImageSeqDialog(QWidget *parent, Mode mode, FileType fileType, ImportCriteria importCriteria) :
-    ImportExportDialog(parent, mode, fileType), mParent(parent), mImportCriteria(importCriteria), mFileType(fileType)
+ImportImageSeqDialog::ImportImageSeqDialog(QWidget *parent,
+                                           Mode mode,
+                                           FileType fileType,
+                                           ImportCriteria importCriteria) :
+    ImportExportDialog(parent, mode, fileType),
+    mParent(parent),
+    mImportCriteria(importCriteria),
+    mFileType(fileType)
 {
-
     uiOptionsBox = new Ui::ImportImageSeqOptions;
     uiOptionsBox->setupUi(getOptionsGroupBox());
 
@@ -56,7 +61,6 @@ ImportImageSeqDialog::ImportImageSeqDialog(QWidget *parent, Mode mode, FileType 
 
 void ImportImageSeqDialog::setupLayout()
 {
-
     hideInstructionsLabel(true);
 
     if (mFileType == FileType::GIF)
@@ -68,7 +72,10 @@ void ImportImageSeqDialog::setupLayout()
         setWindowTitle(tr("Import image sequence"));
     }
 
-    connect(uiOptionsBox->spaceSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ImportImageSeqDialog::setSpace);
+    connect(uiOptionsBox->spaceSpinBox,
+            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this,
+            &ImportImageSeqDialog::setSpace);
     connect(this, &ImportImageSeqDialog::filePathsChanged, this, &ImportImageSeqDialog::validateFiles);
 }
 
@@ -76,7 +83,8 @@ void ImportImageSeqDialog::setupPredefinedLayout()
 {
     setWindowTitle(tr("Import predefined keyframe set"));
     setInstructionsLabel(tr("Select an image that matches the criteria: MyFile000.png, eg. Joe001.png \n"
-                            "The importer will search and find images matching the same criteria. You can see the result in the preview box below."));
+                            "The importer will search and find images matching the same criteria. You can see the "
+                            "result in the preview box below."));
     hideOptionsGroupBox(true);
     hidePreviewGroupBox(false);
 
@@ -113,11 +121,7 @@ void ImportImageSeqDialog::updatePreviewList(const QStringList &list)
         QPushButton *okButton = getDialogButtonBox()->button(QDialogButtonBox::StandardButton::Ok);
         if (status == Status::FAIL)
         {
-            QMessageBox::warning(mParent,
-                                 status.title(),
-                                 status.description(),
-                                 QMessageBox::Ok,
-                                 QMessageBox::Ok);
+            QMessageBox::warning(mParent, status.title(), status.description(), QMessageBox::Ok, QMessageBox::Ok);
             okButton->setEnabled(false);
         }
         else
@@ -193,18 +197,14 @@ void ImportImageSeqDialog::importArbitrarySequence()
     {
         QString strImgFileLower = strImgFile.toLower();
 
-        if (strImgFileLower.endsWith(".png") ||
-            strImgFileLower.endsWith(".jpg") ||
-            strImgFileLower.endsWith(".jpeg") ||
-            strImgFileLower.endsWith(".bmp") ||
-            strImgFileLower.endsWith(".tif") ||
-            strImgFileLower.endsWith(".tiff"))
+        if (strImgFileLower.endsWith(".png") || strImgFileLower.endsWith(".jpg") || strImgFileLower.endsWith(".jpeg") ||
+            strImgFileLower.endsWith(".bmp") || strImgFileLower.endsWith(".tif") || strImgFileLower.endsWith(".tiff"))
         {
             mEditor->importImage(strImgFile);
 
             imagesImportedSoFar++;
             progress.setValue(imagesImportedSoFar);
-            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);  // Required to make progress bar update
+            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents); // Required to make progress bar update
 
             if (progress.wasCanceled())
             {
@@ -234,7 +234,6 @@ void ImportImageSeqDialog::importArbitrarySequence()
                              QMessageBox::Ok,
                              QMessageBox::Ok);
     }
-
 
     emit notifyAnimationLengthChanged();
     progress.close();
@@ -277,22 +276,26 @@ const PredefinedKeySetParams ImportImageSeqDialog::predefinedKeySetParams() cons
 
     QDir dir = strFilePath.left(strFilePath.lastIndexOf("/"));
     QStringList sList = dir.entryList(QDir::Files, QDir::Name);
-    if (sList.isEmpty()) { return setParams; }
+    if (sList.isEmpty())
+    {
+        return setParams;
+    }
 
     // List of files is not empty. Let's go find the relevant files
     QStringList finalList;
     int validLength = prefix.length() + digit.length() + suffix.length();
     for (int i = 0; i < sList.size(); i++)
     {
-        if (sList[i].startsWith(prefix) &&
-            sList[i].length() == validLength &&
-            sList[i].mid(sList[i].lastIndexOf(".") - digits, digits).toInt() > 0 &&
-            sList[i].endsWith(suffix))
+        if (sList[i].startsWith(prefix) && sList[i].length() == validLength &&
+            sList[i].mid(sList[i].lastIndexOf(".") - digits, digits).toInt() > 0 && sList[i].endsWith(suffix))
         {
             finalList.append(sList[i]);
         }
     }
-    if (finalList.isEmpty()) { return setParams; }
+    if (finalList.isEmpty())
+    {
+        return setParams;
+    }
 
     // List of relevant files is not empty. Let's validate them
     dot = finalList[0].lastIndexOf(".");
@@ -338,14 +341,17 @@ void ImportImageSeqDialog::importPredefinedSet()
         imagesImportedSoFar++;
 
         progress.setValue(imagesImportedSoFar);
-        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);  // Required to make progress bar update
+        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents); // Required to make progress bar update
 
         if (progress.wasCanceled())
         {
             break;
         }
 
-        if (!ok) { return;}
+        if (!ok)
+        {
+            return;
+        }
     }
 
     emit notifyAnimationLengthChanged();
@@ -363,7 +369,10 @@ Status ImportImageSeqDialog::validateKeySet(const PredefinedKeySet &keySet, cons
 
     Status status = Status::OK;
 
-    if (filepaths.isEmpty()) { status = Status::FAIL; }
+    if (filepaths.isEmpty())
+    {
+        status = Status::FAIL;
+    }
 
     if (keySet.isEmpty())
     {
@@ -374,7 +383,9 @@ Status ImportImageSeqDialog::validateKeySet(const PredefinedKeySet &keySet, cons
     if (status == Status::FAIL)
     {
         status.setTitle(tr("Invalid path"));
-        status.setDescription(QString(tr("The following file did not meet the criteria: \n%1 \n\nRead the instructions and try again")).arg(failedPathsString));
+        status.setDescription(
+            QString(tr("The following file did not meet the criteria: \n%1 \n\nRead the instructions and try again"))
+                .arg(failedPathsString));
     }
 
     return status;
@@ -386,7 +397,10 @@ Status ImportImageSeqDialog::validateFiles(const QStringList &filepaths)
 
     Status status = Status::OK;
 
-    if (filepaths.isEmpty()) { status = Status::FAIL; }
+    if (filepaths.isEmpty())
+    {
+        status = Status::FAIL;
+    }
 
     for (int i = 0; i < filepaths.count(); i++)
     {
@@ -401,7 +415,8 @@ Status ImportImageSeqDialog::validateFiles(const QStringList &filepaths)
     {
         status = Status::FAIL;
         status.setTitle(tr("Invalid path"));
-        status.setDescription(QString(tr("The following file(-s) did not meet the criteria: \n%1")).arg(failedPathsString));
+        status.setDescription(
+            QString(tr("The following file(-s) did not meet the criteria: \n%1")).arg(failedPathsString));
     }
 
     if (status == Status::OK)

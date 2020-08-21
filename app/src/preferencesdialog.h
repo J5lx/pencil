@@ -21,8 +21,8 @@ GNU General Public License for more details.
 #include <QDir>
 
 #include "pencildef.h"
-#include "scribblearea.h"
 #include "preferencemanager.h"
+#include "scribblearea.h"
 
 class QListWidgetItem;
 class PreferenceManager;
@@ -35,7 +35,7 @@ class GeneralPage;
 class TimelinePage;
 class FilesPage;
 class ToolsPage;
-}
+} // namespace Ui
 
 class PreferencesDialog : public QDialog
 {
@@ -67,7 +67,6 @@ private:
 
     PreferenceManager *mPrefManager = nullptr;
 };
-
 
 class GeneralPage : public QWidget
 {
@@ -103,7 +102,6 @@ private slots:
     void frameCacheNumberChanged(int value);
 
 private:
-
     void updateSafeHelperTextEnabledState();
 
     Ui::GeneralPage *ui = nullptr;
@@ -179,7 +177,6 @@ private:
     int mMaxPresetIndex = 0;
 };
 
-
 class ToolsPage : public QWidget
 {
     Q_OBJECT
@@ -193,6 +190,7 @@ public slots:
     void quickSizingChange(int);
     void setRotationIncrement(int);
     void rotationIncrementChange(int);
+
 private:
     Ui::ToolsPage *ui = nullptr;
     PreferenceManager *mManager = nullptr;

@@ -17,10 +17,10 @@ GNU General Public License for more details.
 
 #include "filedialogex.h"
 
-#include <QSettings>
-#include <QFileInfo>
-#include <QFileDialog>
 #include <QDebug>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QSettings>
 
 #include "fileformat.h"
 #include "pencildef.h"
@@ -30,9 +30,7 @@ FileDialog::FileDialog(QWidget *parent) : QObject(parent)
     mRoot = parent;
 }
 
-FileDialog::~FileDialog()
-{
-}
+FileDialog::~FileDialog() {}
 
 QString FileDialog::openFile(FileType fileType)
 {
@@ -40,10 +38,7 @@ QString FileDialog::openFile(FileType fileType)
     QString strInitialFilePath = getLastOpenPath(fileType);
     QString strFilter = openFileFilters(fileType);
 
-    QString filePath = QFileDialog::getOpenFileName(mRoot,
-                                                    strTitle,
-                                                    strInitialFilePath,
-                                                    strFilter);
+    QString filePath = QFileDialog::getOpenFileName(mRoot, strTitle, strInitialFilePath, strFilter);
     if (!filePath.isEmpty())
     {
         setLastOpenPath(fileType, filePath);
@@ -85,7 +80,10 @@ QString FileDialog::saveFile(FileType fileType)
                                                     strFilter,
                                                     strSelectedFilter.isNull() ? nullptr : &strSelectedFilter);
 
-    if (filePath.isEmpty()) { return QString(); }
+    if (filePath.isEmpty())
+    {
+        return QString();
+    }
 
     setLastSavePath(fileType, filePath);
 
@@ -138,8 +136,7 @@ QString FileDialog::getLastSavePath(FileType fileType)
     QSettings setting(PENCIL2D, PENCIL2D);
     setting.beginGroup("LastSavePath");
 
-    return setting.value(toSettingKey(fileType),
-                         QDir::homePath() + "/" + defaultFileName(fileType)).toString();
+    return setting.value(toSettingKey(fileType), QDir::homePath() + "/" + defaultFileName(fileType)).toString();
 }
 
 void FileDialog::setLastSavePath(FileType fileType, QString savePath)

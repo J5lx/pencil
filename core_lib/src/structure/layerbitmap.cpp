@@ -16,23 +16,18 @@ GNU General Public License for more details.
 */
 #include "layerbitmap.h"
 
+#include "bitmapimage.h"
+#include "keyframe.h"
 #include <QDebug>
 #include <QDir>
 #include <QFile>
-#include "keyframe.h"
-#include "bitmapimage.h"
-
-
-
 
 LayerBitmap::LayerBitmap(Object *object) : Layer(object, Layer::BITMAP)
 {
     setName(tr("Bitmap Layer"));
 }
 
-LayerBitmap::~LayerBitmap()
-{
-}
+LayerBitmap::~LayerBitmap() {}
 
 BitmapImage *LayerBitmap::getBitmapImageAtFrame(int frameNumber)
 {
@@ -99,13 +94,11 @@ Status LayerBitmap::presave(const QString &sDataFolder)
     QDir dataFolder(sDataFolder);
     // Handles keys that have been moved but not modified
     std::vector<BitmapImage *> movedOnlyBitmaps;
-    foreachKeyFrame([&movedOnlyBitmaps, &dataFolder, this](KeyFrame * key)
-    {
+    foreachKeyFrame([&movedOnlyBitmaps, &dataFolder, this](KeyFrame *key) {
         auto bitmap = static_cast<BitmapImage *>(key);
         // (b->fileName() != fileName(b) && !modified => the keyframe has been moved, but users didn't draw on it.
-        if (!bitmap->fileName().isEmpty()
-            && !bitmap->isModified()
-            && bitmap->fileName() != filePath(bitmap, dataFolder))
+        if (!bitmap->fileName().isEmpty() && !bitmap->isModified() &&
+            bitmap->fileName() != filePath(bitmap, dataFolder))
         {
             movedOnlyBitmaps.push_back(bitmap);
         }
@@ -171,8 +164,7 @@ QDomElement LayerBitmap::createDomElement(QDomDocument &doc)
 {
     QDomElement layerElem = this->createBaseDomElement(doc);
 
-    foreachKeyFrame([&](KeyFrame * pKeyFrame)
-    {
+    foreachKeyFrame([&](KeyFrame *pKeyFrame) {
         BitmapImage *pImg = static_cast<BitmapImage *>(pKeyFrame);
 
         QDomElement imageTag = doc.createElement("image");
@@ -200,9 +192,13 @@ void LayerBitmap::loadDomElement(const QDomElement &element, QString dataDirPath
         {
             if (imageElement.tagName() == "image")
             {
-                QString path = dataDirPath + "/" + imageElement.attribute("src"); // the file is supposed to be in the data directory
+                QString path = dataDirPath + "/" +
+                               imageElement.attribute("src"); // the file is supposed to be in the data directory
                 QFileInfo fi(path);
-                if (!fi.exists()) { path = imageElement.attribute("src"); }
+                if (!fi.exists())
+                {
+                    path = imageElement.attribute("src");
+                }
                 int position = imageElement.attribute("frame").toInt();
                 int x = imageElement.attribute("topLeftX").toInt();
                 int y = imageElement.attribute("topLeftY").toInt();

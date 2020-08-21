@@ -17,10 +17,10 @@ GNU General Public License for more details.
 #ifndef SOUNDPLAYER_H
 #define SOUNDPLAYER_H
 
-#include <memory>
-#include <QObject>
-#include "pencilerror.h"
 #include "keyframe.h"
+#include "pencilerror.h"
+#include <QObject>
+#include <memory>
 
 class SoundClip;
 class QMediaPlayer;

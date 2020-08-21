@@ -1,8 +1,8 @@
 #ifndef POINTEREVENT_H
 #define POINTEREVENT_H
 
-#include <QTabletEvent>
 #include <QMouseEvent>
+#include <QTabletEvent>
 
 class PointerEvent
 {

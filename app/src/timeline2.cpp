@@ -28,12 +28,6 @@ Timeline2::~Timeline2()
     delete ui;
 }
 
-void Timeline2::initUI()
-{
+void Timeline2::initUI() {}
 
-}
-
-void Timeline2::updateUI()
-{
-
-}
+void Timeline2::updateUI() {}

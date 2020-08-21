@@ -17,20 +17,22 @@ GNU General Public License for more details.
 
 #include "stroketool.h"
 
-#include <QKeyEvent>
+#include "editor.h"
 #include "scribblearea.h"
 #include "strokemanager.h"
 #include "viewmanager.h"
-#include "editor.h"
+#include <QKeyEvent>
 
 #ifdef Q_OS_MAC
-extern "C" {
+extern "C"
+{
     void detectWhichOSX();
     void disableCoalescing();
     void enableCoalescing();
 }
 #else
-extern "C" {
+extern "C"
+{
     void detectWhichOSX() {}
     void disableCoalescing() {}
     void enableCoalescing() {}
@@ -54,7 +56,7 @@ void StrokeTool::startStroke()
 
     mStrokePoints.clear();
 
-    //Experimental
+    // Experimental
     QPointF startStrokes = strokeManager()->interpolateStart(mLastPixel);
     mStrokePoints << mEditor->view()->mapScreenToCanvas(startStrokes);
 

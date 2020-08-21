@@ -18,10 +18,10 @@ GNU General Public License for more details.
 #ifndef BACKUPELEMENT_H
 #define BACKUPELEMENT_H
 
-#include <QObject>
-#include "vectorimage.h"
 #include "bitmapimage.h"
 #include "soundclip.h"
+#include "vectorimage.h"
+#include <QObject>
 
 class Editor;
 
@@ -29,7 +29,13 @@ class BackupElement : public QObject
 {
     Q_OBJECT
 public:
-    enum types { UNDEFINED, BITMAP_MODIF, VECTOR_MODIF, SOUND_MODIF };
+    enum types
+    {
+        UNDEFINED,
+        BITMAP_MODIF,
+        VECTOR_MODIF,
+        SOUND_MODIF
+    };
 
     QString undoText;
     bool somethingSelected = false;

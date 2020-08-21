@@ -18,9 +18,8 @@ GNU General Public License for more details.
 #ifndef VECTORSELECTION_H
 #define VECTORSELECTION_H
 
-
-#include <QList>
 #include "vertexref.h"
+#include <QList>
 
 class VectorSelection
 {

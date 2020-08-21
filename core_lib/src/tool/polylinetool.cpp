@@ -17,23 +17,20 @@ GNU General Public License for more details.
 
 #include "polylinetool.h"
 
-#include <QSettings>
 #include "editor.h"
 #include "scribblearea.h"
+#include <QSettings>
 
-#include "strokemanager.h"
-#include "layermanager.h"
 #include "colormanager.h"
-#include "viewmanager.h"
-#include "pointerevent.h"
-#include "layervector.h"
 #include "layerbitmap.h"
+#include "layermanager.h"
+#include "layervector.h"
+#include "pointerevent.h"
+#include "strokemanager.h"
 #include "vectorimage.h"
+#include "viewmanager.h"
 
-
-PolylineTool::PolylineTool(QObject *parent) : BaseTool(parent)
-{
-}
+PolylineTool::PolylineTool(QObject *parent) : BaseTool(parent) {}
 
 ToolType PolylineTool::type()
 {
@@ -118,7 +115,8 @@ void PolylineTool::pointerPressEvent(PointerEvent *event)
 
             if (layer->type() == Layer::VECTOR)
             {
-                VectorImage *vectorImage = static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+                VectorImage *vectorImage =
+                    static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
                 Q_CHECK_PTR(vectorImage);
                 vectorImage->deselectAll();
                 if (mScribbleArea->makeInvisible() && !mEditor->preference()->isOn(SETTING::INVISIBLE_LINES))
@@ -141,8 +139,7 @@ void PolylineTool::pointerMoveEvent(PointerEvent *)
     }
 }
 
-void PolylineTool::pointerReleaseEvent(PointerEvent *)
-{}
+void PolylineTool::pointerReleaseEvent(PointerEvent *) {}
 
 void PolylineTool::pointerDoubleClickEvent(PointerEvent *)
 {
@@ -154,7 +151,6 @@ void PolylineTool::pointerDoubleClickEvent(PointerEvent *)
     endPolyline(mPoints);
     clearToolData();
 }
-
 
 bool PolylineTool::keyPressEvent(QKeyEvent *event)
 {
@@ -189,11 +185,7 @@ void PolylineTool::drawPolyline(QList<QPointF> points, QPointF endPoint)
 {
     if (points.size() > 0)
     {
-        QPen pen(mEditor->color()->frontColor(),
-                 properties.width,
-                 Qt::SolidLine,
-                 Qt::RoundCap,
-                 Qt::RoundJoin);
+        QPen pen(mEditor->color()->frontColor(), properties.width, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
         Layer *layer = mEditor->layers()->currentLayer();
 
         // Bitmap by default
@@ -230,7 +222,6 @@ void PolylineTool::drawPolyline(QList<QPointF> points, QPointF endPoint)
     }
 }
 
-
 void PolylineTool::cancelPolyline()
 {
     // Clear the in-progress polyline from the bitmap buffer.
@@ -258,15 +249,23 @@ void PolylineTool::endPolyline(QList<QPointF> points)
         curve.setVariableWidth(false);
         curve.setInvisibility(mScribbleArea->makeInvisible());
 
-        VectorImage *vectorImage = static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
-        if (vectorImage == nullptr) { return; } // Can happen if the first frame is deleted while drawing
+        VectorImage *vectorImage =
+            static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+        if (vectorImage == nullptr)
+        {
+            return;
+        } // Can happen if the first frame is deleted while drawing
         vectorImage->addCurve(curve, mEditor->view()->scaling());
     }
     if (layer->type() == Layer::BITMAP)
     {
         drawPolyline(points, points.last());
-        BitmapImage *bitmapImage = static_cast<LayerBitmap *>(layer)->getLastBitmapImageAtFrame(mEditor->currentFrame(), 0);
-        if (bitmapImage == nullptr) { return; } // Can happen if the first frame is deleted while drawing
+        BitmapImage *bitmapImage =
+            static_cast<LayerBitmap *>(layer)->getLastBitmapImageAtFrame(mEditor->currentFrame(), 0);
+        if (bitmapImage == nullptr)
+        {
+            return;
+        } // Can happen if the first frame is deleted while drawing
         bitmapImage->paste(mScribbleArea->mBufferImg);
     }
     mScribbleArea->setModified(mEditor->layers()->currentLayerIndex(), mEditor->currentFrame());

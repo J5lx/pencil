@@ -25,7 +25,6 @@ GNU General Public License for more details.
 class Layer;
 class VectorImage;
 
-
 class MoveTool : public BaseTool
 {
     Q_OBJECT

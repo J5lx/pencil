@@ -17,19 +17,16 @@ GNU General Public License for more details.
 
 #include "beziercurve.h"
 
-#include <cmath>
-#include <QList>
-#include <QXmlStreamWriter>
-#include <QDomElement>
-#include <QDebug>
-#include <QPainterPath>
 #include "object.h"
 #include "pencilerror.h"
+#include <QDebug>
+#include <QDomElement>
+#include <QList>
+#include <QPainterPath>
+#include <QXmlStreamWriter>
+#include <cmath>
 
-
-BezierCurve::BezierCurve()
-{
-}
+BezierCurve::BezierCurve() {}
 
 BezierCurve::BezierCurve(const QList<QPointF> &pointList, bool smooth)
 {
@@ -50,7 +47,10 @@ BezierCurve::BezierCurve(const QList<QPointF> &pointList, const QList<qreal> &pr
 
     // Simplify path
     QList<bool> markList;
-    for (int i = 0; i < n; i++) { markList.append(false); }
+    for (int i = 0; i < n; i++)
+    {
+        markList.append(false);
+    }
     markList.replace(0, true);
     markList.replace(n - 1, true);
     BezierCurve::simplify(tol, pointList, 0, n - 1, markList);
@@ -84,13 +84,15 @@ BezierCurve::BezierCurve(const QList<QPointF> &pointList, const QList<qreal> &pr
     createCurve(simplifiedPointList, simplifiedPressureList, smooth);
 }
 
-
 Status BezierCurve::createDomElement(QXmlStreamWriter &xmlStream)
 {
     xmlStream.writeStartElement("curve");
     xmlStream.writeAttribute("width", QString::number(width));
     xmlStream.writeAttribute("variableWidth", variableWidth ? "true" : "false");
-    if (feather > 0) { xmlStream.writeAttribute("feather", QString::number(feather)); }
+    if (feather > 0)
+    {
+        xmlStream.writeAttribute("feather", QString::number(feather));
+    }
     xmlStream.writeAttribute("invisible", invisible ? "true" : "false");
     xmlStream.writeAttribute("filled", mFilled ? "true" : "false");
     xmlStream.writeAttribute("colourNumber", QString::number(colorNumber));
@@ -99,7 +101,7 @@ Status BezierCurve::createDomElement(QXmlStreamWriter &xmlStream)
     xmlStream.writeAttribute("originPressure", QString::number(pressure.at(0)));
 
     int errorLocation = -1;
-    for (int i = 0; i < c1.size() ; i++)
+    for (int i = 0; i < c1.size(); i++)
     {
         xmlStream.writeEmptyElement("segment");
         xmlStream.writeAttribute("c1x", QString::number(c1.at(i).x()));
@@ -152,7 +154,10 @@ void BezierCurve::loadDomElement(const QDomElement &element)
     feather = element.attribute("feather").toDouble();
     invisible = (element.attribute("invisible") == "1") || (element.attribute("invisible") == "true");
     mFilled = (element.attribute("filled") == "1") || (element.attribute("filled") == "true");
-    if (width == 0) { invisible = true; }
+    if (width == 0)
+    {
+        invisible = true;
+    }
 
     colorNumber = element.attribute("colourNumber").toInt();
     origin = QPointF(element.attribute("originX").toFloat(), element.attribute("originY").toFloat());
@@ -167,9 +172,12 @@ void BezierCurve::loadDomElement(const QDomElement &element)
         {
             if (segmentElement.tagName() == "segment")
             {
-                QPointF c1Point = QPointF(segmentElement.attribute("c1x").toFloat(), segmentElement.attribute("c1y").toFloat());
-                QPointF c2Point = QPointF(segmentElement.attribute("c2x").toFloat(), segmentElement.attribute("c2y").toFloat());
-                QPointF vertexPoint = QPointF(segmentElement.attribute("vx").toFloat(), segmentElement.attribute("vy").toFloat());
+                QPointF c1Point =
+                    QPointF(segmentElement.attribute("c1x").toFloat(), segmentElement.attribute("c1y").toFloat());
+                QPointF c2Point =
+                    QPointF(segmentElement.attribute("c2x").toFloat(), segmentElement.attribute("c2y").toFloat());
+                QPointF vertexPoint =
+                    QPointF(segmentElement.attribute("vx").toFloat(), segmentElement.attribute("vy").toFloat());
                 qreal pressureValue = segmentElement.attribute("pressure").toFloat();
                 appendCubic(c1Point, c2Point, vertexPoint, pressureValue);
             }
@@ -177,7 +185,6 @@ void BezierCurve::loadDomElement(const QDomElement &element)
         segmentTag = segmentTag.nextSibling();
     }
 }
-
 
 void BezierCurve::setOrigin(const QPointF &point)
 {
@@ -243,7 +250,6 @@ void BezierCurve::setLastVertex(const QPointF &point)
     }
 }
 
-
 void BezierCurve::setWidth(qreal desiredWidth)
 {
     width = desiredWidth;
@@ -283,17 +289,23 @@ void BezierCurve::setFilled(bool YesOrNo)
 BezierCurve BezierCurve::transformed(QTransform transformation)
 {
     BezierCurve transformedCurve = *this; // copy the curve
-    if (isSelected(-1)) { transformedCurve.setOrigin(transformation.map(origin)); }
+    if (isSelected(-1))
+    {
+        transformedCurve.setOrigin(transformation.map(origin));
+    }
     for (int i = 0; i < vertex.size(); i++)
     {
-        if (isSelected(i - 1)) { transformedCurve.setC1(i, transformation.map(c1.at(i))); }
+        if (isSelected(i - 1))
+        {
+            transformedCurve.setC1(i, transformation.map(c1.at(i)));
+        }
         if (isSelected(i))
         {
             transformedCurve.setC2(i, transformation.map(c2.at(i)));
             transformedCurve.setVertex(i, transformation.map(vertex.at(i)));
         }
     }
-    //transformedCurve.smoothCurve();
+    // transformedCurve.smoothCurve();
     /*QPointF newOrigin = origin;
     if (isSelected(-1)) { newOrigin =  transformation.map(newOrigin); }
     transformedCurve.setOrigin( newOrigin );
@@ -315,20 +327,29 @@ BezierCurve BezierCurve::transformed(QTransform transformation)
 
 void BezierCurve::transform(QTransform transformation)
 {
-    if (isSelected(-1)) { setOrigin(transformation.map(origin)); }
+    if (isSelected(-1))
+    {
+        setOrigin(transformation.map(origin));
+    }
     for (int i = 0; i < vertex.size(); i++)
     {
-        if (isSelected(i - 1)) { c1[i] = transformation.map(c1.at(i)); }
+        if (isSelected(i - 1))
+        {
+            c1[i] = transformation.map(c1.at(i));
+        }
         if (isSelected(i))
         {
             c2[i] = transformation.map(c2.at(i));
             vertex[i] = transformation.map(vertex.at(i));
         }
     }
-    //smoothCurve();
+    // smoothCurve();
 }
 
-void BezierCurve::appendCubic(const QPointF &c1Point, const QPointF &c2Point, const QPointF &vertexPoint, qreal pressureValue)
+void BezierCurve::appendCubic(const QPointF &c1Point,
+                              const QPointF &c2Point,
+                              const QPointF &vertexPoint,
+                              qreal pressureValue)
 {
     c1.append(c1Point);
     c2.append(c2Point);
@@ -355,7 +376,7 @@ void BezierCurve::addPoint(int position, const QPointF point)
         pressure.insert(position, getPressure(position));
         selected.insert(position, isSelected(position) && isSelected(position - 1));
 
-        //smoothCurve();
+        // smoothCurve();
     }
     else
     {
@@ -363,7 +384,8 @@ void BezierCurve::addPoint(int position, const QPointF point)
     }
 }
 
-void BezierCurve::addPoint(int position, const qreal fraction) // fraction is where to split the bezier curve (ex: fraction=0.5)
+void BezierCurve::addPoint(int position,
+                           const qreal fraction) // fraction is where to split the bezier curve (ex: fraction=0.5)
 {
     // de Casteljau's method is used
     // http://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
@@ -390,7 +412,7 @@ void BezierCurve::addPoint(int position, const qreal fraction) // fraction is wh
         pressure.insert(position, getPressure(position));
         selected.insert(position, isSelected(position) && isSelected(position - 1));
 
-        //smoothCurve();
+        // smoothCurve();
     }
     else
     {
@@ -430,13 +452,23 @@ void BezierCurve::removeVertex(int i)
     }
 }
 
-void BezierCurve::drawPath(QPainter &painter, Object *object, QTransform transformation, bool simplified, bool showThinLines)
+void BezierCurve::drawPath(QPainter &painter,
+                           Object *object,
+                           QTransform transformation,
+                           bool simplified,
+                           bool showThinLines)
 {
     QColor color = object->getColor(colorNumber).color;
 
     BezierCurve myCurve;
-    if (isPartlySelected()) { myCurve = (transformed(transformation)); }
-    else { myCurve = *this; }
+    if (isPartlySelected())
+    {
+        myCurve = (transformed(transformation));
+    }
+    else
+    {
+        myCurve = *this;
+    }
 
     if (variableWidth && !simplified && !invisible)
     {
@@ -477,7 +509,7 @@ void BezierCurve::drawPath(QPainter &painter, Object *object, QTransform transfo
         else
         {
             painter.setPen(QPen(QBrush(color), renderedWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-            //painter.setPen( QPen( Qt::darkYellow , 5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin ) );
+            // painter.setPen( QPen( Qt::darkYellow , 5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin ) );
         }
         QPainterPath path = myCurve.getSimplePath();
         painter.drawPath(path);
@@ -491,24 +523,28 @@ void BezierCurve::drawPath(QPainter &painter, Object *object, QTransform transfo
         qreal lineWidth = 1.5 / painter.worldTransform().m11();
         lineWidth = fabs(lineWidth); // make sure line width is positive, otherwise nothing is drawn
         painter.setPen(QPen(QBrush(color), lineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        if (isSelected()) { painter.drawPath(myCurve.getSimplePath()); }
-
+        if (isSelected())
+        {
+            painter.drawPath(myCurve.getSimplePath());
+        }
 
         for (int i = -1; i < vertex.size(); i++)
         {
             if (isSelected(i))
             {
-                //                painter.fillRect(myCurve.getVertex(i).x()-0.5*squareWidth, myCurve.getVertex(i).y()-0.5*squareWidth, squareWidth, squareWidth, color);
+                //                painter.fillRect(myCurve.getVertex(i).x()-0.5*squareWidth,
+                //                myCurve.getVertex(i).y()-0.5*squareWidth, squareWidth, squareWidth, color);
 
-                //painter.fillRect(QRectF(myCurve.getVertex(i).x()-0.5*squareWidth, myCurve.getVertex(i).y()-0.5*squareWidth, squareWidth, squareWidth), color);
+                // painter.fillRect(QRectF(myCurve.getVertex(i).x()-0.5*squareWidth,
+                // myCurve.getVertex(i).y()-0.5*squareWidth, squareWidth, squareWidth), color);
 
-                /*painter.drawText(myCurve.getVertex(i)+QPointF(4.0,0.0), QString::number(i)+"-"+QString::number(myCurve.getVertex(i).x())+","+QString::number(myCurve.getVertex(i).y()));
+                /*painter.drawText(myCurve.getVertex(i)+QPointF(4.0,0.0),
+                QString::number(i)+"-"+QString::number(myCurve.getVertex(i).x())+","+QString::number(myCurve.getVertex(i).y()));
                 QPointF normale = QPointF(4.0, 0.0);
-                if (i>-1) { normale = (myCurve.getVertex(i)-myCurve.getC2(i)); } else { normale = (myCurve.getC1(i+1)-myCurve.getVertex(i)); }
-                normale = QPointF(-normale.y(), normale.x());
-                normale = 8.0*normale/eLength(normale)/painter.matrix().m11();
-                painter.drawLine(myCurve.getVertex(i), myCurve.getVertex(i)+normale);
-                painter.drawText(myCurve.getVertex(i)+2*normale, QString::number(i));*/
+                if (i>-1) { normale = (myCurve.getVertex(i)-myCurve.getC2(i)); } else { normale =
+                (myCurve.getC1(i+1)-myCurve.getVertex(i)); } normale = QPointF(-normale.y(), normale.x()); normale
+                = 8.0*normale/eLength(normale)/painter.matrix().m11(); painter.drawLine(myCurve.getVertex(i),
+                myCurve.getVertex(i)+normale); painter.drawText(myCurve.getVertex(i)+2*normale, QString::number(i));*/
             }
         }
     }
@@ -559,8 +595,14 @@ QPainterPath BezierCurve::getStrokedPath(qreal width, bool usePressure)
 
     normalVec = QPointF(-(c1.at(0) - origin).y(), (c1.at(0) - origin).x());
     normalise(normalVec);
-    if (usePressure) { width2 = width * 0.5 * pressure.at(0); }
-    if (n == 1 && width2 == 0.0) { width2 = 0.15 * width; }
+    if (usePressure)
+    {
+        width2 = width * 0.5 * pressure.at(0);
+    }
+    if (n == 1 && width2 == 0.0)
+    {
+        width2 = 0.15 * width;
+    }
     path.moveTo(origin + width2 * normalVec);
     for (int i = 0; i < n; i++)
     {
@@ -577,21 +619,35 @@ QPainterPath BezierCurve::getStrokedPath(qreal width, bool usePressure)
             normalVec2 = normalVec2_1 + normalVec2_2;
         }
         normalise(normalVec2);
-        if (usePressure) { width2 = width * 0.5 * pressure.at(i); }
-        if (n == 1 && width2 == 0.0) { width2 = 0.15 * width; }
-        //if (i==n-1) width2 = 0.0;
+        if (usePressure)
+        {
+            width2 = width * 0.5 * pressure.at(i);
+        }
+        if (n == 1 && width2 == 0.0)
+        {
+            width2 = 0.15 * width;
+        }
+        // if (i==n-1) width2 = 0.0;
         path.cubicTo(c1.at(i) + width2 * normalVec, c2.at(i) + width2 * normalVec2, vertex.at(i) + width2 * normalVec2);
-        //path.moveTo(vertex.at(i) + width*normalVec2);
-        //path.lineTo(vertex.at(i) - width*normalVec2);
+        // path.moveTo(vertex.at(i) + width*normalVec2);
+        // path.lineTo(vertex.at(i) - width*normalVec2);
         normalVec = normalVec2;
     }
-    if (usePressure) { width2 = width * 0.5 * pressure.at(n - 1); }
-    if (n == 1 && width2 == 0.0) { width2 = 0.15 * width; }
+    if (usePressure)
+    {
+        width2 = width * 0.5 * pressure.at(n - 1);
+    }
+    if (n == 1 && width2 == 0.0)
+    {
+        width2 = 0.15 * width;
+    }
 
-    //path.lineTo(vertex.at(n-1) - width2*normalVec);
+    // path.lineTo(vertex.at(n-1) - width2*normalVec);
     tangentVec = (vertex.at(n - 1) - c2.at(n - 1));
     normalise(tangentVec);
-    path.cubicTo(vertex.at(n - 1) + width2 * (normalVec + 1.8 * tangentVec), vertex.at(n - 1) + width2 * (-normalVec + 1.8 * tangentVec), vertex.at(n - 1) - width2 * normalVec);
+    path.cubicTo(vertex.at(n - 1) + width2 * (normalVec + 1.8 * tangentVec),
+                 vertex.at(n - 1) + width2 * (-normalVec + 1.8 * tangentVec),
+                 vertex.at(n - 1) - width2 * normalVec);
 
     for (int i = n - 2; i >= 0; i--)
     {
@@ -601,20 +657,36 @@ QPainterPath BezierCurve::getStrokedPath(qreal width, bool usePressure)
         normalise(normalVec2_2);
         normalVec2 = normalVec2_1 + normalVec2_2;
         normalise(normalVec2);
-        if (usePressure) { width2 = width * 0.5 * pressure.at(i); }
-        if (n == 1 && width2 == 0.0) { width2 = 0.15 * width; }
-        path.cubicTo(c2.at(i + 1) - width2 * normalVec, c1.at(i + 1) - width2 * normalVec2, vertex.at(i) - width2 * normalVec2);
+        if (usePressure)
+        {
+            width2 = width * 0.5 * pressure.at(i);
+        }
+        if (n == 1 && width2 == 0.0)
+        {
+            width2 = 0.15 * width;
+        }
+        path.cubicTo(c2.at(i + 1) - width2 * normalVec,
+                     c1.at(i + 1) - width2 * normalVec2,
+                     vertex.at(i) - width2 * normalVec2);
         normalVec = normalVec2;
     }
     normalVec2 = QPointF((origin - c1.at(0)).y(), -(origin - c1.at(0)).x());
     normalise(normalVec2);
-    if (usePressure) { width2 = width * 0.5 * pressure.at(0); }
-    if (n == 1 && width2 == 0.0) { width2 = 0.15 * width; }
+    if (usePressure)
+    {
+        width2 = width * 0.5 * pressure.at(0);
+    }
+    if (n == 1 && width2 == 0.0)
+    {
+        width2 = 0.15 * width;
+    }
     path.cubicTo(c2.at(0) - width2 * normalVec, c1.at(0) - width2 * normalVec2, origin - width2 * normalVec2);
 
     tangentVec = (origin - c1.at(0));
     normalise(tangentVec);
-    path.cubicTo(origin + width2 * (-normalVec + 1.8 * tangentVec), origin + width2 * (normalVec + 1.8 * tangentVec), origin + width2 * normalVec);
+    path.cubicTo(origin + width2 * (-normalVec + 1.8 * tangentVec),
+                 origin + width2 * (normalVec + 1.8 * tangentVec),
+                 origin + width2 * normalVec);
 
     path.closeSubpath();
     return path;
@@ -631,11 +703,26 @@ void BezierCurve::createCurve(const QList<QPointF> &pointList, const QList<qreal
     int n = pointList.size();
     // generate the Bezier (cubic) curve from the simplified path and mouse pressure
     // first, empty everything
-    while (c1.size() > 0) { c1.removeAt(0); }
-    while (c2.size() > 0) { c2.removeAt(0); }
-    while (vertex.size() > 0) { vertex.removeAt(0); }
-    while (selected.size() > 0) { selected.removeAt(0); }
-    while (pressure.size() > 0) { pressure.removeAt(0); }
+    while (c1.size() > 0)
+    {
+        c1.removeAt(0);
+    }
+    while (c2.size() > 0)
+    {
+        c2.removeAt(0);
+    }
+    while (vertex.size() > 0)
+    {
+        vertex.removeAt(0);
+    }
+    while (selected.size() > 0)
+    {
+        selected.removeAt(0);
+    }
+    while (pressure.size() > 0)
+    {
+        pressure.removeAt(0);
+    }
 
     setOrigin(pointList.at(0));
     selected.append(false);
@@ -648,16 +735,14 @@ void BezierCurve::createCurve(const QList<QPointF> &pointList, const QList<qreal
         vertex.append(pointList.at(p));
         pressure.append(pressureList.at(p));
         selected.append(false);
-
     }
     if (smooth)
     {
         smoothCurve();
     }
-    //colorNumber = 0;
+    // colorNumber = 0;
     feather = 0;
 }
-
 
 void BezierCurve::smoothCurve()
 {
@@ -677,8 +762,8 @@ void BezierCurve::smoothCurve()
         if (((D - Dprev).x() * (D - Dnext).x() + (D - Dprev).y() * (D - Dnext).y()) / (1.0 * L1 * L2) < 0)
         {
             // smooth point
-            c1 =  D - tangentVec * (L1 + 0.0) / (L1 + L2);
-            c2 =  D + tangentVec * (L2 + 0.0) / (L1 + L2);
+            c1 = D - tangentVec * (L1 + 0.0) / (L1 + L2);
+            c2 = D + tangentVec * (L2 + 0.0) / (L1 + L2);
         }
         else
         {
@@ -689,12 +774,12 @@ void BezierCurve::smoothCurve()
 
         if (p == 0)
         {
-            c2old  = 0.5 * (vertex.at(0) + c1);
+            c2old = 0.5 * (vertex.at(0) + c1);
         }
 
         this->c1[p] = c2old;
         this->c2[p] = c1;
-        //appendCubic(c2old, c1, D, pressureList->at(p));
+        // appendCubic(c2old, c1, D, pressureList->at(p));
         c2old = c2;
     }
     if (n > 2)
@@ -708,16 +793,16 @@ void BezierCurve::simplify(double tol, const QList<QPointF> &inputList, int j, i
 {
     // -- Douglas-Peucker simplification algorithm
     // from http://geometryalgorithms.com/Archive/algorithm_0205/
-    if (k <= j + 1)   //there is nothing to simplify
+    if (k <= j + 1) // there is nothing to simplify
     {
         // return immediately
     }
     else
     {
         // test distance of intermediate vertices from segment Vj to Vk
-        double maxd = 0.0; //is the distance of farthest vertex from segment jk
-        int maxi = j;  //is the index of the vertex farthest from segement jk
-        for (int i = j + 1; i < k - 1; i++)  // each intermediate vertex Vi
+        double maxd = 0.0;                  // is the distance of farthest vertex from segment jk
+        int maxi = j;                       // is the index of the vertex farthest from segement jk
+        for (int i = j + 1; i < k - 1; i++) // each intermediate vertex Vi
         {
             QPointF Vij = inputList.at(i) - inputList.at(j);
             QPointF Vjk = inputList.at(j) - inputList.at(k);
@@ -728,25 +813,25 @@ void BezierCurve::simplify(double tol, const QList<QPointF> &inputList, int j, i
             double dv = (Vjkx * Vjkx + Vjky * Vjky);
             if (dv != 0.0)
             {
-                dv = sqrt(Vijx * Vijx + Vijy * Vijy  -  pow(Vijx * Vjkx + Vijy * Vjky, 2) / dv);
+                dv = sqrt(Vijx * Vijx + Vijy * Vijy - pow(Vijx * Vjkx + Vijy * Vjky, 2) / dv);
             }
-            //qDebug() << "distance = "+QString::number(dv);
+            // qDebug() << "distance = "+QString::number(dv);
             if (dv < maxd)
             {
-                //Vi is not farther away, so continue to the next vertex
+                // Vi is not farther away, so continue to the next vertex
             }
-            else     //Vi is a new max vertex
+            else // Vi is a new max vertex
             {
                 maxd = dv;
-                maxi = i; //to remember the farthest vertex
+                maxi = i; // to remember the farthest vertex
             }
         }
-        if (maxd >= tol)   //a vertex is farther than tol from Sjk
+        if (maxd >= tol) // a vertex is farther than tol from Sjk
         {
             // split the polyline at the farthest vertex
-            //Mark Vmaxi as part of the simplified polyline
+            // Mark Vmaxi as part of the simplified polyline
             markList.replace(maxi, true);
-            //and recursively simplify the two subpolylines
+            // and recursively simplify the two subpolylines
             simplify(tol, inputList, j, maxi, markList);
             simplify(tol, inputList, maxi, k, markList);
         }
@@ -754,17 +839,21 @@ void BezierCurve::simplify(double tol, const QList<QPointF> &inputList, int j, i
 }
 
 // general useful functions -> to be placed elsewhere
-qreal BezierCurve::eLength(const QPointF point)    // calculates the Euclidean Length (of a point seen as a vector)
+qreal BezierCurve::eLength(const QPointF point) // calculates the Euclidean Length (of a point seen as a vector)
 {
-    qreal result = sqrt(point.x() * point.x() + point.y() * point.y()); // could also use QLine.length()... is it any faster?
-    //if (result == 0.0) result = 1.0;
+    qreal result =
+        sqrt(point.x() * point.x() + point.y() * point.y()); // could also use QLine.length()... is it any faster?
+    // if (result == 0.0) result = 1.0;
     return result;
 }
 
-qreal BezierCurve::mLength(const QPointF point)   // calculates the Manhattan Length (of a point seen as a vector)
+qreal BezierCurve::mLength(const QPointF point) // calculates the Manhattan Length (of a point seen as a vector)
 {
     qreal result = qAbs(point.x()) + qAbs(point.y());
-    if (result == 0.0) { result = 1.0; }
+    if (result == 0.0)
+    {
+        result = 1.0;
+    }
     return result;
 }
 
@@ -777,9 +866,13 @@ void BezierCurve::normalise(QPointF &point)
     }
 }
 
-qreal BezierCurve::findDistance(BezierCurve curve, int i, QPointF P, QPointF &nearestPoint, qreal &t)   //finds the distance between a cubic section and a point
+qreal BezierCurve::findDistance(BezierCurve curve,
+                                int i,
+                                QPointF P,
+                                QPointF &nearestPoint,
+                                qreal &t) // finds the distance between a cubic section and a point
 {
-    //qDebug() << "---- INTER CUBIC SEGMENT";
+    // qDebug() << "---- INTER CUBIC SEGMENT";
     int nSteps = 24;
     QPointF Q;
     Q = curve.getVertex(i - 1);
@@ -798,25 +891,22 @@ qreal BezierCurve::findDistance(BezierCurve curve, int i, QPointF P, QPointF &ne
             t = s;
         }
     }
-    //QPointF Q1 = curve.getPointOnCubic(i, t);
+    // QPointF Q1 = curve.getPointOnCubic(i, t);
     return distMin;
 }
 
 QPointF BezierCurve::getPointOnCubic(int i, qreal t)
 {
-    return (1.0 - t) * (1.0 - t) * (1.0 - t) * getVertex(i - 1)
-           + 3 * t * (1.0 - t) * (1.0 - t) * getC1(i)
-           + 3 * t * t * (1.0 - t) * getC2(i)
-           + t * t * t * getVertex(i);
+    return (1.0 - t) * (1.0 - t) * (1.0 - t) * getVertex(i - 1) + 3 * t * (1.0 - t) * (1.0 - t) * getC1(i) +
+           3 * t * t * (1.0 - t) * getC2(i) + t * t * t * getVertex(i);
 }
-
 
 bool BezierCurve::intersects(QPointF point, qreal distance)
 {
     bool result = false;
     if (getStrokedPath(distance, false).contains(point))
     {
-        //if ( getSimplePath().controlPointRect().contains(point)) {
+        // if ( getSimplePath().controlPointRect().contains(point)) {
         result = true;
     }
     return result;
@@ -829,16 +919,24 @@ bool BezierCurve::intersects(QRectF rectangle)
     {
         for (int i = 0; i < vertex.size(); i++)
         {
-            if (rectangle.contains(getVertex(i))) { return true; }
+            if (rectangle.contains(getVertex(i)))
+            {
+                return true;
+            }
         }
     }
     return result;
 }
 
-bool BezierCurve::findIntersection(BezierCurve curve1, int i1, BezierCurve curve2, int i2, QList<Intersection> &intersections)   //finds the intersection between two cubic sections
+bool BezierCurve::findIntersection(
+    BezierCurve curve1,
+    int i1,
+    BezierCurve curve2,
+    int i2,
+    QList<Intersection> &intersections) // finds the intersection between two cubic sections
 {
     bool result = false;
-    //qDebug() << "---- INTER CUBIC CUBIC"  << i1 << i2;
+    // qDebug() << "---- INTER CUBIC CUBIC"  << i1 << i2;
     QPointF P1, Q1, P2, Q2;
     QLineF L1, L2;
     QRectF R1;
@@ -851,7 +949,7 @@ bool BezierCurve::findIntersection(BezierCurve curve1, int i1, BezierCurve curve
     L1 = QLineF(P1, Q1);
     L2 = QLineF(P2, Q2);
 
-    //qDebug() << "-------------------- ";
+    // qDebug() << "-------------------- ";
 
     R1.setTopLeft(P1);
     R1.setBottomRight(Q1);
@@ -862,9 +960,9 @@ bool BezierCurve::findIntersection(BezierCurve curve1, int i1, BezierCurve curve
     QPointF *cubicIntersection = &intersectionPoint;
     if (R1.intersects(R2) || L2.intersect(L1, cubicIntersection) == QLineF::BoundedIntersection)
     {
-        //if (L2.intersect(L1, intersection) == QLineF::BoundedIntersection) {
-        //qDebug() << "                   FOUND rectangle intersection ";
-        //if (intersectionPoint != curve1.getVertex(i1-1) && intersectionPoint != curve1.getVertex(i1)) {
+        // if (L2.intersect(L1, intersection) == QLineF::BoundedIntersection) {
+        // qDebug() << "                   FOUND rectangle intersection ";
+        // if (intersectionPoint != curve1.getVertex(i1-1) && intersectionPoint != curve1.getVertex(i1)) {
         //  qDebug() << "                   it's not one of the points ";
         // find the cubic intersection
         int nSteps = 24;
@@ -895,7 +993,7 @@ bool BezierCurve::findIntersection(BezierCurve curve1, int i1, BezierCurve curve
                         intersection.t2 = t2;
                         intersections.append(intersection);
                         result = true;
-                        //qDebug() << "FOUND cubic interesection " << intersectionPoint << i << j;
+                        // qDebug() << "FOUND cubic interesection " << intersectionPoint << i << j;
                     }
                 }
                 P2 = Q2;
@@ -905,8 +1003,8 @@ bool BezierCurve::findIntersection(BezierCurve curve1, int i1, BezierCurve curve
     }
     else
     {
-        //return false; // approximation to speed up the calculation
+        // return false; // approximation to speed up the calculation
     }
-    //qDebug() << "------";
+    // qDebug() << "------";
     return result;
 }

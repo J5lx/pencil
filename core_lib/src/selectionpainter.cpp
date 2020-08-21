@@ -1,15 +1,11 @@
 #include "selectionpainter.h"
 
+#include "basetool.h"
+#include "layermanager.h"
 #include "object.h"
 #include "qpainter.h"
-#include "layermanager.h"
-#include "basetool.h"
 
-
-SelectionPainter::SelectionPainter()
-{
-
-}
+SelectionPainter::SelectionPainter() {}
 
 void SelectionPainter::paint(QPainter &painter,
                              const Object *object,
@@ -19,7 +15,10 @@ void SelectionPainter::paint(QPainter &painter,
 {
     Layer *layer = object->getLayer(layerIndex);
 
-    if (layer == nullptr) { return; }
+    if (layer == nullptr)
+    {
+        return;
+    }
 
     if (layer->type() == Layer::BITMAP)
     {
@@ -31,7 +30,6 @@ void SelectionPainter::paint(QPainter &painter,
 
         // Draw current selection
         painter.drawPolygon(tParams.currentSelectionPolygonF.toPolygon());
-
     }
     if (layer->type() == Layer::VECTOR)
     {
@@ -49,22 +47,26 @@ void SelectionPainter::paint(QPainter &painter,
 
         const QRectF topLeftCorner = QRectF(tParams.currentSelectionPolygonF[0].x() - radius,
                                             tParams.currentSelectionPolygonF[0].y() - radius,
-                                            width, width);
+                                            width,
+                                            width);
         painter.drawRect(topLeftCorner);
 
         const QRectF topRightCorner = QRectF(tParams.currentSelectionPolygonF[1].x() - radius,
                                              tParams.currentSelectionPolygonF[1].y() - radius,
-                                             width, width);
+                                             width,
+                                             width);
         painter.drawRect(topRightCorner);
 
         const QRectF bottomRightCorner = QRectF(tParams.currentSelectionPolygonF[2].x() - radius,
                                                 tParams.currentSelectionPolygonF[2].y() - radius,
-                                                width, width);
+                                                width,
+                                                width);
         painter.drawRect(bottomRightCorner);
 
         const QRectF bottomLeftCorner = QRectF(tParams.currentSelectionPolygonF[3].x() - radius,
                                                tParams.currentSelectionPolygonF[3].y() - radius,
-                                               width, width);
+                                               width,
+                                               width);
         painter.drawRect(bottomLeftCorner);
 
         painter.setBrush(QColor(0, 255, 0, 50));

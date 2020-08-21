@@ -1,7 +1,6 @@
 #ifndef MOVEMODE_H
 #define MOVEMODE_H
 
-
 enum class MoveMode
 {
     MIDDLE,

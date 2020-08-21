@@ -80,11 +80,11 @@ public:
     Status(ErrorCode code);
     Status(ErrorCode code, const DebugDetails &detailsList, QString title = "", QString description = "");
 
-    ErrorCode   code() { return mCode; }
-    bool        ok() const { return (mCode == OK) || (mCode == SAFE); }
-    QString     msg();
-    QString     title() { return !mTitle.isEmpty() ? mTitle : msg(); }
-    QString     description() const { return mDescription; }
+    ErrorCode code() { return mCode; }
+    bool ok() const { return (mCode == OK) || (mCode == SAFE); }
+    QString msg();
+    QString title() { return !mTitle.isEmpty() ? mTitle : msg(); }
+    QString description() const { return mDescription; }
     DebugDetails details() const { return mDetails; }
 
     void setTitle(QString title) { mTitle = title; }
@@ -101,11 +101,15 @@ private:
     DebugDetails mDetails;
 };
 
-
-
 #ifndef STATUS_CHECK
-#define STATUS_CHECK( x )\
-    { Status st = (x); if (!st.ok()) { return st; } }
+#define STATUS_CHECK(x)  \
+    {                    \
+        Status st = (x); \
+        if (!st.ok())    \
+        {                \
+            return st;   \
+        }                \
+    }
 #endif
 
 #endif // PENCILERROR_H

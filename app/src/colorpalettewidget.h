@@ -40,7 +40,6 @@ class ColorPaletteWidget : public BaseDockWidget
     Q_OBJECT
 
 public:
-
     explicit ColorPaletteWidget(QWidget *parent);
     ~ColorPaletteWidget() override;
 
@@ -101,7 +100,7 @@ private:
     QAction *mLargeSwatchAction = nullptr;
     QAction *mSeparator = nullptr;
 
-    QSize mIconSize{ 34, 34 };
+    QSize mIconSize{34, 34};
     QMenu *mToolMenu = nullptr;
     int stepper = 0;
 
@@ -120,4 +119,3 @@ private:
 };
 
 #endif
-

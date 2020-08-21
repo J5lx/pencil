@@ -14,16 +14,16 @@ GNU General Public License for more details.
 
 */
 
-#include <QVBoxLayout>
-#include <QtMath>
+#include "pencildef.h"
+#include <QDebug>
 #include <QPainter>
-#include <QResizeEvent>
 #include <QPixmapCache>
+#include <QRect>
+#include <QResizeEvent>
 #include <QStyleOption>
 #include <QStylePainter>
-#include <QRect>
-#include <QDebug>
-#include "pencildef.h"
+#include <QVBoxLayout>
+#include <QtMath>
 
 #include "colorwheel.h"
 
@@ -77,25 +77,23 @@ QColor ColorWheel::pickColor(const QPoint &point)
         hue = qAtan2(-diff.y(), diff.x()) / M_PI * 180;
         hue = fmod((hue + 360), 360); // shift -180~180 to 0~360
 
-        //QString strDebug = "";
-        //strDebug += QString("Radius=%1").arg(r);
-        //strDebug += QString(" Atan2=%1").arg(qAtan2(diff.y(), diff.x()));
-        //strDebug += QString(" Hue=%1").arg(hue);
-        //qDebug() << strDebug;
+        // QString strDebug = "";
+        // strDebug += QString("Radius=%1").arg(r);
+        // strDebug += QString(" Atan2=%1").arg(qAtan2(diff.y(), diff.x()));
+        // strDebug += QString(" Hue=%1").arg(hue);
+        // qDebug() << strDebug;
 
         hue = (hue > 359) ? 359 : hue;
         hue = (hue < 0) ? 0 : hue;
 
-        return QColor::fromHsv(static_cast<int>(hue),
-                               mCurrentColor.saturation(),
-                               mCurrentColor.value());
+        return QColor::fromHsv(static_cast<int>(hue), mCurrentColor.saturation(), mCurrentColor.value());
     }
     else if (mIsInSquare)
     {
         QPointF p = point - mSquareRect.topLeft();
-        //qDebug("TopRight(%d, %d) Point(%d, %d)", rect.topRight().x(), rect.topRight().y(), point.x(), point.y());
+        // qDebug("TopRight(%d, %d) Point(%d, %d)", rect.topRight().x(), rect.topRight().y(), point.x(), point.y());
 
-        //qDebug("p(%d, %d), Region(%.1f, %.1f)", p.x(), p.y(), regionSize.width(), regionSize.height());
+        // qDebug("p(%d, %d), Region(%.1f, %.1f)", p.x(), p.y(), regionSize.width(), regionSize.height());
         return QColor::fromHsvF(mCurrentColor.hueF(),
                                 p.x() / (mSquareRect.width() - 1),
                                 1.0 - (p.y() / (mSquareRect.height() - 1)));
@@ -113,7 +111,6 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
         QColor color = pickColor(lastPos);
         saturationChanged(color.saturation());
         valueChanged(color.value());
-
     }
     else if (mWheelRect.contains(lastPos))
     {
@@ -279,7 +276,6 @@ void ColorWheel::drawSquareImage(const int &hue)
     qreal SquareWidth = 2 * ir / qSqrt(2.1);
     mSquareRect = QRectF(m1, m2, SquareWidth, SquareWidth).toAlignedRect();
     mSquareImage = square.scaled(mSquareRect.size());
-
 }
 
 void ColorWheel::drawHueIndicator(const int &hue)

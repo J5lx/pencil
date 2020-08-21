@@ -34,7 +34,6 @@ public:
     QCursor cursor() override;
 
 private:
-
     void pointerPressEvent(PointerEvent *) override;
     void pointerReleaseEvent(PointerEvent *) override;
     void pointerMoveEvent(PointerEvent *) override;

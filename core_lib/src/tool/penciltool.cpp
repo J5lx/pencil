@@ -16,27 +16,24 @@ GNU General Public License for more details.
 */
 #include "penciltool.h"
 
-#include <QSettings>
-#include <QPixmap>
 #include "pointerevent.h"
+#include <QPixmap>
+#include <QSettings>
 
-#include "layermanager.h"
 #include "colormanager.h"
-#include "strokemanager.h"
-#include "viewmanager.h"
+#include "layermanager.h"
 #include "preferencemanager.h"
 #include "selectionmanager.h"
+#include "strokemanager.h"
+#include "viewmanager.h"
 
-#include "editor.h"
-#include "scribblearea.h"
 #include "blitrect.h"
+#include "editor.h"
 #include "layervector.h"
+#include "scribblearea.h"
 #include "vectorimage.h"
 
-
-PencilTool::PencilTool(QObject *parent) : StrokeTool(parent)
-{
-}
+PencilTool::PencilTool(QObject *parent) : StrokeTool(parent) {}
 
 void PencilTool::loadSettings()
 {
@@ -156,7 +153,8 @@ void PencilTool::pointerPressEvent(PointerEvent *)
     startStroke();
 
     // note: why are we doing this on device press event?
-    if (mEditor->layers()->currentLayer()->type() == Layer::VECTOR && !mEditor->preference()->isOn(SETTING::INVISIBLE_LINES))
+    if (mEditor->layers()->currentLayer()->type() == Layer::VECTOR &&
+        !mEditor->preference()->isOn(SETTING::INVISIBLE_LINES))
     {
         mScribbleArea->toggleThinLines();
     }
@@ -203,7 +201,7 @@ void PencilTool::pointerReleaseEvent(PointerEvent *)
 // draw a single paint dab at the given location
 void PencilTool::paintAt(QPointF point)
 {
-    //qDebug() << "Made a single dab at " << point;
+    // qDebug() << "Made a single dab at " << point;
     Layer *layer = mEditor->layers()->currentLayer();
     if (layer->type() == Layer::BITMAP)
     {
@@ -215,17 +213,12 @@ void PencilTool::paintAt(QPointF point)
         mCurrentWidth = brushWidth;
 
         BlitRect rect(point.toPoint());
-        mScribbleArea->drawPencil(point,
-                                  brushWidth,
-                                  fixedBrushFeather,
-                                  mEditor->color()->frontColor(),
-                                  opacity);
+        mScribbleArea->drawPencil(point, brushWidth, fixedBrushFeather, mEditor->color()->frontColor(), opacity);
 
         int rad = qRound(brushWidth) / 2 + 2;
         mScribbleArea->refreshBitmap(rect, rad);
     }
 }
-
 
 void PencilTool::drawStroke()
 {
@@ -256,11 +249,7 @@ void PencilTool::drawStroke()
         {
             QPointF point = mLastBrushPoint + (i + 1) * brushStep * (getCurrentPoint() - mLastBrushPoint) / distance;
             rect.extend(point.toPoint());
-            mScribbleArea->drawPencil(point,
-                                      brushWidth,
-                                      fixedBrushFeather,
-                                      mEditor->color()->frontColor(),
-                                      opacity);
+            mScribbleArea->drawPencil(point, brushWidth, fixedBrushFeather, mEditor->color()->frontColor(), opacity);
 
             if (i == (steps - 1))
             {
@@ -277,26 +266,19 @@ void PencilTool::drawStroke()
     {
         properties.useFeather = false;
         mCurrentWidth = 0; // FIXME: WTF?
-        QPen pen(mEditor->color()->frontColor(),
-                 1,
-                 Qt::DotLine,
-                 Qt::RoundCap,
-                 Qt::RoundJoin);
+        QPen pen(mEditor->color()->frontColor(), 1, Qt::DotLine, Qt::RoundCap, Qt::RoundJoin);
 
         int rad = qRound((mCurrentWidth / 2 + 2) * mEditor->view()->scaling());
 
         if (p.size() == 4)
         {
             QPainterPath path(p[0]);
-            path.cubicTo(p[1],
-                         p[2],
-                         p[3]);
+            path.cubicTo(p[1], p[2], p[3]);
             mScribbleArea->drawPath(path, pen, Qt::NoBrush, QPainter::CompositionMode_Source);
             mScribbleArea->refreshVector(path.boundingRect().toRect(), rad);
         }
     }
 }
-
 
 void PencilTool::paintBitmapStroke()
 {
@@ -324,13 +306,15 @@ void PencilTool::paintVectorStroke(Layer *layer)
     curve.setVariableWidth(false);
     curve.setColorNumber(mEditor->color()->frontColorNumber());
     VectorImage *vectorImage = static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
-    if (vectorImage == nullptr) { return; } // Can happen if the first frame is deleted while drawing
+    if (vectorImage == nullptr)
+    {
+        return;
+    } // Can happen if the first frame is deleted while drawing
     vectorImage->addCurve(curve, qAbs(mEditor->view()->scaling()), properties.vectorMergeEnabled);
 
     if (properties.useFillContour)
     {
-        vectorImage->fillContour(mStrokePoints,
-                                 mEditor->color()->frontColorNumber());
+        vectorImage->fillContour(mStrokePoints, mEditor->color()->frontColorNumber());
     }
 
     if (vectorImage->isAnyCurveSelected() || mEditor->select()->somethingSelected())

@@ -23,7 +23,6 @@ GNU General Public License for more details.
 #include <QList>
 #include <QPointF>
 
-
 class StrokeTool : public BaseTool
 {
     Q_OBJECT
@@ -44,7 +43,7 @@ protected:
     QList<QPointF> mStrokePoints;
     QList<qreal> mStrokePressures;
 
-    qreal mCurrentWidth    = 0.0;
+    qreal mCurrentWidth = 0.0;
     qreal mCurrentPressure = 0.5;
 
     /// Whether to enable the "drawing on empty frame" preference.
@@ -55,7 +54,7 @@ protected:
     virtual bool emptyFrameActionEnabled();
 
 private:
-    QPointF mLastPixel { 0, 0 };
+    QPointF mLastPixel{0, 0};
 };
 
 #endif // STROKETOOL_H

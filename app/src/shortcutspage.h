@@ -17,10 +17,10 @@ GNU General Public License for more details.
 #ifndef SHORTCUTSPAGE_H
 #define SHORTCUTSPAGE_H
 
-#include <QWidget>
-#include <QModelIndex>
 #include <QKeySequence>
+#include <QModelIndex>
 #include <QSettings>
+#include <QWidget>
 
 class QTreeView;
 class QStandardItem;

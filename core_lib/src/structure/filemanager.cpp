@@ -17,28 +17,29 @@ GNU General Public License for more details.
 
 #include "filemanager.h"
 
-#include <ctime>
-#include <QDir>
+#include "fileformat.h"
+#include "layercamera.h"
+#include "object.h"
 #include "pencildef.h"
 #include "qminiz.h"
-#include "fileformat.h"
-#include "object.h"
-#include "layercamera.h"
+#include <QDir>
+#include <ctime>
 
 namespace
 {
 QString openErrorTitle = QObject::tr("Could not open file");
-QString openErrorDesc = QObject::tr("There was an error processing your file. This usually means that your project has "
-                                    "been at least partially corrupted. You can try again with a newer version of Pencil2D, "
-                                    "or you can try to use a backup file if you have one. If you contact us through one of "
-                                    "our official channels we may be able to help you. For reporting issues, "
-                                    "the best places to reach us are:");
+QString openErrorDesc =
+    QObject::tr("There was an error processing your file. This usually means that your project has "
+                "been at least partially corrupted. You can try again with a newer version of Pencil2D, "
+                "or you can try to use a backup file if you have one. If you contact us through one of "
+                "our official channels we may be able to help you. For reporting issues, "
+                "the best places to reach us are:");
 QString contactLinks = "<ul>"
                        "<li><a href=\"https://discuss.pencil2d.org/c/bugs\">Pencil2D Forum</a></li>"
                        "<li><a href=\"https://github.com/pencil2d/pencil/issues/new\">Github</a></li>"
                        "<li><a href=\"https://discord.gg/8FxdV2g\">Discord<\a></li>"
                        "</ul>";
-}
+} // namespace
 
 FileManager::FileManager(QObject *parent) : QObject(parent)
 {
@@ -52,9 +53,12 @@ Object *FileManager::load(QString sFileName)
     if (!QFile::exists(sFileName))
     {
         FILEMANAGER_LOG("ERROR - File doesn't exist");
-        return cleanUpWithErrorCode(Status(Status::FILE_NOT_FOUND, dd, tr("Could not open file"),
-                                           tr("The file does not exist, so we are unable to open it. Please check "
-                                              "to make sure the path is correct and that the file is accessible and try again.")));
+        return cleanUpWithErrorCode(
+            Status(Status::FILE_NOT_FOUND,
+                   dd,
+                   tr("Could not open file"),
+                   tr("The file does not exist, so we are unable to open it. Please check "
+                      "to make sure the path is correct and that the file is accessible and try again.")));
     }
 
     progressForward();
@@ -87,8 +91,7 @@ Object *FileManager::load(QString sFileName)
         strDataFolder = QDir(obj->workingDir()).filePath(PFF_DATA_DIR);
     }
 
-    dd << QString("XML file: ").append(strMainXMLFile)
-       << QString("Data folder: ").append(strDataFolder)
+    dd << QString("XML file: ").append(strMainXMLFile) << QString("Data folder: ").append(strDataFolder)
        << QString("Working folder: ").append(obj->workingDir());
 
     obj->setDataDir(strDataFolder);
@@ -102,13 +105,17 @@ Object *FileManager::load(QString sFileName)
     if (!file.exists())
     {
         dd << "Main XML file does not exist";
-        return cleanUpWithErrorCode(Status(Status::ERROR_INVALID_XML_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
+        return cleanUpWithErrorCode(
+            Status(Status::ERROR_INVALID_XML_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
     }
     if (!file.open(QFile::ReadOnly))
     {
-        return cleanUpWithErrorCode(Status(Status::ERROR_FILE_CANNOT_OPEN, dd, tr("Could not open file"),
-                                           tr("This program does not have permission to read the file you have selected. "
-                                              "Please check that you have read permissions for this file and try again.")));
+        return cleanUpWithErrorCode(
+            Status(Status::ERROR_FILE_CANNOT_OPEN,
+                   dd,
+                   tr("Could not open file"),
+                   tr("This program does not have permission to read the file you have selected. "
+                      "Please check that you have read permissions for this file and try again.")));
     }
 
     QDomDocument xmlDoc;
@@ -116,7 +123,8 @@ Object *FileManager::load(QString sFileName)
     {
         FILEMANAGER_LOG("Couldn't open the main XML file");
         dd << "Error parsing or opening the main XML file";
-        return cleanUpWithErrorCode(Status(Status::ERROR_INVALID_XML_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
+        return cleanUpWithErrorCode(
+            Status(Status::ERROR_INVALID_XML_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
     }
 
     QDomDocumentType type = xmlDoc.doctype();
@@ -124,14 +132,16 @@ Object *FileManager::load(QString sFileName)
     {
         FILEMANAGER_LOG("Invalid main XML doctype");
         dd << QString("Invalid main XML doctype: ").append(type.name());
-        return cleanUpWithErrorCode(Status(Status::ERROR_INVALID_PENCIL_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
+        return cleanUpWithErrorCode(
+            Status(Status::ERROR_INVALID_PENCIL_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
     }
 
     QDomElement root = xmlDoc.documentElement();
     if (root.isNull())
     {
         dd << "Main XML root node is null";
-        return cleanUpWithErrorCode(Status(Status::ERROR_INVALID_PENCIL_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
+        return cleanUpWithErrorCode(
+            Status(Status::ERROR_INVALID_PENCIL_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
     }
 
     loadPalette(obj);
@@ -179,8 +189,10 @@ bool FileManager::loadObject(Object *object, const QDomElement &root)
         if (element.tagName() == "object")
         {
             ok = object->loadXML(element, [this] { progressForward(); });
-            if (!ok) { FILEMANAGER_LOG("Failed to Load object"); }
-
+            if (!ok)
+            {
+                FILEMANAGER_LOG("Failed to Load object");
+            }
         }
         else if (element.tagName() == "editor" || element.tagName() == "projectdata")
         {
@@ -227,7 +239,8 @@ Status FileManager::save(Object *object, QString sFileName)
     if (fileInfo.isDir())
     {
         dd << "FileName points to a directory";
-        return Status(Status::INVALID_ARGUMENT, dd,
+        return Status(Status::INVALID_ARGUMENT,
+                      dd,
                       tr("Invalid Save Path"),
                       tr("The path (\"%1\") points to a directory.").arg(fileInfo.absoluteFilePath()));
     }
@@ -235,14 +248,16 @@ Status FileManager::save(Object *object, QString sFileName)
     if (!parentDirInfo.exists())
     {
         dd << "The parent directory of sFileName does not exist";
-        return Status(Status::INVALID_ARGUMENT, dd,
+        return Status(Status::INVALID_ARGUMENT,
+                      dd,
                       tr("Invalid Save Path"),
                       tr("The directory (\"%1\") does not exist.").arg(parentDirInfo.absoluteFilePath()));
     }
     if ((fileInfo.exists() && !fileInfo.isWritable()) || !parentDirInfo.isWritable())
     {
         dd << "Filename points to a location that is not writable";
-        return Status(Status::INVALID_ARGUMENT, dd,
+        return Status(Status::INVALID_ARGUMENT,
+                      dd,
                       tr("Invalid Save Path"),
                       tr("The path (\"%1\") is not writable.").arg(fileInfo.absoluteFilePath()));
     }
@@ -279,9 +294,11 @@ Status FileManager::save(Object *object, QString sFileName)
         if (!dir.mkpath(sDataFolder))
         {
             dd << QString("dir.absolutePath() = %1").arg(dir.absolutePath());
-            return Status(Status::FAIL, dd,
+            return Status(Status::FAIL,
+                          dd,
                           tr("Cannot Create Data Directory"),
-                          tr("Failed to create directory \"%1\". Please make sure you have sufficient permissions.").arg(sDataFolder));
+                          tr("Failed to create directory \"%1\". Please make sure you have sufficient permissions.")
+                              .arg(sDataFolder));
         }
     }
     if (!dataInfo.isDir())
@@ -310,7 +327,11 @@ Status FileManager::save(Object *object, QString sFileName)
     {
         Layer *layer = object->getLayer(i);
 
-        dd << QString("Layer[%1] = [id=%2, name=%3, type=%4]").arg(i).arg(layer->id()).arg(layer->name()).arg(layer->type());
+        dd << QString("Layer[%1] = [id=%2, name=%3, type=%4]")
+                  .arg(i)
+                  .arg(layer->id())
+                  .arg(layer->name())
+                  .arg(layer->type());
 
         Status st = layer->save(sDataFolder, zippedFiles, [this] { progressForward(); });
         if (!st.ok())
@@ -344,7 +365,8 @@ Status FileManager::save(Object *object, QString sFileName)
 
     QDomDocument xmlDoc("PencilDocument");
     QDomElement root = xmlDoc.createElement("document");
-    QDomProcessingInstruction encoding = xmlDoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\"");
+    QDomProcessingInstruction encoding =
+        xmlDoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\"");
     xmlDoc.appendChild(encoding);
     xmlDoc.appendChild(root);
 
@@ -383,7 +405,8 @@ Status FileManager::save(Object *object, QString sFileName)
         if (!s.ok())
         {
             dd.collect(s.details());
-            return Status(Status::ERROR_MINIZ_FAIL, dd,
+            return Status(Status::ERROR_MINIZ_FAIL,
+                          dd,
                           tr("Miniz Error"),
                           tr("An internal error occurred. Your file may not be saved successfully."));
         }
@@ -399,7 +422,8 @@ Status FileManager::save(Object *object, QString sFileName)
 
     if (!saveLayersOK)
     {
-        return Status(Status::FAIL, dd,
+        return Status(Status::FAIL,
+                      dd,
                       tr("Internal Error"),
                       tr("An internal error occurred. Your file may not be saved successfully."));
     }
@@ -500,7 +524,7 @@ void FileManager::extractProjectData(const QDomElement &element, ObjectData *dat
     {
         data->setCurrentFrame(element.attribute("value").toInt());
     }
-    else  if (strName == "currentColor")
+    else if (strName == "currentColor")
     {
         int r = element.attribute("r", "255").toInt();
         int g = element.attribute("g", "255").toInt();

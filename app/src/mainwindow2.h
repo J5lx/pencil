@@ -44,7 +44,6 @@ class BackupElement;
 class PegBarAlignmentDialog;
 enum class SETTING;
 
-
 namespace Ui
 {
 class MainWindow2;
@@ -151,18 +150,18 @@ private:
     void bindActionWithSetting(QAction *, const SETTING &);
 
     // UI: Dock widgets
-    ColorBox             *mColorBox = nullptr;
-    ColorPaletteWidget   *mColorPalette = nullptr;
-    DisplayOptionWidget  *mDisplayOptionWidget = nullptr;
-    ToolOptionWidget     *mToolOptions = nullptr;
-    ToolBoxWidget        *mToolBox = nullptr;
-    Timeline2            *mTimeline2 = nullptr;
-    RecentFileMenu       *mRecentFileMenu = nullptr;
-    PreferencesDialog    *mPrefDialog = nullptr;
-    //PreviewWidget*      mPreview = nullptr;
-    TimeLine             *mTimeLine = nullptr; // be public temporary
-    ColorInspector       *mColorInspector = nullptr;
-    OnionSkinWidget      *mOnionSkinWidget = nullptr;
+    ColorBox *mColorBox = nullptr;
+    ColorPaletteWidget *mColorPalette = nullptr;
+    DisplayOptionWidget *mDisplayOptionWidget = nullptr;
+    ToolOptionWidget *mToolOptions = nullptr;
+    ToolBoxWidget *mToolBox = nullptr;
+    Timeline2 *mTimeline2 = nullptr;
+    RecentFileMenu *mRecentFileMenu = nullptr;
+    PreferencesDialog *mPrefDialog = nullptr;
+    // PreviewWidget*      mPreview = nullptr;
+    TimeLine *mTimeLine = nullptr; // be public temporary
+    ColorInspector *mColorInspector = nullptr;
+    OnionSkinWidget *mOnionSkinWidget = nullptr;
 
     // backup
     BackupElement *mBackupAtSave = nullptr;

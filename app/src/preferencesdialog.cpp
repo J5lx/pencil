@@ -17,27 +17,24 @@ GNU General Public License for more details.
 #include "preferencesdialog.h"
 
 #include <QComboBox>
-#include <QMessageBox>
-#include <QSlider>
 #include <QDir>
+#include <QMessageBox>
+#include <QSettings>
+#include <QSlider>
 #include <QStandardPaths>
 #include <QtMath>
-#include <QSettings>
 
-#include "ui_preferencesdialog.h"
-#include "ui_generalpage.h"
-#include "ui_timelinepage.h"
-#include "ui_filespage.h"
-#include "ui_toolspage.h"
-#include "util.h"
+#include "errordialog.h"
 #include "filemanager.h"
 #include "presetdialog.h"
-#include "errordialog.h"
+#include "ui_filespage.h"
+#include "ui_generalpage.h"
+#include "ui_preferencesdialog.h"
+#include "ui_timelinepage.h"
+#include "ui_toolspage.h"
+#include "util.h"
 
-
-PreferencesDialog::PreferencesDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::PreferencesDialog)
+PreferencesDialog::PreferencesDialog(QWidget *parent) : QDialog(parent), ui(new Ui::PreferencesDialog)
 {
     ui->setupUi(this);
 }
@@ -72,7 +69,8 @@ void PreferencesDialog::init(PreferenceManager *m)
     connect(ui->filesPage, &FilesPage::clearRecentList, this, &PreferencesDialog::clearRecentList);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &PreferencesDialog::close);
 
-    auto onCurrentItemChanged = static_cast<void (QListWidget::*)(QListWidgetItem *, QListWidgetItem *)>(&QListWidget::currentItemChanged);
+    auto onCurrentItemChanged =
+        static_cast<void (QListWidget::*)(QListWidgetItem *, QListWidgetItem *)>(&QListWidget::currentItemChanged);
     connect(ui->contentsWidget, onCurrentItemChanged, this, &PreferencesDialog::changePage);
 }
 
@@ -105,35 +103,34 @@ GeneralPage::GeneralPage() : ui(new Ui::GeneralPage)
 
     QSettings settings(PENCIL2D, PENCIL2D);
 
-    QString languages [][3]
-    {
+    QString languages[][3]{
         // translatable string, endonym, locale code
-        { tr("Arabic"), QStringLiteral("العربية"), "ar" },
-        { tr("Catalan"), QStringLiteral("Català"), "ca" },
-        { tr("Czech"), QStringLiteral("Čeština"), "cs" },
-        { tr("Danish"), QStringLiteral("Dansk"), "da" },
-        { tr("German"), QStringLiteral("Deutsch"), "de" },
-        { tr("Greek"), QStringLiteral("Ελληνικά"), "el" },
-        { tr("English"), QStringLiteral("English"), "en" },
-        { tr("Spanish"), QStringLiteral("Español"), "es" },
-        { tr("Estonian"), QStringLiteral("Eesti"), "et" },
-        { tr("French"), QStringLiteral("Français"), "fr" },
-        { tr("Hebrew"), QStringLiteral("עברית"), "he" },
-        { tr("Hungarian"), QStringLiteral("Magyar"), "hu_HU" },
-        { tr("Indonesian"), QStringLiteral("Bahasa Indonesia"), "id" },
-        { tr("Italian"), QStringLiteral("Italiano"), "it" },
-        { tr("Japanese"), QStringLiteral("日本語"), "ja" },
-        { tr("Kabyle"), QStringLiteral("Taqbaylit"), "kab" },
-        { tr("Polish"), QStringLiteral("Polski"), "pl" },
-        { tr("Portuguese \u2013 Portugal"), QStringLiteral("Português \u2013 Portugal"), "pt_PT" },
-        { tr("Portuguese \u2013 Brazil"), QStringLiteral("Português \u2013 Brasil"), "pt_BR" },
-        { tr("Russian"), QStringLiteral("Русский"), "ru" },
-        { tr("Slovene"), QStringLiteral("Slovenščina"), "sl" },
-        { tr("Swedish"), QStringLiteral("Svenska"), "sv" },
-        { tr("Turkish"), QStringLiteral("Türkçe"), "tr" },
-        { tr("Vietnamese"), QStringLiteral("Tiếng Việt"), "vi" },
-        { tr("Chinese \u2013 China"), QStringLiteral("简体中文"), "zh_CN" },
-        { tr("Chinese \u2013 Taiwan"), QStringLiteral("繁體中文"), "zh_TW" },
+        {tr("Arabic"), QStringLiteral("العربية"), "ar"},
+        {tr("Catalan"), QStringLiteral("Català"), "ca"},
+        {tr("Czech"), QStringLiteral("Čeština"), "cs"},
+        {tr("Danish"), QStringLiteral("Dansk"), "da"},
+        {tr("German"), QStringLiteral("Deutsch"), "de"},
+        {tr("Greek"), QStringLiteral("Ελληνικά"), "el"},
+        {tr("English"), QStringLiteral("English"), "en"},
+        {tr("Spanish"), QStringLiteral("Español"), "es"},
+        {tr("Estonian"), QStringLiteral("Eesti"), "et"},
+        {tr("French"), QStringLiteral("Français"), "fr"},
+        {tr("Hebrew"), QStringLiteral("עברית"), "he"},
+        {tr("Hungarian"), QStringLiteral("Magyar"), "hu_HU"},
+        {tr("Indonesian"), QStringLiteral("Bahasa Indonesia"), "id"},
+        {tr("Italian"), QStringLiteral("Italiano"), "it"},
+        {tr("Japanese"), QStringLiteral("日本語"), "ja"},
+        {tr("Kabyle"), QStringLiteral("Taqbaylit"), "kab"},
+        {tr("Polish"), QStringLiteral("Polski"), "pl"},
+        {tr("Portuguese \u2013 Portugal"), QStringLiteral("Português \u2013 Portugal"), "pt_PT"},
+        {tr("Portuguese \u2013 Brazil"), QStringLiteral("Português \u2013 Brasil"), "pt_BR"},
+        {tr("Russian"), QStringLiteral("Русский"), "ru"},
+        {tr("Slovene"), QStringLiteral("Slovenščina"), "sl"},
+        {tr("Swedish"), QStringLiteral("Svenska"), "sv"},
+        {tr("Turkish"), QStringLiteral("Türkçe"), "tr"},
+        {tr("Vietnamese"), QStringLiteral("Tiếng Việt"), "vi"},
+        {tr("Chinese \u2013 China"), QStringLiteral("简体中文"), "zh_CN"},
+        {tr("Chinese \u2013 Taiwan"), QStringLiteral("繁體中文"), "zh_TW"},
     };
 
     for (auto &lang : languages)
@@ -167,8 +164,8 @@ GeneralPage::GeneralPage() : ui(new Ui::GeneralPage)
     ui->backgroundButtons->setId(ui->weaveBackgroundButton, 5);
 
     auto buttonClicked = static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked);
-    auto curIndexChagned = static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged);
-    auto spinValueChanged = static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged);
+    auto curIndexChagned = static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged);
+    auto spinValueChanged = static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged);
     connect(ui->languageCombo, curIndexChagned, this, &GeneralPage::languageChanged);
     connect(ui->windowOpacityLevel, &QSlider::valueChanged, this, &GeneralPage::windowOpacityChange);
     connect(ui->backgroundButtons, buttonClicked, this, &GeneralPage::backgroundChanged);
@@ -184,7 +181,10 @@ GeneralPage::GeneralPage() : ui(new Ui::GeneralPage)
     connect(ui->actionSafeInput, spinValueChanged, this, &GeneralPage::actionSafeAreaChanged);
     connect(ui->titleSafeCheckBox, &QCheckBox::stateChanged, this, &GeneralPage::titleSafeCheckBoxStateChanged);
     connect(ui->titleSafeInput, spinValueChanged, this, &GeneralPage::titleSafeAreaChanged);
-    connect(ui->safeHelperTextCheckbox, &QCheckBox::stateChanged, this, &GeneralPage::SafeAreaHelperTextCheckBoxStateChanged);
+    connect(ui->safeHelperTextCheckbox,
+            &QCheckBox::stateChanged,
+            this,
+            &GeneralPage::SafeAreaHelperTextCheckBoxStateChanged);
     connect(ui->gridCheckBox, &QCheckBox::stateChanged, this, &GeneralPage::gridCheckBoxStateChanged);
     connect(ui->framePoolSizeSpin, spinValueChanged, this, &GeneralPage::frameCacheNumberChanged);
 }
@@ -247,12 +247,30 @@ void GeneralPage::updateValues()
     ui->framePoolSizeSpin->setValue(mManager->getInt(SETTING::FRAME_POOL_SIZE));
 
     int buttonIdx = 1;
-    if (bgName == "checkerboard") { buttonIdx = 1; }
-    else if (bgName == "white") { buttonIdx = 2; }
-    else if (bgName == "grey") { buttonIdx = 3; }
-    else if (bgName == "dots") { buttonIdx = 4; }
-    else if (bgName == "weave") { buttonIdx = 5; }
-    else { Q_ASSERT(false); }
+    if (bgName == "checkerboard")
+    {
+        buttonIdx = 1;
+    }
+    else if (bgName == "white")
+    {
+        buttonIdx = 2;
+    }
+    else if (bgName == "grey")
+    {
+        buttonIdx = 3;
+    }
+    else if (bgName == "dots")
+    {
+        buttonIdx = 4;
+    }
+    else if (bgName == "weave")
+    {
+        buttonIdx = 5;
+    }
+    else
+    {
+        Q_ASSERT(false);
+    }
 
     ui->backgroundButtons->button(buttonIdx)->setChecked(true);
 }
@@ -384,16 +402,15 @@ void GeneralPage::frameCacheNumberChanged(int value)
     mManager->set(SETTING::FRAME_POOL_SIZE, value);
 }
 
-TimelinePage::TimelinePage()
-    : ui(new Ui::TimelinePage)
+TimelinePage::TimelinePage() : ui(new Ui::TimelinePage)
 {
     ui->setupUi(this);
 
     ui->timelineLength->setMaximum(MaxFramesBound);
 
-    auto spinBoxValueChange = static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged);
-    auto sliderChanged = static_cast<void(QSlider::*)(int)>(&QSlider::valueChanged);
-    auto comboChanged = static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged);
+    auto spinBoxValueChange = static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged);
+    auto sliderChanged = static_cast<void (QSlider::*)(int)>(&QSlider::valueChanged);
+    auto comboChanged = static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged);
     connect(ui->timelineLength, spinBoxValueChange, this, &TimelinePage::timelineLengthChanged);
     connect(ui->scrubBox, &QCheckBox::stateChanged, this, &TimelinePage::scrubChanged);
     connect(ui->radioButtonAddNewKey, &QRadioButton::toggled, this, &TimelinePage::drawEmptyKeyRadioButtonToggled);
@@ -452,7 +469,10 @@ void TimelinePage::updateValues()
     // to secure that you have a relevant minimum setting for sound scrub
     int fps = mManager->getInt(SETTING::FPS);
     int minMsec = 1000 / fps;
-    if (minMsec > 100) { minMsec = 100; }
+    if (minMsec > 100)
+    {
+        minMsec = 100;
+    }
     ui->soundScrubSpinBox->setMinimum(minMsec);
     ui->soundScrubSlider->setMinimum(minMsec);
 
@@ -586,8 +606,7 @@ void TimelinePage::soundScrubMsecSpinboxChanged(int value)
     emit soundScrubMsecChanged(value);
 }
 
-FilesPage::FilesPage()
-    : ui(new Ui::FilesPage)
+FilesPage::FilesPage() : ui(new Ui::FilesPage)
 {
     ui->setupUi(this);
 
@@ -599,7 +618,7 @@ FilesPage::FilesPage()
     connect(ui->askPresetCheckBox, &QCheckBox::stateChanged, this, &FilesPage::askForPresetChange);
     connect(ui->presetListWidget, &QListWidget::itemChanged, this, &FilesPage::presetNameChanged);
 
-    auto spinBoxValueChange = static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged);
+    auto spinBoxValueChange = static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged);
     connect(ui->autosaveCheckBox, &QCheckBox::stateChanged, this, &FilesPage::autosaveChange);
     connect(ui->autosaveNumberBox, spinBoxValueChange, this, &FilesPage::autosaveNumberChange);
 }
@@ -625,7 +644,10 @@ void FilesPage::initPreset()
     for (const QString &key : mPresetSettings->allKeys())
     {
         int index = key.toInt(&ok);
-        if (!ok || index == 0 || !mPresetDir.exists(QString("%1.pclx").arg(index))) { continue; }
+        if (!ok || index == 0 || !mPresetDir.exists(QString("%1.pclx").arg(index)))
+        {
+            continue;
+        }
 
         mMaxPresetIndex = qMax(index, mMaxPresetIndex);
 
@@ -651,11 +673,15 @@ void FilesPage::addPreset()
     Status st = fm.save(mManager->object(), PresetDialog::getPresetPath(newPresetIndex));
     if (!st.ok())
     {
-        ErrorDialog errorDialog(st.title(),
-                                st.description().append(tr("<br><br>Error: your file may not have saved successfully."
-                                                           "If you believe that this error is an issue with Pencil2D, please create a new issue at:"
-                                                           "<br><a href='https://github.com/pencil2d/pencil/issues'>https://github.com/pencil2d/pencil/issues</a><br>"
-                                                           "Please include the following details in your issue:")), st.details().html());
+        ErrorDialog errorDialog(
+            st.title(),
+            st.description().append(
+                tr("<br><br>Error: your file may not have saved successfully."
+                   "If you believe that this error is an issue with Pencil2D, please create a new issue at:"
+                   "<br><a "
+                   "href='https://github.com/pencil2d/pencil/issues'>https://github.com/pencil2d/pencil/issues</a><br>"
+                   "Please include the following details in your issue:")),
+            st.details().html());
         errorDialog.exec();
         return;
     }
@@ -677,8 +703,14 @@ void FilesPage::addPreset()
 
 void FilesPage::removePreset()
 {
-    if (ui->presetListWidget->count() <= 1) { return; }
-    if (ui->presetListWidget->selectedItems().empty()) { return; }
+    if (ui->presetListWidget->count() <= 1)
+    {
+        return;
+    }
+    if (ui->presetListWidget->selectedItems().empty())
+    {
+        return;
+    }
 
     // 1. Remove the items from list widget
     QList<QListWidgetItem *> itemsToRemove = ui->presetListWidget->selectedItems();
@@ -826,8 +858,7 @@ void ToolsPage::rotationIncrementChange(int value)
     {
         angle++;
     }
-    ui->rotationIncrementDisplay->setText(tr("%1 degrees").arg(angle)); // don't use tr()'s plural settings, it breaks Transifex.
+    ui->rotationIncrementDisplay->setText(
+        tr("%1 degrees").arg(angle)); // don't use tr()'s plural settings, it breaks Transifex.
     mManager->set(SETTING::ROTATION_INCREMENT, angle);
 }
-
-

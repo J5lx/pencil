@@ -17,27 +17,24 @@ GNU General Public License for more details.
 
 #include "timeline.h"
 
-#include <QWidget>
-#include <QScrollBar>
-#include <QHBoxLayout>
-#include <QMenu>
 #include <QAction>
-#include <QSplitter>
-#include <QMessageBox>
+#include <QHBoxLayout>
 #include <QLabel>
-#include <QWheelEvent>
+#include <QMenu>
+#include <QMessageBox>
+#include <QScrollBar>
 #include <QSlider>
+#include <QSplitter>
+#include <QWheelEvent>
+#include <QWidget>
 
-#include "layer.h"
 #include "editor.h"
+#include "layer.h"
 #include "layermanager.h"
 #include "timecontrols.h"
 #include "timelinecells.h"
 
-
-TimeLine::TimeLine(QWidget *parent) : BaseDockWidget(parent)
-{
-}
+TimeLine::TimeLine(QWidget *parent) : BaseDockWidget(parent) {}
 
 void TimeLine::initUI()
 {
@@ -182,7 +179,6 @@ void TimeLine::initUI()
     splitter->addWidget(rightWidget);
     splitter->setSizes(QList<int>() << 100 << 600);
 
-
     QGridLayout *lay = new QGridLayout();
     lay->addWidget(splitter, 0, 0);
     lay->addWidget(mVScrollbar, 0, 1);
@@ -299,8 +295,7 @@ void TimeLine::deleteCurrentLayer()
         Status st = layerMgr->deleteLayer(editor()->currentLayerIndex());
         if (st == Status::ERROR_NEED_AT_LEAST_ONE_CAMERA_LAYER)
         {
-            QMessageBox::information(this, "",
-                                     tr("Please keep at least one camera layer in project"));
+            QMessageBox::information(this, "", tr("Please keep at least one camera layer in project"));
         }
     }
 }

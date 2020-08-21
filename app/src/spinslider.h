@@ -15,7 +15,6 @@ GNU General Public License for more details.
 
 */
 
-
 #ifndef SPINSLIDER_H
 #define SPINSLIDER_H
 
@@ -24,7 +23,6 @@ GNU General Public License for more details.
 class QLabel;
 class QSlider;
 class QStyle;
-
 
 class SpinSlider : public QWidget
 {
@@ -66,7 +64,7 @@ private:
     QLabel *mLabel = nullptr;
 
     GROWTH_TYPE mGrowthType = LINEAR;
-    VALUE_TYPE  mValueType = INTEGER;
+    VALUE_TYPE mValueType = INTEGER;
 };
 
 #endif // SPINSLIDER_H

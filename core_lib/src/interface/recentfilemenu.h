@@ -15,14 +15,13 @@ GNU General Public License for more details.
 
 */
 
-
 #ifndef RECENTFILEMENU_H
 #define RECENTFILEMENU_H
 
-#include <map>
+#include "pencildef.h"
 #include <QMenu>
 #include <QStringList>
-#include "pencildef.h"
+#include <map>
 
 class QAction;
 class ListItemModel;

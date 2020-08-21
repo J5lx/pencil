@@ -16,30 +16,29 @@ GNU General Public License for more details.
 */
 #include "object.h"
 
-#include <QDomDocument>
-#include <QTextStream>
-#include <QProgressDialog>
 #include <QApplication>
+#include <QDateTime>
+#include <QDebug>
+#include <QDir>
+#include <QDomDocument>
 #include <QFile>
 #include <QFileInfo>
-#include <QDir>
-#include <QDebug>
-#include <QDateTime>
+#include <QProgressDialog>
 #include <QSettings>
+#include <QTextStream>
 
 #include "layer.h"
 #include "layerbitmap.h"
-#include "layervector.h"
-#include "layersound.h"
 #include "layercamera.h"
+#include "layersound.h"
+#include "layervector.h"
 
-#include "util.h"
-#include "editor.h"
-#include "bitmapimage.h"
-#include "vectorimage.h"
-#include "fileformat.h"
 #include "activeframepool.h"
-
+#include "bitmapimage.h"
+#include "editor.h"
+#include "fileformat.h"
+#include "util.h"
+#include "vectorimage.h"
 
 Object::Object(QObject *parent) : QObject(parent)
 {
@@ -183,10 +182,10 @@ void Object::createWorkingDir()
     do
     {
         strWorkingDir = QString("%1/Pencil2D/%2_%3_%4/")
-                        .arg(QDir::tempPath())
-                        .arg(strFolderName)
-                        .arg(PFF_TMP_DECOMPRESS_EXT)
-                        .arg(uniqueString(8));
+                            .arg(QDir::tempPath())
+                            .arg(strFolderName)
+                            .arg(PFF_TMP_DECOMPRESS_EXT)
+                            .arg(uniqueString(8));
     } while (dir.exists(strWorkingDir));
 
     dir.mkpath(strWorkingDir);
@@ -370,7 +369,6 @@ bool Object::isColorInUse(int index)
         }
     }
     return false;
-
 }
 
 void Object::removeColor(int index)
@@ -408,13 +406,14 @@ QString Object::savePalette(QString dataFolder)
 
 void Object::exportPaletteGPL(QFile &file)
 {
-
     QString fileName = QFileInfo(file).baseName();
     QTextStream out(&file);
 
-    out << "GIMP Palette" << "\n";
+    out << "GIMP Palette"
+        << "\n";
     out << "Name: " << fileName << "\n";
-    out << "#" << "\n";
+    out << "#"
+        << "\n";
 
     for (ColorRef ref : mPalette)
     {
@@ -484,7 +483,10 @@ void Object::importPaletteGPL(QFile &file)
     // First line must start with "GIMP Palette"
     // Displaying an error here would be nice
     in.readLineInto(&line);
-    if (!line.startsWith("GIMP Palette")) { return; }
+    if (!line.startsWith("GIMP Palette"))
+    {
+        return;
+    }
 
     in.readLineInto(&line);
 
@@ -507,7 +509,10 @@ void Object::importPaletteGPL(QFile &file)
     do
     {
         // Ignore comments and empty lines
-        if (line.isEmpty() || line.startsWith("#")) { continue; }
+        if (line.isEmpty() || line.startsWith("#"))
+        {
+            continue;
+        }
 
         int red = 0;
         int green = 0;
@@ -539,13 +544,22 @@ void Object::importPaletteGPL(QFile &file)
         name = name.trimmed();
 
         // Get values from previous color if necessary
-        if (countInLine < 2) { green = prevColor.green(); }
-        if (countInLine < 3) { blue = prevColor.blue(); }
+        if (countInLine < 2)
+        {
+            green = prevColor.green();
+        }
+        if (countInLine < 3)
+        {
+            blue = prevColor.blue();
+        }
 
         // GIMP assigns colors the name "Untitled" by default now
         // so in addition to missing names, we also use automatic
         // naming for this
-        if (name.isEmpty() || name == "Untitled") { name = QString(); }
+        if (name.isEmpty() || name == "Untitled")
+        {
+            name = QString();
+        }
 
         QColor color(red, green, blue);
         if (color.isValid())
@@ -592,7 +606,7 @@ void Object::openPalette(QString filePath)
 
 /*
  * Imports palette, e.g. appends to palette
-*/
+ */
 bool Object::importPalette(QString filePath)
 {
     QFile file(filePath);
@@ -613,7 +627,6 @@ bool Object::importPalette(QString filePath)
     file.close();
     return true;
 }
-
 
 void Object::loadDefaultPalette()
 {
@@ -644,9 +657,7 @@ void Object::loadDefaultPalette()
     addColor(ColorRef(QColor(227, 177, 105), QString(tr("Light Grayish Orange Yellow"))));
 }
 
-void Object::paintImage(QPainter &painter, int frameNumber,
-                        bool background,
-                        bool antialiasing) const
+void Object::paintImage(QPainter &painter, int frameNumber, bool background, bool antialiasing) const
 {
     updateActiveFrames(frameNumber);
 
@@ -681,7 +692,6 @@ void Object::paintImage(QPainter &painter, int frameNumber,
                 {
                     bitmap->paintImage(painter);
                 }
-
             }
             // paints the vector images
             if (layer->type() == Layer::VECTOR)
@@ -727,7 +737,8 @@ QString Object::copyFileToDataFolder(QString strFilePath)
     return destFile;
 }
 
-bool Object::exportFrames(int frameStart, int frameEnd,
+bool Object::exportFrames(int frameStart,
+                          int frameEnd,
                           LayerCamera *cameraLayer,
                           QSize exportSize,
                           QString filePath,
@@ -772,10 +783,7 @@ bool Object::exportFrames(int frameStart, int frameEnd,
         filePath.chop(extension.size());
     }
 
-    qDebug() << "Exporting frames from "
-             << frameStart << "to"
-             << frameEnd
-             << "at size " << exportSize;
+    qDebug() << "Exporting frames from " << frameStart << "to" << frameEnd << "at size " << exportSize;
 
     for (int currentFrame = frameStart; currentFrame <= frameEnd; currentFrame++)
     {
@@ -820,7 +828,12 @@ bool Object::exportFrames(int frameStart, int frameEnd,
     return true;
 }
 
-bool Object::exportX(int frameStart, int frameEnd, QTransform view, QSize exportSize, QString filePath, bool antialiasing)
+bool Object::exportX(int frameStart,
+                     int frameEnd,
+                     QTransform view,
+                     QSize exportSize,
+                     QString filePath,
+                     bool antialiasing)
 {
     QSettings settings(PENCIL2D, PENCIL2D);
 
@@ -862,7 +875,14 @@ bool Object::exportX(int frameStart, int frameEnd, QTransform view, QSize export
     return true;
 }
 
-bool Object::exportIm(int frame, QTransform view, QSize cameraSize, QSize exportSize, QString filePath, QString format, bool antialiasing, bool transparency)
+bool Object::exportIm(int frame,
+                      QTransform view,
+                      QSize cameraSize,
+                      QSize exportSize,
+                      QString filePath,
+                      QString format,
+                      bool antialiasing,
+                      bool transparency)
 {
     QImage imageToExport(exportSize, QImage::Format_ARGB32_Premultiplied);
 

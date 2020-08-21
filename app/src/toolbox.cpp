@@ -20,16 +20,16 @@ GNU General Public License for more details.
 
 #include <cmath>
 
-#include <QToolButton>
 #include <QGridLayout>
 #include <QKeySequence>
 #include <QResizeEvent>
+#include <QToolButton>
 
-#include "flowlayout.h"
-#include "spinslider.h"
 #include "editor.h"
-#include "toolmanager.h"
+#include "flowlayout.h"
 #include "pencilsettings.h"
+#include "spinslider.h"
+#include "toolmanager.h"
 
 // ----------------------------------------------------------------------------------
 QString GetToolTips(QString strCommandName)
@@ -39,9 +39,7 @@ QString GetToolTips(QString strCommandName)
     return QString("<b>%1</b>").arg(keySequence.toString()); // don't tr() this string.
 }
 
-ToolBoxWidget::ToolBoxWidget(QWidget *parent) :
-    BaseDockWidget(parent),
-    ui(new Ui::ToolBoxWidget)
+ToolBoxWidget::ToolBoxWidget(QWidget *parent) : BaseDockWidget(parent), ui(new Ui::ToolBoxWidget)
 {
     ui->setupUi(this);
 }
@@ -75,57 +73,38 @@ void ToolBoxWidget::initUI()
     ui->smudgeButton->setStyleSheet(sStyle);
 #endif
 
-    ui->pencilButton->setToolTip(tr("Pencil Tool (%1): Sketch with pencil")
-                                 .arg(GetToolTips(CMD_TOOL_PENCIL)));
-    ui->selectButton->setToolTip(tr("Select Tool (%1): Select an object")
-                                 .arg(GetToolTips(CMD_TOOL_SELECT)));
-    ui->moveButton->setToolTip(tr("Move Tool (%1): Move an object")
-                               .arg(GetToolTips(CMD_TOOL_MOVE)));
-    ui->handButton->setToolTip(tr("Hand Tool (%1): Move the canvas")
-                               .arg(GetToolTips(CMD_TOOL_HAND)));
-    ui->penButton->setToolTip(tr("Pen Tool (%1): Sketch with pen")
-                              .arg(GetToolTips(CMD_TOOL_PEN)));
-    ui->eraserButton->setToolTip(tr("Eraser Tool (%1): Erase")
-                                 .arg(GetToolTips(CMD_TOOL_ERASER)));
-    ui->polylineButton->setToolTip(tr("Polyline Tool (%1): Create line/curves")
-                                   .arg(GetToolTips(CMD_TOOL_POLYLINE)));
-    ui->bucketButton->setToolTip(tr("Paint Bucket Tool (%1): Fill selected area with a color")
-                                 .arg(GetToolTips(CMD_TOOL_BUCKET)));
-    ui->brushButton->setToolTip(tr("Brush Tool (%1): Paint smooth stroke with a brush")
-                                .arg(GetToolTips(CMD_TOOL_BRUSH)));
+    ui->pencilButton->setToolTip(tr("Pencil Tool (%1): Sketch with pencil").arg(GetToolTips(CMD_TOOL_PENCIL)));
+    ui->selectButton->setToolTip(tr("Select Tool (%1): Select an object").arg(GetToolTips(CMD_TOOL_SELECT)));
+    ui->moveButton->setToolTip(tr("Move Tool (%1): Move an object").arg(GetToolTips(CMD_TOOL_MOVE)));
+    ui->handButton->setToolTip(tr("Hand Tool (%1): Move the canvas").arg(GetToolTips(CMD_TOOL_HAND)));
+    ui->penButton->setToolTip(tr("Pen Tool (%1): Sketch with pen").arg(GetToolTips(CMD_TOOL_PEN)));
+    ui->eraserButton->setToolTip(tr("Eraser Tool (%1): Erase").arg(GetToolTips(CMD_TOOL_ERASER)));
+    ui->polylineButton->setToolTip(tr("Polyline Tool (%1): Create line/curves").arg(GetToolTips(CMD_TOOL_POLYLINE)));
+    ui->bucketButton->setToolTip(
+        tr("Paint Bucket Tool (%1): Fill selected area with a color").arg(GetToolTips(CMD_TOOL_BUCKET)));
+    ui->brushButton->setToolTip(
+        tr("Brush Tool (%1): Paint smooth stroke with a brush").arg(GetToolTips(CMD_TOOL_BRUSH)));
     ui->eyedropperButton->setToolTip(tr("Eyedropper Tool (%1): "
                                         "Set color from the stage<br>[ALT] for instant access")
-                                     .arg(GetToolTips(CMD_TOOL_EYEDROPPER)));
-    ui->clearButton->setToolTip(tr("Clear Frame (%1): Erases content of selected frame")
-                                .arg(GetToolTips(CMD_CLEAR_FRAME)));
+                                         .arg(GetToolTips(CMD_TOOL_EYEDROPPER)));
+    ui->clearButton->setToolTip(
+        tr("Clear Frame (%1): Erases content of selected frame").arg(GetToolTips(CMD_CLEAR_FRAME)));
     ui->smudgeButton->setToolTip(tr("Smudge Tool (%1):<br>Edit polyline/curves<br>"
                                     "Liquify bitmap pixels<br> (%1)+[Alt]: Smooth")
-                                 .arg(GetToolTips(CMD_TOOL_SMUDGE)));
+                                     .arg(GetToolTips(CMD_TOOL_SMUDGE)));
 
-    ui->pencilButton->setWhatsThis(tr("Pencil Tool (%1)")
-                                   .arg(GetToolTips(CMD_TOOL_PENCIL)));
-    ui->selectButton->setWhatsThis(tr("Select Tool (%1)")
-                                   .arg(GetToolTips(CMD_TOOL_SELECT)));
-    ui->moveButton->setWhatsThis(tr("Move Tool (%1)")
-                                 .arg(GetToolTips(CMD_TOOL_MOVE)));
-    ui->handButton->setWhatsThis(tr("Hand Tool (%1)")
-                                 .arg(GetToolTips(CMD_TOOL_HAND)));
-    ui->penButton->setWhatsThis(tr("Pen Tool (%1)")
-                                .arg(GetToolTips(CMD_TOOL_PEN)));
-    ui->eraserButton->setWhatsThis(tr("Eraser Tool (%1)")
-                                   .arg(GetToolTips(CMD_TOOL_ERASER)));
-    ui->polylineButton->setWhatsThis(tr("Polyline Tool (%1)")
-                                     .arg(GetToolTips(CMD_TOOL_POLYLINE)));
-    ui->bucketButton->setWhatsThis(tr("Paint Bucket Tool (%1)")
-                                   .arg(GetToolTips(CMD_TOOL_BUCKET)));
-    ui->brushButton->setWhatsThis(tr("Brush Tool (%1)")
-                                  .arg(GetToolTips(CMD_TOOL_BRUSH)));
-    ui->eyedropperButton->setWhatsThis(tr("Eyedropper Tool (%1)")
-                                       .arg(GetToolTips(CMD_TOOL_EYEDROPPER)));
-    ui->clearButton->setWhatsThis(tr("Clear Tool (%1)")
-                                  .arg(GetToolTips(CMD_CLEAR_FRAME)));
-    ui->smudgeButton->setWhatsThis(tr("Smudge Tool (%1)")
-                                   .arg(GetToolTips(CMD_TOOL_SMUDGE)));
+    ui->pencilButton->setWhatsThis(tr("Pencil Tool (%1)").arg(GetToolTips(CMD_TOOL_PENCIL)));
+    ui->selectButton->setWhatsThis(tr("Select Tool (%1)").arg(GetToolTips(CMD_TOOL_SELECT)));
+    ui->moveButton->setWhatsThis(tr("Move Tool (%1)").arg(GetToolTips(CMD_TOOL_MOVE)));
+    ui->handButton->setWhatsThis(tr("Hand Tool (%1)").arg(GetToolTips(CMD_TOOL_HAND)));
+    ui->penButton->setWhatsThis(tr("Pen Tool (%1)").arg(GetToolTips(CMD_TOOL_PEN)));
+    ui->eraserButton->setWhatsThis(tr("Eraser Tool (%1)").arg(GetToolTips(CMD_TOOL_ERASER)));
+    ui->polylineButton->setWhatsThis(tr("Polyline Tool (%1)").arg(GetToolTips(CMD_TOOL_POLYLINE)));
+    ui->bucketButton->setWhatsThis(tr("Paint Bucket Tool (%1)").arg(GetToolTips(CMD_TOOL_BUCKET)));
+    ui->brushButton->setWhatsThis(tr("Brush Tool (%1)").arg(GetToolTips(CMD_TOOL_BRUSH)));
+    ui->eyedropperButton->setWhatsThis(tr("Eyedropper Tool (%1)").arg(GetToolTips(CMD_TOOL_EYEDROPPER)));
+    ui->clearButton->setWhatsThis(tr("Clear Tool (%1)").arg(GetToolTips(CMD_CLEAR_FRAME)));
+    ui->smudgeButton->setWhatsThis(tr("Smudge Tool (%1)").arg(GetToolTips(CMD_TOOL_SMUDGE)));
 
     connect(ui->clearButton, &QToolButton::clicked, this, &ToolBoxWidget::clearButtonClicked);
     connect(ui->pencilButton, &QToolButton::clicked, this, &ToolBoxWidget::pencilOn);
@@ -161,13 +140,14 @@ void ToolBoxWidget::initUI()
     restoreGeometry(settings.value("ToolBoxGeom").toByteArray());
 }
 
-void ToolBoxWidget::updateUI()
-{
-}
+void ToolBoxWidget::updateUI() {}
 
 void ToolBoxWidget::pencilOn()
 {
-    if (!leavingTool(ui->pencilButton)) { return; }
+    if (!leavingTool(ui->pencilButton))
+    {
+        return;
+    }
 
     editor()->tools()->setCurrentTool(PENCIL);
 
@@ -177,7 +157,10 @@ void ToolBoxWidget::pencilOn()
 
 void ToolBoxWidget::eraserOn()
 {
-    if (!leavingTool(ui->eraserButton)) { return; }
+    if (!leavingTool(ui->eraserButton))
+    {
+        return;
+    }
 
     editor()->tools()->setCurrentTool(ERASER);
 
@@ -187,7 +170,10 @@ void ToolBoxWidget::eraserOn()
 
 void ToolBoxWidget::selectOn()
 {
-    if (!leavingTool(ui->selectButton)) { return; }
+    if (!leavingTool(ui->selectButton))
+    {
+        return;
+    }
 
     editor()->tools()->setCurrentTool(SELECT);
 
@@ -197,7 +183,10 @@ void ToolBoxWidget::selectOn()
 
 void ToolBoxWidget::moveOn()
 {
-    if (!leavingTool(ui->moveButton)) { return; }
+    if (!leavingTool(ui->moveButton))
+    {
+        return;
+    }
 
     editor()->tools()->setCurrentTool(MOVE);
 
@@ -207,7 +196,10 @@ void ToolBoxWidget::moveOn()
 
 void ToolBoxWidget::penOn()
 {
-    if (!leavingTool(ui->penButton)) { return; }
+    if (!leavingTool(ui->penButton))
+    {
+        return;
+    }
 
     editor()->tools()->setCurrentTool(PEN);
 
@@ -217,7 +209,10 @@ void ToolBoxWidget::penOn()
 
 void ToolBoxWidget::handOn()
 {
-    if (!leavingTool(ui->handButton)) { return; }
+    if (!leavingTool(ui->handButton))
+    {
+        return;
+    }
 
     editor()->tools()->setCurrentTool(HAND);
 
@@ -227,7 +222,10 @@ void ToolBoxWidget::handOn()
 
 void ToolBoxWidget::polylineOn()
 {
-    if (!leavingTool(ui->polylineButton)) { return; }
+    if (!leavingTool(ui->polylineButton))
+    {
+        return;
+    }
 
     editor()->tools()->setCurrentTool(POLYLINE);
 
@@ -237,7 +235,10 @@ void ToolBoxWidget::polylineOn()
 
 void ToolBoxWidget::bucketOn()
 {
-    if (!leavingTool(ui->bucketButton)) { return; }
+    if (!leavingTool(ui->bucketButton))
+    {
+        return;
+    }
 
     editor()->tools()->setCurrentTool(BUCKET);
 
@@ -247,7 +248,10 @@ void ToolBoxWidget::bucketOn()
 
 void ToolBoxWidget::eyedropperOn()
 {
-    if (!leavingTool(ui->eyedropperButton)) { return; }
+    if (!leavingTool(ui->eyedropperButton))
+    {
+        return;
+    }
     editor()->tools()->setCurrentTool(EYEDROPPER);
 
     deselectAllTools();
@@ -256,7 +260,10 @@ void ToolBoxWidget::eyedropperOn()
 
 void ToolBoxWidget::brushOn()
 {
-    if (!leavingTool(ui->brushButton)) { return; }
+    if (!leavingTool(ui->brushButton))
+    {
+        return;
+    }
 
     editor()->tools()->setCurrentTool(BRUSH);
 
@@ -266,7 +273,10 @@ void ToolBoxWidget::brushOn()
 
 void ToolBoxWidget::smudgeOn()
 {
-    if (!leavingTool(ui->smudgeButton)) { return; }
+    if (!leavingTool(ui->smudgeButton))
+    {
+        return;
+    }
     editor()->tools()->setCurrentTool(SMUDGE);
 
     deselectAllTools();

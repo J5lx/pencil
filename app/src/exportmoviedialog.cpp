@@ -54,7 +54,7 @@ void ExportMovieDialog::setCamerasInfo(const std::vector<std::pair<QString, QSiz
         ui->cameraCombo->addItem(camera.first, camera.second);
     }
 
-    auto indexChanged = static_cast< void(QComboBox::*)(int i) >(&QComboBox::currentIndexChanged);
+    auto indexChanged = static_cast<void (QComboBox::*)(int i)>(&QComboBox::currentIndexChanged);
     connect(ui->cameraCombo, indexChanged, this, &ExportMovieDialog::updateResolutionCombo);
 
     updateResolutionCombo(0);
@@ -135,12 +135,10 @@ void ExportMovieDialog::onFilePathsChanged(QStringList filePaths)
 
 bool ExportMovieDialog::supportsLooping(QString filePath) const
 {
-    return filePath.endsWith(".apng", Qt::CaseInsensitive) ||
-           filePath.endsWith(".gif", Qt::CaseInsensitive);
+    return filePath.endsWith(".apng", Qt::CaseInsensitive) || filePath.endsWith(".gif", Qt::CaseInsensitive);
 }
 
 bool ExportMovieDialog::supportsTransparency(QString filePath) const
 {
-    return filePath.endsWith(".apng", Qt::CaseInsensitive) ||
-           filePath.endsWith(".webm", Qt::CaseInsensitive);
+    return filePath.endsWith(".apng", Qt::CaseInsensitive) || filePath.endsWith(".webm", Qt::CaseInsensitive);
 }

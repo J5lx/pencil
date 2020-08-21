@@ -20,7 +20,6 @@ GNU General Public License for more details.
 
 #include "basetool.h"
 
-
 class HandTool : public BaseTool
 {
     Q_OBJECT

@@ -1,9 +1,9 @@
 #ifndef PEGBARALIGNMENTDIALOG_H
 #define PEGBARALIGNMENTDIALOG_H
 
+#include "editor.h"
 #include <QDialog>
 #include <QStringList>
-#include "editor.h"
 
 namespace Ui
 {
@@ -20,8 +20,8 @@ public:
 
     void setLayerList(QStringList layerList);
     QStringList getLayerList();
-    int getRefKey() {return refkey; }
-    QString getRefLayer() {return refLayer; }
+    int getRefKey() { return refkey; }
+    QString getRefLayer() { return refLayer; }
     void setLabRefKey();
 
     void setAreaSelected(bool b);

@@ -25,7 +25,6 @@ class QTimer;
 class QElapsedTimer;
 class SoundClip;
 
-
 class PlaybackManager : public BaseManager
 {
     Q_OBJECT
@@ -47,7 +46,7 @@ public:
     void playFlipInBetween();
     void playScrub(int frame);
     void setSoundScrubMsec(int mSec) { mMsecSoundScrub = mSec; }
-    int  getSoundScrubMsec() { return mMsecSoundScrub; }
+    int getSoundScrubMsec() { return mMsecSoundScrub; }
     void setSoundScrubActive(bool b) { mSoundScrub = b; }
     bool getSoundScrubActive() { return mSoundScrub; }
 

@@ -17,8 +17,8 @@ GNU General Public License for more details.
 #ifndef LAYERVECTOR_H
 #define LAYERVECTOR_H
 
-#include <QImage>
 #include "layer.h"
+#include <QImage>
 
 class VectorImage;
 

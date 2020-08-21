@@ -16,9 +16,8 @@ GNU General Public License for more details.
 */
 #include "pencilsettings.h"
 
-#include <QStringList>
 #include <QDebug>
-
+#include <QStringList>
 
 // ==== Singleton ====
 
@@ -60,7 +59,7 @@ void checkExistingShortcuts()
     QSettings curSetting(PENCIL2D, PENCIL2D);
     foreach (QString pShortcutsKey, defaultKey.allKeys())
     {
-        if (! curSetting.contains(pShortcutsKey))
+        if (!curSetting.contains(pShortcutsKey))
         {
             curSetting.setValue(pShortcutsKey, defaultKey.value(pShortcutsKey));
         }

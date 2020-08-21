@@ -17,13 +17,12 @@ GNU General Public License for more details.
 #ifndef COMMANDCENTER_H
 #define COMMANDCENTER_H
 
-#include <QObject>
 #include "pencilerror.h"
+#include <QObject>
 
 class Editor;
 class QWidget;
 class ExportMovieDialog;
-
 
 class ActionCommands : public QObject
 {
@@ -94,7 +93,6 @@ public:
     void about();
 
 private:
-
     Status convertSoundToWav(const QString &filePath);
 
     Editor *mEditor = nullptr;

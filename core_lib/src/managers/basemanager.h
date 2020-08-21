@@ -18,8 +18,8 @@ GNU General Public License for more details.
 #ifndef BASEMANAGER_H
 #define BASEMANAGER_H
 
-#include <QObject>
 #include "pencilerror.h"
+#include <QObject>
 
 class Object;
 class Layer;

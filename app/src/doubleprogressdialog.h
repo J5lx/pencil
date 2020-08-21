@@ -48,13 +48,18 @@ public:
         float getMax() { return max; }
         void setMax(float maximum);
 
-        void setRange(float minimum, float maximum) { setMin(minimum); setMax(maximum); }
+        void setRange(float minimum, float maximum)
+        {
+            setMin(minimum);
+            setMax(maximum);
+        }
 
         float getValue() { return val; }
         void setValue(float value);
 
         int getPrecision();
         void setPrecision(int e);
+
     private:
         QProgressBar *bar;
         float min = 0, max = 1, val = 0;

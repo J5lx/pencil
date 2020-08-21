@@ -20,12 +20,7 @@
  ***************************************************************************/
 #include "bspline.h"
 
-static const float B[3][3] =
-{
-    {+1.0f, -2.0f, +1.0f},
-    {-2.0f, +2.0f, +0.0f},
-    {+1.0f, +1.0f, +0.0f}
-};
+static const float B[3][3] = {{+1.0f, -2.0f, +1.0f}, {-2.0f, +2.0f, +0.0f}, {+1.0f, +1.0f, +0.0f}};
 
 /**
  * http://en.wikipedia.org/wiki/B-spline
@@ -66,4 +61,3 @@ void BSpline::interpolate_quad(float *x, float *y, float t)
     x[3] = r_vec[0] * x[0] + r_vec[1] * x[1] + r_vec[2] * x[2];
     y[3] = r_vec[0] * y[0] + r_vec[1] * y[1] + r_vec[2] * y[2];
 }
-

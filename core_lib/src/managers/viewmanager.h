@@ -18,13 +18,12 @@ GNU General Public License for more details.
 #ifndef VIEWMANAGER_H
 #define VIEWMANAGER_H
 
-#include <QTransform>
 #include "basemanager.h"
+#include <QTransform>
 
 class Layer;
 class LayerCamera;
 class Camera;
-
 
 class ViewManager : public BaseManager
 {
@@ -89,7 +88,6 @@ public:
     bool getOverlayGoldenRatio() { return mOverlayGoldenRatio; }
     bool getOverlaySafeAreas() { return mOverlaySafeAreas; }
 
-
     void setCanvasSize(QSize size);
     void setCameraLayer(Layer *layer);
 
@@ -105,7 +103,6 @@ public:
     Q_SIGNAL void viewFlipped();
 
 private:
-
     void onCurrentFrameChanged();
 
     QTransform mView;
@@ -118,7 +115,7 @@ private:
     Camera *mDefaultEditorCamera = nullptr;
     Camera *mCurrentCamera = nullptr;
 
-    QSize mCanvasSize = { 1, 1 };
+    QSize mCanvasSize = {1, 1};
 
     bool mIsFlipHorizontal = false;
     bool mIsFlipVertical = false;

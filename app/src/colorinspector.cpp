@@ -16,21 +16,19 @@ GNU General Public License for more details.
 #include "colorinspector.h"
 #include "ui_colorinspector.h"
 
+#include <QButtonGroup>
+#include <QDebug>
 #include <QSettings>
 #include <QStyleOption>
-#include <QDebug>
 #include <QStylePainter>
-#include <QButtonGroup>
 
-#include "colorslider.h"
-#include "pencildef.h"
-#include "editor.h"
 #include "colormanager.h"
+#include "colorslider.h"
+#include "editor.h"
+#include "pencildef.h"
 #include "util/util.h"
 
-
-ColorInspector::ColorInspector(QWidget *parent) :
-    BaseDockWidget(parent)
+ColorInspector::ColorInspector(QWidget *parent) : BaseDockWidget(parent)
 {
     QWidget *innerWidget = new QWidget;
     setWindowTitle(tr("Color Inspector", "Window title of color inspector"));
@@ -83,7 +81,7 @@ void ColorInspector::initUI()
         ui->alpha_slider->init(ColorSlider::ColorType::ALPHA, mCurrentColor, 0.0, 255.0);
     }
 
-    auto spinBoxChanged = static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged);
+    auto spinBoxChanged = static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged);
     connect(ui->RedspinBox, spinBoxChanged, this, &ColorInspector::onColorChanged);
     clearFocusOnFinished(ui->RedspinBox);
     connect(ui->GreenspinBox, spinBoxChanged, this, &ColorInspector::onColorChanged);
@@ -305,9 +303,9 @@ void ColorInspector::onModeChanged()
         const qreal bound = 100.0 / 255.0; // from 255 to 100
 
         ui->RedspinBox->setValue(mCurrentColor.hsvHue());
-        ui->GreenspinBox->setValue(qRound(mCurrentColor.hsvSaturation()*bound));
-        ui->BluespinBox->setValue(qRound(mCurrentColor.value()*bound));
-        ui->AlphaspinBox->setValue(qRound(mCurrentColor.alpha()*bound));
+        ui->GreenspinBox->setValue(qRound(mCurrentColor.hsvSaturation() * bound));
+        ui->BluespinBox->setValue(qRound(mCurrentColor.value() * bound));
+        ui->AlphaspinBox->setValue(qRound(mCurrentColor.alpha() * bound));
     }
 
     emit modeChange(isRgbColors);
@@ -318,20 +316,17 @@ void ColorInspector::onColorChanged()
     QColor c;
     if (isRgbColors)
     {
-        c.setRgb(
-            ui->RedspinBox->value(),
-            ui->GreenspinBox->value(),
-            ui->BluespinBox->value(),
-            ui->AlphaspinBox->value());
-
+        c.setRgb(ui->RedspinBox->value(),
+                 ui->GreenspinBox->value(),
+                 ui->BluespinBox->value(),
+                 ui->AlphaspinBox->value());
     }
     else
     {
-        c.setHsv(
-            ui->RedspinBox->value(),
-            static_cast<int>(ui->GreenspinBox->value() * 2.55),
-            static_cast<int>(ui->BluespinBox->value() * 2.55),
-            static_cast<int>(ui->AlphaspinBox->value() * 2.55));
+        c.setHsv(ui->RedspinBox->value(),
+                 static_cast<int>(ui->GreenspinBox->value() * 2.55),
+                 static_cast<int>(ui->BluespinBox->value() * 2.55),
+                 static_cast<int>(ui->AlphaspinBox->value() * 2.55));
     }
 
     emit colorChanged(c);

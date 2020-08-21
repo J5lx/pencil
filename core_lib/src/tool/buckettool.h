@@ -49,7 +49,6 @@ public:
     void applyChanges();
 
 private:
-
     VectorImage *vectorImage = nullptr;
 };
 

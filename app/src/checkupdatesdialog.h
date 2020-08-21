@@ -26,7 +26,6 @@ class QPushButton;
 class QLabel;
 class QProgressBar;
 
-
 class CheckUpdatesDialog : public QDialog
 {
     Q_OBJECT

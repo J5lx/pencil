@@ -17,15 +17,15 @@ GNU General Public License for more details.
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <memory>
-#include <QObject>
-#include <QList>
-#include <QColor>
-#include "layer.h"
 #include "colorref.h"
-#include "pencilerror.h"
-#include "pencildef.h"
+#include "layer.h"
 #include "objectdata.h"
+#include "pencildef.h"
+#include "pencilerror.h"
+#include <QColor>
+#include <QList>
+#include <QObject>
+#include <memory>
 
 class QProgressDialog;
 class QFile;
@@ -35,7 +35,6 @@ class LayerCamera;
 class LayerSound;
 class ObjectData;
 class ActiveFramePool;
-
 
 struct ExportMovieParameters
 {
@@ -49,7 +48,6 @@ struct ExportMovieParameters
     int exportFps;
     QString exportFormat;
 };
-
 
 class Object : public QObject
 {
@@ -65,15 +63,15 @@ public:
     void createDefaultLayers();
 
     QString filePath() const { return mFilePath; }
-    void    setFilePath(QString strFileName) { mFilePath = strFileName; }
+    void setFilePath(QString strFileName) { mFilePath = strFileName; }
 
     QString workingDir() const { return mWorkingDirPath; }
 
     QString dataDir() const { return mDataDirPath; }
-    void    setDataDir(QString dirPath) { mDataDirPath = dirPath; }
+    void setDataDir(QString dirPath) { mDataDirPath = dirPath; }
 
     QString mainXMLFile() const { return mMainXMLFile; }
-    void    setMainXMLFile(QString file) { mMainXMLFile = file; }
+    void setMainXMLFile(QString file) { mMainXMLFile = file; }
 
     QDomElement saveXML(QDomDocument &doc);
     bool loadXML(QDomElement element, ProgressCallback progressForward);
@@ -113,7 +111,7 @@ public:
     LayerSound *addNewSoundLayer();
     LayerCamera *addNewCameraLayer();
 
-    int  getLayerCount() const;
+    int getLayerCount() const;
     Layer *getLayer(int i) const;
     Layer *findLayerByName(QString strName, Layer::LAYER_TYPE type = Layer::UNDEFINED) const;
 
@@ -122,8 +120,7 @@ public:
     void deleteLayer(Layer *);
     void addLayer(Layer *layer);
 
-    template<typename T>
-    std::vector<T *> getLayersByType() const
+    template<typename T> std::vector<T *> getLayersByType() const
     {
         std::vector<T *> result;
         for (Layer *layer : mLayers)
@@ -138,10 +135,27 @@ public:
     }
 
     // these functions need to be moved to somewhere...
-    bool exportFrames(int frameStart, int frameEnd, LayerCamera *cameraLayer, QSize exportSize, QString filePath, QString format,
-                      bool transparency, bool exportKeyframesOnly, QString layerName, bool antialiasing, QProgressDialog *progress, int progressMax);
+    bool exportFrames(int frameStart,
+                      int frameEnd,
+                      LayerCamera *cameraLayer,
+                      QSize exportSize,
+                      QString filePath,
+                      QString format,
+                      bool transparency,
+                      bool exportKeyframesOnly,
+                      QString layerName,
+                      bool antialiasing,
+                      QProgressDialog *progress,
+                      int progressMax);
     bool exportX(int frameStart, int frameEnd, QTransform view, QSize exportSize, QString filePath, bool antialiasing);
-    bool exportIm(int frameStart, QTransform view, QSize cameraSize, QSize exportSize, QString filePath, QString format, bool antialiasing, bool transparency);
+    bool exportIm(int frameStart,
+                  QTransform view,
+                  QSize cameraSize,
+                  QSize exportSize,
+                  QString filePath,
+                  QString format,
+                  bool antialiasing,
+                  bool transparency);
 
     void modification() { modified = true; }
     bool isModified() { return modified; }
@@ -176,6 +190,5 @@ private:
     std::unique_ptr<ObjectData> mData;
     mutable std::unique_ptr<ActiveFramePool> mActiveFramePool;
 };
-
 
 #endif

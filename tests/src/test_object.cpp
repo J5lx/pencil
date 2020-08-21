@@ -15,15 +15,14 @@ GNU General Public License for more details.
 */
 #include "catch.hpp"
 
-#include <memory>
+#include "layerbitmap.h"
+#include "layersound.h"
+#include "layervector.h"
+#include "object.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QTemporaryDir>
-#include "object.h"
-#include "layerbitmap.h"
-#include "layervector.h"
-#include "layersound.h"
-
+#include <memory>
 
 TEST_CASE("Object::addXXXLayer()")
 {
@@ -100,8 +99,6 @@ TEST_CASE("Object::addXXXLayer()")
 
     delete obj;
 }
-
-
 
 TEST_CASE("Object::getUniqueLayerID()")
 {

@@ -17,10 +17,7 @@ GNU General Public License for more details.
 
 #include "keyframe.h"
 
-
-KeyFrame::KeyFrame()
-{
-}
+KeyFrame::KeyFrame() {}
 
 KeyFrame::KeyFrame(const KeyFrame &k2)
 {

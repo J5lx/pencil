@@ -19,7 +19,6 @@ GNU General Public License for more details.
 
 #include <QWidget>
 
-
 class ColorWheel : public QWidget
 {
     Q_OBJECT
@@ -57,7 +56,7 @@ private:
     void composeWheel(QPixmap &pixmap);
 
 private:
-    QSize mInitSize{ 20, 20 };
+    QSize mInitSize{20, 20};
     QImage mWheelImage;
     QImage mSquareImage;
     QPixmap mWheelPixmap;
@@ -68,7 +67,6 @@ private:
     QColor mCurrentColor = Qt::red;
     bool mIsInWheel = false;
     bool mIsInSquare = false;
-
 };
 
 #endif // COLORWHEEL_H

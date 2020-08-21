@@ -18,13 +18,13 @@ GNU General Public License for more details.
 #ifndef BASETOOL_H
 #define BASETOOL_H
 
-#include <QObject>
-#include <QString>
-#include <QCursor>
-#include <QPointF>
-#include <QHash>
 #include "movemode.h"
 #include "pencildef.h"
+#include <QCursor>
+#include <QHash>
+#include <QObject>
+#include <QPointF>
+#include <QString>
 
 class QPixmap;
 class Editor;
@@ -40,22 +40,21 @@ class Properties
 public:
     qreal width = 1.f;
     qreal feather = 1.f;
-    bool  pressure = true;
-    int   invisibility = 0;
-    int   preserveAlpha = 0;
-    bool  vectorMergeEnabled = false;
-    bool  bezier_state = false;
-    bool  useFeather = true;
-    int   useAA = 0;
-    int   stabilizerLevel = 0;
+    bool pressure = true;
+    int invisibility = 0;
+    int preserveAlpha = 0;
+    bool vectorMergeEnabled = false;
+    bool bezier_state = false;
+    bool useFeather = true;
+    int useAA = 0;
+    int stabilizerLevel = 0;
     qreal tolerance = 0;
-    bool  useFillContour = false;
+    bool useFillContour = false;
 };
 
 const int ON = 1;
 const int OFF = 0;
 const int DISABLED = -1;
-
 
 class BaseTool : public QObject
 {
@@ -90,7 +89,11 @@ public:
     virtual void clearToolData() {}
     virtual void resetToDefault() {}
 
-    static QPixmap canvasCursor(float brushWidth, float brushFeather, bool useFeather, float scalingFac, int windowWidth);
+    static QPixmap canvasCursor(float brushWidth,
+                                float brushFeather,
+                                bool useFeather,
+                                float scalingFac,
+                                int windowWidth);
     QPixmap quickSizeCursor(qreal scalingFac);
     static QCursor selectMoveCursor(MoveMode mode, ToolType type);
     static bool isAdjusting() { return msIsAdjusting; }
@@ -150,7 +153,7 @@ private:
     qreal mAdjustmentStep = 0.0f;
 
     static bool msIsAdjusting;
-    static qreal msOriginalPropertyValue;  // start from previous value (width, or feather ...)
+    static qreal msOriginalPropertyValue; // start from previous value (width, or feather ...)
 };
 
 #endif // BASETOOL_H

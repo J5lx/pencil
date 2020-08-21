@@ -13,25 +13,13 @@ struct PredefinedKeySet
         mFilePaths.append(filePath);
     }
 
-    int keyFrameIndexAt(const int &index) const
-    {
-        return mKeyframeIndexes.at(index);
-    }
+    int keyFrameIndexAt(const int &index) const { return mKeyframeIndexes.at(index); }
 
-    QString filePathAt(const int &index) const
-    {
-        return mFilePaths.at(index);
-    }
+    QString filePathAt(const int &index) const { return mFilePaths.at(index); }
 
-    bool contains(const QString &path) const
-    {
-        return mFilePaths.contains(path);
-    }
+    bool contains(const QString &path) const { return mFilePaths.contains(path); }
 
-    bool isEmpty() const
-    {
-        return mFilePaths.isEmpty();
-    }
+    bool isEmpty() const { return mFilePaths.isEmpty(); }
 
     enum ColumnType
     {
@@ -59,7 +47,6 @@ private:
     QList<QString> mFilePaths;
     QList<int> mKeyframeIndexes;
     QString mLayerName;
-
 };
 
 class PredefinedSetModel : public QAbstractTableModel
@@ -67,7 +54,7 @@ class PredefinedSetModel : public QAbstractTableModel
     Q_OBJECT
 public:
     PredefinedSetModel(QObject *parent, const PredefinedKeySet &keyFrameSet);
-    int rowCount(const QModelIndex &parent = QModelIndex()) const ;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;

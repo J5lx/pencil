@@ -30,8 +30,9 @@ void clearFocusOnFinished(QAbstractSpinBox *spinBox);
 class ScopeGuard
 {
 public:
-    explicit ScopeGuard(std::function< void() > onScopeExit) { m_onScopeExit = onScopeExit; }
+    explicit ScopeGuard(std::function<void()> onScopeExit) { m_onScopeExit = onScopeExit; }
     ~ScopeGuard() { m_onScopeExit(); }
+
 private:
     std::function<void()> m_onScopeExit;
 };
@@ -39,10 +40,9 @@ private:
 #define SCOPEGUARD_LINENAME_CAT(name, line) name##line
 #define SCOPEGUARD_LINENAME(name, line) SCOPEGUARD_LINENAME_CAT(name, line)
 
-#define OnScopeExit( callback ) ScopeGuard SCOPEGUARD_LINENAME( myScopeGuard, __LINE__ ) ( [&] { callback; } );
+#define OnScopeExit(callback) ScopeGuard SCOPEGUARD_LINENAME(myScopeGuard, __LINE__)([&] { callback; });
 
-template <typename Container, typename Pred>
-Container filter(const Container &container, Pred predicate)
+template<typename Container, typename Pred> Container filter(const Container &container, Pred predicate)
 {
     Container result;
     std::copy_if(container.begin(), container.end(), std::back_inserter(result), predicate);

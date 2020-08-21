@@ -17,20 +17,19 @@ GNU General Public License for more details.
 
 #include "basetool.h"
 
-#include <array>
-#include <QtMath>
-#include <QPixmap>
 #include "editor.h"
-#include "viewmanager.h"
-#include "toolmanager.h"
+#include "pointerevent.h"
 #include "scribblearea.h"
 #include "strokemanager.h"
-#include "pointerevent.h"
+#include "toolmanager.h"
+#include "viewmanager.h"
+#include <QPixmap>
+#include <QtMath>
+#include <array>
 
 // ---- shared static variables ---- ( only one instance for all the tools )
-qreal BaseTool::msOriginalPropertyValue;  // start value (width, feather ..)
+qreal BaseTool::msOriginalPropertyValue; // start value (width, feather ..)
 bool BaseTool::msIsAdjusting = false;
-
 
 QString BaseTool::TypeName(ToolType type)
 {
@@ -154,7 +153,10 @@ QPixmap BaseTool::canvasCursor(float width, float feather, bool useFeather, floa
         return QPixmap(0, 0);
     }
 
-    if (cursorWidth < 1) { cursorWidth = 1; }
+    if (cursorWidth < 1)
+    {
+        cursorWidth = 1;
+    }
 
     QPixmap cursorPixmap = QPixmap(cursorWidth, cursorWidth);
     if (!cursorPixmap.isNull())

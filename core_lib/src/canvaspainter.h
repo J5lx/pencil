@@ -17,12 +17,12 @@ GNU General Public License for more details.
 #ifndef CANVASPAINTER_H
 #define CANVASPAINTER_H
 
-#include <memory>
-#include <QObject>
-#include <QTransform>
-#include <QPainter>
 #include "log.h"
 #include "pencildef.h"
+#include <QObject>
+#include <QPainter>
+#include <QTransform>
+#include <memory>
 
 #include "layer.h"
 
@@ -32,31 +32,31 @@ class ViewManager;
 
 struct CanvasPainterOptions
 {
-    bool  bPrevOnionSkin = false;
-    bool  bNextOnionSkin = false;
-    int   nPrevOnionSkinCount = 3;
-    int   nNextOnionSkinCount = 3;
+    bool bPrevOnionSkin = false;
+    bool bNextOnionSkin = false;
+    int nPrevOnionSkinCount = 3;
+    int nNextOnionSkinCount = 3;
     float fOnionSkinMaxOpacity = 0.5f;
     float fOnionSkinMinOpacity = 0.1f;
-    bool  bColorizePrevOnion = false;
-    bool  bColorizeNextOnion = false;
-    bool  bAntiAlias = false;
-    bool  bGrid = false;
-    int   nGridSizeW = 50; /* This is the grid Width IN PIXELS. The grid will scale with the image, though */
-    int   nGridSizeH = 50; /* This is the grid Height IN PIXELS. The grid will scale with the image, though */
-    bool  bCenter = false;
-    bool  bThirds = false;
-    bool  bGoldenRatio = false;
-    bool  bActionSafe = true;
-    int   nActionSafe = 5;
-    bool  bSafeArea = false;
-    bool  bTitleSafe = true;
-    int   nTitleSafe = 10;
+    bool bColorizePrevOnion = false;
+    bool bColorizeNextOnion = false;
+    bool bAntiAlias = false;
+    bool bGrid = false;
+    int nGridSizeW = 50; /* This is the grid Width IN PIXELS. The grid will scale with the image, though */
+    int nGridSizeH = 50; /* This is the grid Height IN PIXELS. The grid will scale with the image, though */
+    bool bCenter = false;
+    bool bThirds = false;
+    bool bGoldenRatio = false;
+    bool bActionSafe = true;
+    int nActionSafe = 5;
+    bool bSafeArea = false;
+    bool bTitleSafe = true;
+    int nTitleSafe = 10;
     bool bShowSafeAreaHelperText = true;
-    bool  bAxis = false;
-    bool  bThinLines = false;
-    bool  bOutlines = false;
-    bool  bIsOnionAbsolute = false;
+    bool bAxis = false;
+    bool bThinLines = false;
+    bool bOutlines = false;
+    bool bIsOnionAbsolute = false;
     LayerVisibility eLayerVisibility = LayerVisibility::RELATED;
     float fLayerVisibilityThreshold;
     float scaling = 1.0f;
@@ -86,7 +86,6 @@ public:
     void resetLayerCache();
 
 private:
-
     /**
      * CanvasPainter::initializePainter
      * Enriches the painter with a context and sets it's initial matrix.
@@ -108,8 +107,18 @@ private:
 
     void paintCurrentFrame(QPainter &painter, int startLayer, int endLayer);
 
-    void paintBitmapFrame(QPainter &, Layer *layer, int nFrame, bool colorize, bool useLastKeyFrame, bool isCurrentFrame);
-    void paintVectorFrame(QPainter &, Layer *layer, int nFrame, bool colorize, bool useLastKeyFrame, bool isCurrentFrame);
+    void paintBitmapFrame(QPainter &,
+                          Layer *layer,
+                          int nFrame,
+                          bool colorize,
+                          bool useLastKeyFrame,
+                          bool isCurrentFrame);
+    void paintVectorFrame(QPainter &,
+                          Layer *layer,
+                          int nFrame,
+                          bool colorize,
+                          bool useLastKeyFrame,
+                          bool isCurrentFrame);
 
     void paintTransformedSelection(QPainter &painter);
     void paintGrid(QPainter &painter);
@@ -125,6 +134,7 @@ private:
     qreal calculateRelativeOpacityForLayer(int layerIndex) const;
 
     void savePaintResult(QString layerName, int frameNum);
+
 private:
     CanvasPainterOptions mOptions;
 

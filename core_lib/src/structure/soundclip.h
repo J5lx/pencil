@@ -18,8 +18,8 @@ GNU General Public License for more details.
 #ifndef SOUNDCLIP_H
 #define SOUNDCLIP_H
 
-#include <memory>
 #include "keyframe.h"
+#include <memory>
 
 class SoundPlayer;
 

@@ -3,9 +3,9 @@
 
 #include "pencilerror.h"
 
+#include "filetype.h"
 #include <QObject>
 #include <functional>
-#include "filetype.h"
 
 class Editor;
 class QTemporaryDir;
@@ -27,7 +27,8 @@ public:
      * @param[in] filePath Path to the video file.
      * @param[in] fps Frames per second to import at.
      * @param[out] frameEstimate An estimate of the number of frames if successful, unchanged otherwise.
-     * @return Will FAIL if an error occurs during loading the video or calculating the duration, or OK if everything succeded.
+     * @return Will FAIL if an error occurs during loading the video or calculating the duration, or OK if everything
+     * succeded.
      */
     Status estimateFrames(const QString &filePath, int fps, int *frameEstimate);
 
@@ -38,7 +39,9 @@ public:
      * @param askPermission a function that when called, could would be used to notify UI for permission
      * @return whether the run suceeded, failed or canceled
      */
-    Status run(const QString &filePath, int fps, FileType type,
+    Status run(const QString &filePath,
+               int fps,
+               FileType type,
                std::function<void(int)> progress,
                std::function<void(QString)> progressMessage,
                std::function<bool()> askPermission);
@@ -46,9 +49,10 @@ public:
     void cancel() { mCanceled = true; }
 
 private:
-
     Status verifyFFmpegExists();
-    Status importMovieVideo(const QString &filePath, int fps, int frameEstimate,
+    Status importMovieVideo(const QString &filePath,
+                            int fps,
+                            int frameEstimate,
                             std::function<bool(int)> progress,
                             std::function<void(QString)> progressMessage);
     Status importMovieAudio(const QString &filePath, std::function<bool(int)> progress);

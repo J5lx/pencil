@@ -28,7 +28,7 @@ namespace Ui
 {
 class ImportImageSeqOptions;
 class ImportImageSeqPreviewGroupBox;
-}
+} // namespace Ui
 
 struct PredefinedKeySetParams
 {
@@ -42,7 +42,11 @@ struct PredefinedKeySetParams
     Status pathsValid() const;
 };
 
-enum ImportCriteria { Arbitrary, PredefinedSet };
+enum ImportCriteria
+{
+    Arbitrary,
+    PredefinedSet
+};
 
 class ImportImageSeqDialog : public ImportExportDialog
 {

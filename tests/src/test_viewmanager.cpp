@@ -15,13 +15,12 @@ GNU General Public License for more details.
 */
 #include "catch.hpp"
 
-#include <cmath>
-#include "viewmanager.h"
-#include "editor.h"
-#include "object.h"
 #include "camera.h"
+#include "editor.h"
 #include "layercamera.h"
-
+#include "object.h"
+#include "viewmanager.h"
+#include <cmath>
 
 TEST_CASE("ViewManager: Init")
 {
@@ -286,7 +285,6 @@ TEST_CASE("ViewManager: working with camera layers")
 
     delete editor;
 }
-
 
 TEST_CASE("ViewManager: canvas size")
 {

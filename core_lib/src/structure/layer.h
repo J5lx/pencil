@@ -17,13 +17,13 @@ GNU General Public License for more details.
 #ifndef LAYER_H
 #define LAYER_H
 
-#include <map>
-#include <functional>
+#include "pencildef.h"
+#include "pencilerror.h"
+#include <QDomElement>
 #include <QObject>
 #include <QString>
-#include <QDomElement>
-#include "pencilerror.h"
-#include "pencildef.h"
+#include <functional>
+#include <map>
 
 class QMouseEvent;
 class QPainter;
@@ -34,7 +34,6 @@ class TimeLineCells;
 class Status;
 
 #define ProgressCallback std::function<void()>
-
 
 class Layer : public QObject
 {
@@ -78,10 +77,10 @@ public:
     int firstKeyFramePosition() const;
 
     bool keyExists(int position) const;
-    int  getPreviousKeyFramePosition(int position) const;
-    int  getNextKeyFramePosition(int position) const;
-    int  getPreviousFrameNumber(int position, bool isAbsolute) const;
-    int  getNextFrameNumber(int position, bool isAbsolute) const;
+    int getPreviousKeyFramePosition(int position) const;
+    int getNextKeyFramePosition(int position) const;
+    int getPreviousFrameNumber(int position, bool isAbsolute) const;
+    int getNextFrameNumber(int position, bool isAbsolute) const;
 
     int keyFrameCount() const { return static_cast<int>(mKeyFrames.size()); }
 
@@ -113,12 +112,36 @@ public:
     bool moveSelectedFrames(int offset);
 
     Status save(const QString &sDataFolder, QStringList &attachedFiles, ProgressCallback progressStep);
-    virtual Status presave(const QString &sDataFolder) { Q_UNUSED(sDataFolder); return Status::SAFE; }
+    virtual Status presave(const QString &sDataFolder)
+    {
+        Q_UNUSED(sDataFolder);
+        return Status::SAFE;
+    }
 
     // graphic representation -- could be put in another class
-    void paintTrack(QPainter &painter, TimeLineCells *cells, int x, int y, int width, int height, bool selected, int frameSize);
-    void paintFrames(QPainter &painter, QColor trackCol, TimeLineCells *cells, int y, int height, bool selected, int frameSize);
-    void paintLabel(QPainter &painter, TimeLineCells *cells, int x, int y, int height, int width, bool selected, LayerVisibility layerVisibility);
+    void paintTrack(QPainter &painter,
+                    TimeLineCells *cells,
+                    int x,
+                    int y,
+                    int width,
+                    int height,
+                    bool selected,
+                    int frameSize);
+    void paintFrames(QPainter &painter,
+                     QColor trackCol,
+                     TimeLineCells *cells,
+                     int y,
+                     int height,
+                     bool selected,
+                     int frameSize);
+    void paintLabel(QPainter &painter,
+                    TimeLineCells *cells,
+                    int x,
+                    int y,
+                    int height,
+                    int width,
+                    bool selected,
+                    LayerVisibility layerVisibility);
     void paintSelection(QPainter &painter, int x, int y, int height, int width);
     void mouseDoubleClick(QMouseEvent *, int frameNumber);
 
@@ -132,10 +155,10 @@ protected:
 
 private:
     LAYER_TYPE meType = UNDEFINED;
-    Object    *mObject = nullptr;
-    int        mId = 0;
-    bool       mVisible = true;
-    QString    mName;
+    Object *mObject = nullptr;
+    int mId = 0;
+    bool mVisible = true;
+    QString mName;
 
     std::map<int, KeyFrame *, std::greater<int>> mKeyFrames;
 
@@ -143,7 +166,7 @@ private:
     // and by position.
     // Both should be pre-sorted on each selection for optimization purpose when moving frames.
     //
-    QList<int> mSelectedFrames_byLast; // Used to handle selection range (based on last selected
+    QList<int> mSelectedFrames_byLast;     // Used to handle selection range (based on last selected
     QList<int> mSelectedFrames_byPosition; // Used to handle frames movements on the timeline
 };
 

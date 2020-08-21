@@ -17,8 +17,7 @@ GNU General Public License for more details.
 
 #include "shortcutfilter.h"
 
-ShortcutFilter::ShortcutFilter(ScribbleArea *scribbleArea, QObject *parent) :
-    QObject(parent)
+ShortcutFilter::ShortcutFilter(ScribbleArea *scribbleArea, QObject *parent) : QObject(parent)
 {
     mScribbleArea = scribbleArea;
 }

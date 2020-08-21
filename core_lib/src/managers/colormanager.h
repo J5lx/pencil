@@ -18,10 +18,8 @@ GNU General Public License for more details.
 #ifndef COLORMANAGER_H
 #define COLORMANAGER_H
 
-#include <QColor>
 #include "basemanager.h"
-
-
+#include <QColor>
 
 class ColorManager : public BaseManager
 {
@@ -45,8 +43,8 @@ Q_SIGNALS:
     void colorNumberChanged(int);
 
 private:
-    QColor mCurrentFrontColor{ 33, 33, 33, 255 };
-    int  mCurrentColorIndex = 0;
+    QColor mCurrentFrontColor{33, 33, 33, 255};
+    int mCurrentColorIndex = 0;
     bool mIsWorkingOnVectorLayer = false;
 };
 

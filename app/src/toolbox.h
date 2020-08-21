@@ -17,8 +17,8 @@ GNU General Public License for more details.
 #ifndef TOOLBOXWIDGET_H
 #define TOOLBOXWIDGET_H
 
-#include "pencildef.h"
 #include "basedockwidget.h"
+#include "pencildef.h"
 
 class QToolButton;
 class QGridLayout;

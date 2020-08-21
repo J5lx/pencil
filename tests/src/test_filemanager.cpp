@@ -15,17 +15,16 @@ GNU General Public License for more details.
 */
 #include "catch.hpp"
 
-#include <QTemporaryDir>
-#include <QTemporaryFile>
-#include <QImage>
-#include "qminiz.h"
+#include "bitmapimage.h"
 #include "fileformat.h"
 #include "filemanager.h"
-#include "util.h"
-#include "object.h"
-#include "bitmapimage.h"
 #include "layerbitmap.h"
-
+#include "object.h"
+#include "qminiz.h"
+#include "util.h"
+#include <QImage>
+#include <QTemporaryDir>
+#include <QTemporaryFile>
 
 TEST_CASE("FileManager Initial Test")
 {
@@ -317,7 +316,11 @@ TEST_CASE("FileManager File-saving")
         REQUIRE(layer->addNewKeyFrameAt(2));
 
         BitmapImage *b1 = layer->getBitmapImageAtFrame(2);
-        b1->drawRect(QRectF(0, 0, 10, 10), QPen(QColor(255, 0, 0)), QBrush(Qt::red), QPainter::CompositionMode_SourceOver, false);
+        b1->drawRect(QRectF(0, 0, 10, 10),
+                     QPen(QColor(255, 0, 0)),
+                     QBrush(Qt::red),
+                     QPainter::CompositionMode_SourceOver,
+                     false);
 
         QTemporaryDir testDir("PENCIL_TEST_XXXXXXXX");
         QString animationPath = testDir.path() + "/abc.pclx";
@@ -344,7 +347,7 @@ TEST_CASE("FileManager File-saving")
         delete o3;
     }
 
-    //https://github.com/pencil2d/pencil/issues/966
+    // https://github.com/pencil2d/pencil/issues/966
     SECTION("#966 Moving more than 200 frames corrupts frames upon save")
     {
         FileManager fm;
@@ -359,7 +362,11 @@ TEST_CASE("FileManager File-saving")
         {
             layer->addNewKeyFrameAt(i);
             auto bitmap = layer->getBitmapImageAtFrame(i);
-            bitmap->drawRect(QRectF(0, 0, 10, 10), QPen(QColor(255, 0, 0)), QBrush(Qt::red), QPainter::CompositionMode_SourceOver, false);
+            bitmap->drawRect(QRectF(0, 0, 10, 10),
+                             QPen(QColor(255, 0, 0)),
+                             QBrush(Qt::red),
+                             QPainter::CompositionMode_SourceOver,
+                             false);
         }
 
         QTemporaryDir testDir("PENCIL_TEST_XXXXXXXX");
@@ -407,7 +414,6 @@ TEST_CASE("Empty Sound Frames")
 {
     SECTION("Invalid src value")
     {
-
         QTemporaryFile soundFrameDoc;
         if (soundFrameDoc.open())
         {
@@ -423,7 +429,6 @@ TEST_CASE("Empty Sound Frames")
             fout << "  </object>";
             fout << "</document>";
             newXML.close();
-
 
             FileManager fm;
             Object *newObj = fm.load(soundFrameDoc.fileName());

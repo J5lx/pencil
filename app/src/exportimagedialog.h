@@ -36,7 +36,7 @@ public:
     void setCamerasInfo(const std::vector<std::pair<QString, QSize>> &camInfo);
     void setDefaultRange(int startFrame, int endFrame, int endFrameWithSounds);
 
-    void  setExportSize(QSize size);
+    void setExportSize(QSize size);
     QSize getExportSize() const;
     bool getTransparency() const;
     bool getExportKeyframesOnly() const;
@@ -50,7 +50,6 @@ private slots:
     void frameCheckboxClicked(bool checked);
     void formatChanged(const QString &format);
     void cameraComboChanged(int index);
-
 
 private:
     Ui::ExportImageOptions *ui = nullptr;

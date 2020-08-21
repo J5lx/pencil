@@ -18,18 +18,16 @@ GNU General Public License for more details.
 #ifndef OBJECTSAVELOADER_H
 #define OBJECTSAVELOADER_H
 
-
-#include <QObject>
-#include <QString>
-#include <QDomElement>
+#include "colorref.h"
 #include "log.h"
 #include "pencildef.h"
 #include "pencilerror.h"
-#include "colorref.h"
+#include <QDomElement>
+#include <QObject>
+#include <QString>
 
 class Object;
 class ObjectData;
-
 
 class FileManager : public QObject
 {
@@ -39,7 +37,7 @@ public:
     FileManager(QObject *parent = 0);
 
     Object *load(QString sFilenNme);
-    Status  save(Object *, QString sFileName);
+    Status save(Object *, QString sFileName);
 
     QList<ColorRef> loadPaletteFile(QString strFilename);
     Status error() const { return mError; }

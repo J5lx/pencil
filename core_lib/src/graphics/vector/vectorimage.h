@@ -21,13 +21,12 @@ GNU General Public License for more details.
 
 #include "bezierarea.h"
 #include "beziercurve.h"
-#include "vertexref.h"
 #include "keyframe.h"
+#include "vertexref.h"
 
 class Object;
 class QPainter;
 class QImage;
-
 
 class VectorImage : public KeyFrame
 {
@@ -83,7 +82,7 @@ public:
     void paste(VectorImage &);
 
     QColor getColor(int i);
-    int  getColorNumber(QPointF point);
+    int getColorNumber(QPointF point);
     bool usesColor(int index);
     void removeColor(int index);
     int getCurvesColor(int curve);
@@ -91,7 +90,11 @@ public:
     void moveColor(int start, int end);
 
     void paintImage(QPainter &painter, bool simplified, bool showThinCurves, bool antialiasing);
-    void outputImage(QImage *image, QTransform myView, bool simplified, bool showThinCurves, bool antialiasing); // uses paintImage
+    void outputImage(QImage *image,
+                     QTransform myView,
+                     bool simplified,
+                     bool showThinCurves,
+                     bool antialiasing); // uses paintImage
 
     void clear();
     void clean();
@@ -109,9 +112,9 @@ public:
     void fillSelectedPath(int color);
     //    void fill(QPointF point, int color, float tolerance);
     void addArea(BezierArea bezierArea);
-    int  getFirstAreaNumber(QPointF point);
-    int  getLastAreaNumber(QPointF point);
-    int  getLastAreaNumber(QPointF point, int maxAreaNumber);
+    int getFirstAreaNumber(QPointF point);
+    int getLastAreaNumber(QPointF point);
+    int getLastAreaNumber(QPointF point, int maxAreaNumber);
     int getLastCurveNumber();
     BezierCurve getLastCurve();
     void removeArea(QPointF point);
@@ -129,7 +132,9 @@ public:
     QList<VertexRef> getVerticesCloseTo(VertexRef thisPointRef, qreal maxDistance);
     QList<VertexRef> getVerticesCloseTo(VertexRef thisPointRef, qreal maxDistance, QList<VertexRef> *listOfPoints);
     QList<VertexRef> getAndRemoveVerticesCloseTo(QPointF thisPoint, qreal maxDistance, QList<VertexRef> *listOfPoints);
-    QList<VertexRef> getAndRemoveVerticesCloseTo(VertexRef thisPointRef, qreal maxDistance, QList<VertexRef> *listOfPoints);
+    QList<VertexRef> getAndRemoveVerticesCloseTo(VertexRef thisPointRef,
+                                                 qreal maxDistance,
+                                                 QList<VertexRef> *listOfPoints);
     QPointF getVertex(int curveNumber, int vertexNumber);
     QPointF getVertex(VertexRef vertexRef);
     QPointF getC1(int curveNumber, int vertexNumber);
@@ -167,4 +172,3 @@ private:
 };
 
 #endif
-

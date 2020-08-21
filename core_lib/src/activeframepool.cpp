@@ -20,7 +20,6 @@ GNU General Public License for more details.
 #include "pencildef.h"
 #include <QDebug>
 
-
 ActiveFramePool::ActiveFramePool(unsigned long n)
 {
     size_t maxSize = n;
@@ -111,6 +110,6 @@ void ActiveFramePool::discardLeastUsedFrames()
 
 void ActiveFramePool::unloadFrame(KeyFrame *key)
 {
-    //qDebug() << "Unload frame:" << key->pos();
+    // qDebug() << "Unload frame:" << key->pos();
     key->unloadFile();
 }

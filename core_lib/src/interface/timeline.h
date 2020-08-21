@@ -24,7 +24,6 @@ class Editor;
 class TimeLineCells;
 class TimeControls;
 
-
 class TimeLine : public BaseDockWidget
 {
     Q_OBJECT
@@ -44,7 +43,7 @@ public:
     void setRangeState(bool range);
     void setPlaying(bool isPlaying);
 
-    int  getLength();
+    int getLength();
     void setLength(int frame);
     void extendLength(int frame);
 
@@ -80,7 +79,6 @@ protected:
 
 private:
     void deleteCurrentLayer();
-
 
     QScrollBar *mHScrollbar = nullptr;
     QScrollBar *mVScrollbar = nullptr;

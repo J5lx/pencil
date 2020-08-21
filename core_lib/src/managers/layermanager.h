@@ -26,7 +26,6 @@ class LayerVector;
 class LayerCamera;
 class LayerSound;
 
-
 class LayerManager : public BaseManager
 {
     Q_OBJECT
@@ -44,10 +43,10 @@ public:
     Layer *getLayer(int index);
     Layer *findLayerByName(QString sName, Layer::LAYER_TYPE type = Layer::UNDEFINED);
     Layer *getLastCameraLayer();
-    int    currentLayerIndex();
-    void   setCurrentLayer(int nIndex);
-    void   setCurrentLayer(Layer *layer);
-    int    count();
+    int currentLayerIndex();
+    void setCurrentLayer(int nIndex);
+    void setCurrentLayer(Layer *layer);
+    int count();
 
     Status deleteLayer(int index);
     Status renameLayer(Layer *, const QString &newName);
@@ -59,7 +58,7 @@ public:
     LayerBitmap *createBitmapLayer(const QString &strLayerName);
     LayerVector *createVectorLayer(const QString &strLayerName);
     LayerCamera *createCameraLayer(const QString &strLayerName);
-    LayerSound  *createSoundLayer(const QString &strLayerName);
+    LayerSound *createSoundLayer(const QString &strLayerName);
 
     // KeyFrame Management
     int lastFrameAtFrame(int frameIndex);

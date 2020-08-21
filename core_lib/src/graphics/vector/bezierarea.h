@@ -17,7 +17,6 @@ GNU General Public License for more details.
 #ifndef BEZIERAREA_H
 #define BEZIERAREA_H
 
-
 #include <QPainterPath>
 
 #include "vertexref.h"
@@ -25,7 +24,6 @@ GNU General Public License for more details.
 class Status;
 class QXmlStreamWriter;
 class QDomElement;
-
 
 class BezierArea
 {

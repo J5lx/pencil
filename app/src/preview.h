@@ -18,8 +18,8 @@ GNU General Public License for more details.
 #ifndef PREVIEW_H
 #define PREVIEW_H
 
-#include <QDockWidget>
 #include "bitmapimage.h"
+#include <QDockWidget>
 
 class PreviewCanvas : public QWidget
 {
@@ -36,8 +36,6 @@ private:
     BitmapImage *mBitmapImage = nullptr;
 };
 
-
-
 class PreviewWidget : public QDockWidget
 {
     Q_OBJECT
@@ -48,7 +46,6 @@ public:
 
 private:
     PreviewCanvas *mCanvas = nullptr;
-
 };
 
 #endif // PREVIEW_H

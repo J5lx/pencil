@@ -17,12 +17,11 @@ GNU General Public License for more details.
 
 #include "layer.h"
 #include "layerbitmap.h"
-#include "layervector.h"
 #include "layercamera.h"
 #include "layersound.h"
+#include "layervector.h"
 #include "object.h"
 #include "util.h"
-
 
 TEST_CASE("LayerType")
 {
@@ -146,7 +145,6 @@ TEST_CASE("Test Layer::keyExists()", "[Layer]")
     {
         Layer *layer = obj->addNewBitmapLayer();
         REQUIRE(layer->keyExists(1) == true); // there is a frame at 1 in default.
-
     }
     SECTION("Key exists at 15")
     {
@@ -227,7 +225,6 @@ TEST_CASE("Layer::getMaxKeyFramePosition()")
 
     delete obj;
 }
-
 
 TEST_CASE("Layer::removeKeyFrame()")
 {

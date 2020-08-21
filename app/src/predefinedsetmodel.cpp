@@ -1,8 +1,9 @@
 // PredefinedSetModel.cpp
 #include "predefinedsetmodel.h"
 
-PredefinedSetModel::PredefinedSetModel(QObject *parent, const PredefinedKeySet &mKeySet)
-    : QAbstractTableModel(parent), mKeySet(mKeySet)
+PredefinedSetModel::PredefinedSetModel(QObject *parent, const PredefinedKeySet &mKeySet) :
+    QAbstractTableModel(parent),
+    mKeySet(mKeySet)
 {
 }
 

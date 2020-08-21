@@ -17,26 +17,24 @@ GNU General Public License for more details.
 #include "onionskinwidget.h"
 #include "ui_onionskin.h"
 
-#include <QSettings>
 #include <QDebug>
+#include <QSettings>
 #include <QtMath>
 
 #include <QComboBox>
-#include <QMessageBox>
-#include <QToolButton>
 #include <QGridLayout>
-#include <QSlider>
 #include <QGroupBox>
 #include <QLabel>
+#include <QMessageBox>
+#include <QSlider>
+#include <QToolButton>
 
-#include "spinslider.h"
-#include "preferencemanager.h"
 #include "editor.h"
+#include "preferencemanager.h"
+#include "spinslider.h"
 #include "util.h"
 
-OnionSkinWidget::OnionSkinWidget(QWidget *parent) :
-    BaseDockWidget(parent),
-    ui(new Ui::OnionSkin)
+OnionSkinWidget::OnionSkinWidget(QWidget *parent) : BaseDockWidget(parent), ui(new Ui::OnionSkin)
 {
     ui->setupUi(this);
 }
@@ -63,7 +61,7 @@ void OnionSkinWidget::initUI()
 
 void OnionSkinWidget::makeConnections()
 {
-    auto spinBoxChanged = static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged);
+    auto spinBoxChanged = static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged);
     connect(ui->onionMaxOpacityBox, spinBoxChanged, this, &OnionSkinWidget::onionMaxOpacityChange);
     connect(ui->onionMinOpacityBox, spinBoxChanged, this, &OnionSkinWidget::onionMinOpacityChange);
     connect(ui->onionPrevFramesNumBox, spinBoxChanged, this, &OnionSkinWidget::onionPrevFramesNumChange);
@@ -79,7 +77,6 @@ void OnionSkinWidget::makeConnections()
 
     PreferenceManager *prefs = editor()->preference();
     connect(prefs, &PreferenceManager::optionChanged, this, &OnionSkinWidget::updateUI);
-
 }
 
 void OnionSkinWidget::updateUI()
@@ -108,7 +105,6 @@ void OnionSkinWidget::updateUI()
 
     QSignalBlocker b6(ui->onionWhilePlayback);
     ui->onionWhilePlayback->setChecked(prefs->getInt(SETTING::ONION_WHILE_PLAYBACK));
-
 }
 
 void OnionSkinWidget::onionPrevButtonClicked(bool isOn)

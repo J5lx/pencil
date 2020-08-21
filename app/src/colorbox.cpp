@@ -14,21 +14,18 @@ GNU General Public License for more details.
 
 */
 
-#include <QVBoxLayout>
-#include "colorwheel.h"
 #include "colorbox.h"
-#include "editor.h"
 #include "colormanager.h"
-
+#include "colorwheel.h"
+#include "editor.h"
+#include <QVBoxLayout>
 
 ColorBox::ColorBox(QWidget *parent) : BaseDockWidget(parent)
 {
     setWindowTitle(tr("Color Box", "Color Box window title"));
 }
 
-ColorBox::~ColorBox()
-{
-}
+ColorBox::~ColorBox() {}
 
 void ColorBox::initUI()
 {

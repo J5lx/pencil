@@ -15,13 +15,12 @@ GNU General Public License for more details.
 */
 #include "qminiz.h"
 
-#include <QFileInfo>
-#include <QDir>
-#include <QDebug>
-#include <QDirIterator>
 #include "miniz.h"
 #include "util.h"
-
+#include <QDebug>
+#include <QDir>
+#include <QDirIterator>
+#include <QFileInfo>
 
 bool MiniZ::isZip(const QString &sZipFilePath)
 {
@@ -30,7 +29,10 @@ bool MiniZ::isZip(const QString &sZipFilePath)
     mz_zip_zero_struct(mz);
 
     mz_bool ok = mz_zip_reader_init_file(mz, sZipFilePath.toUtf8().data(), 0);
-    if (!ok) { return false; }
+    if (!ok)
+    {
+        return false;
+    }
 
     int num = mz_zip_reader_get_num_files(mz);
 
@@ -60,7 +62,7 @@ Status MiniZ::compressFolder(QString zipFilePath, QString srcFolderPath, const Q
         dd << QString("Miniz writer init failed: %1").arg((int)err);
     }
 
-    //qDebug() << "SrcFolder=" << srcFolderPath;
+    // qDebug() << "SrcFolder=" << srcFolderPath;
     for (const QString &filePath : fileList)
     {
         QString sRelativePath = filePath;
@@ -68,14 +70,14 @@ Status MiniZ::compressFolder(QString zipFilePath, QString srcFolderPath, const Q
 
         dd << QString("Add file to zip: ").append(sRelativePath);
 
-        ok = mz_zip_writer_add_file(mz,
-                                    sRelativePath.toUtf8().data(),
-                                    filePath.toUtf8().data(),
-                                    "", 0, MZ_BEST_SPEED);
+        ok = mz_zip_writer_add_file(mz, sRelativePath.toUtf8().data(), filePath.toUtf8().data(), "", 0, MZ_BEST_SPEED);
         if (!ok)
         {
             mz_zip_error err = mz_zip_get_last_error(mz);
-            dd << QString("  Cannot add %1: error %2, %3").arg(sRelativePath).arg((int)err).arg(mz_zip_get_error_string(err));
+            dd << QString("  Cannot add %1: error %2, %3")
+                      .arg(sRelativePath)
+                      .arg((int)err)
+                      .arg(mz_zip_get_error_string(err));
         }
     }
     ok &= mz_zip_writer_finalize_archive(mz);

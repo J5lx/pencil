@@ -18,10 +18,9 @@ GNU General Public License for more details.
 #ifndef EDITORSTATE_H
 #define EDITORSTATE_H
 
+#include "pencildef.h"
 #include <QColor>
 #include <QTransform>
-#include "pencildef.h"
-
 
 class ObjectData
 {
@@ -29,19 +28,19 @@ public:
     ObjectData();
 
     void setCurrentFrame(int n) { mCurrentFrame = n; }
-    int  getCurrentFrame() const { return mCurrentFrame; }
+    int getCurrentFrame() const { return mCurrentFrame; }
 
-    void   setCurrentColor(QColor c) { mCurrentColor = c; }
+    void setCurrentColor(QColor c) { mCurrentColor = c; }
     QColor getCurrentColor() const { return mCurrentColor; }
 
     void setCurrentLayer(int n) { mCurrentLayer = n; }
-    int  getCurrentLayer() const { return mCurrentLayer; }
+    int getCurrentLayer() const { return mCurrentLayer; }
 
     void setCurrentView(QTransform t) { mCurrentView = t; }
     QTransform getCurrentView() const { return mCurrentView; }
 
     void setFrameRate(int n) { mFps = n; }
-    int  getFrameRate() const { return mFps; }
+    int getFrameRate() const { return mFps; }
 
     void setLooping(bool b) { mIsLoop = b; }
     bool isLooping() const { return mIsLoop; }
@@ -50,14 +49,14 @@ public:
     bool isRangedPlayback() const { return mIsRangedPlayback; }
 
     void setMarkInFrameNumber(int n) { mMarkInFrame = n; }
-    int  getMarkInFrameNumber() const { return mMarkInFrame; }
+    int getMarkInFrameNumber() const { return mMarkInFrame; }
 
     void setMarkOutFrameNumber(int n) { mMarkOutFrame = n; }
-    int  getMarkOutFrameNumber() const { return mMarkOutFrame; }
+    int getMarkOutFrameNumber() const { return mMarkOutFrame; }
 
 private:
     int mCurrentFrame = 1;
-    QColor mCurrentColor{ 0, 0, 0, 255 };
+    QColor mCurrentColor{0, 0, 0, 255};
     int mCurrentLayer = 2; // Layers are counted bottom up
     // 0 - Camera Layer
     // 1 - Vector Layer
@@ -66,12 +65,11 @@ private:
     QTransform mCurrentView;
 
     // playback manager
-    int  mFps = 12;
+    int mFps = 12;
     bool mIsLoop = false;
     bool mIsRangedPlayback = false;
-    int  mMarkInFrame = 1;
-    int  mMarkOutFrame = 10;
-
+    int mMarkInFrame = 1;
+    int mMarkOutFrame = 10;
 };
 
 #endif // EDITORSTATE_H

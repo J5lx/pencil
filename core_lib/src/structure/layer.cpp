@@ -16,14 +16,13 @@ GNU General Public License for more details.
 */
 #include "layer.h"
 
-#include <QDebug>
-#include <QSettings>
-#include <QPainter>
-#include <QDomElement>
 #include "keyframe.h"
 #include "object.h"
 #include "timelinecells.h"
-
+#include <QDebug>
+#include <QDomElement>
+#include <QPainter>
+#include <QSettings>
 
 // Used to sort the selected frames list
 bool sortAsc(int left, int right)
@@ -156,7 +155,7 @@ int Layer::getNextFrameNumber(int position, bool isAbsolute) const
 
     if (nextNumber <= position)
     {
-        return -1;    // There is no next keyframe
+        return -1; // There is no next keyframe
     }
 
     return nextNumber;
@@ -182,7 +181,10 @@ int Layer::getMaxKeyFramePosition() const
 
 bool Layer::addNewKeyFrameAt(int position)
 {
-    if (position <= 0) { return false; }
+    if (position <= 0)
+    {
+        return false;
+    }
 
     KeyFrame *key = createKeyFrame(position, mObject);
     return addKeyFrame(position, key);
@@ -228,7 +230,7 @@ bool Layer::moveKeyFrameBackward(int position)
     return true;
 }
 
-bool Layer::swapKeyFrames(int position1, int position2) //Current behaviour, need to refresh the swapped cels
+bool Layer::swapKeyFrames(int position1, int position2) // Current behaviour, need to refresh the swapped cels
 {
     bool keyPosition1 = false;
     bool keyPosition2 = false;
@@ -313,7 +315,7 @@ Status Layer::save(const QString &sDataFolder, QStringList &attachedFiles, Progr
         Status st = saveKeyFrameFile(keyFrame, sDataFolder);
         if (st.ok())
         {
-            //qDebug() << "Layer [" << name() << "] FN=" << keyFrame->fileName();
+            // qDebug() << "Layer [" << name() << "] FN=" << keyFrame->fileName();
             if (!keyFrame->fileName().isEmpty())
             {
                 attachedFiles.append(keyFrame->fileName());
@@ -334,17 +336,34 @@ Status Layer::save(const QString &sDataFolder, QStringList &attachedFiles, Progr
     return Status::OK;
 }
 
-void Layer::paintTrack(QPainter &painter, TimeLineCells *cells,
-                       int x, int y, int width, int height,
-                       bool selected, int frameSize)
+void Layer::paintTrack(QPainter &painter,
+                       TimeLineCells *cells,
+                       int x,
+                       int y,
+                       int width,
+                       int height,
+                       bool selected,
+                       int frameSize)
 {
     if (mVisible)
     {
         QColor col;
-        if (type() == BITMAP) { col = QColor(51, 155, 252); }
-        if (type() == VECTOR) { col = QColor(70, 205, 123); }
-        if (type() == SOUND) { col = QColor(255, 141, 112); }
-        if (type() == CAMERA) { col = QColor(253, 202, 92); }
+        if (type() == BITMAP)
+        {
+            col = QColor(51, 155, 252);
+        }
+        if (type() == VECTOR)
+        {
+            col = QColor(70, 205, 123);
+        }
+        if (type() == SOUND)
+        {
+            col = QColor(255, 141, 112);
+        }
+        if (type() == CAMERA)
+        {
+            col = QColor(253, 202, 92);
+        }
 
         painter.save();
         painter.setBrush(col);
@@ -380,7 +399,13 @@ void Layer::paintTrack(QPainter &painter, TimeLineCells *cells,
     }
 }
 
-void Layer::paintFrames(QPainter &painter, QColor trackCol, TimeLineCells *cells, int y, int height, bool selected, int frameSize)
+void Layer::paintFrames(QPainter &painter,
+                        QColor trackCol,
+                        TimeLineCells *cells,
+                        int y,
+                        int height,
+                        bool selected,
+                        int frameSize)
 {
     painter.setPen(QPen(QBrush(QColor(40, 40, 40)), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 
@@ -423,15 +448,19 @@ void Layer::paintFrames(QPainter &painter, QColor trackCol, TimeLineCells *cells
     }
 }
 
-void Layer::paintLabel(QPainter &painter, TimeLineCells *cells,
-                       int x, int y, int width, int height,
-                       bool selected, LayerVisibility layerVisibility)
+void Layer::paintLabel(QPainter &painter,
+                       TimeLineCells *cells,
+                       int x,
+                       int y,
+                       int width,
+                       int height,
+                       bool selected,
+                       LayerVisibility layerVisibility)
 {
     Q_UNUSED(cells)
     painter.setBrush(Qt::lightGray);
     painter.setPen(QPen(QBrush(QColor(100, 100, 100)), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.drawRect(x, y - 1, width, height); // empty rectangle  by default
-
 
     if (selected)
     {
@@ -451,9 +480,18 @@ void Layer::paintLabel(QPainter &painter, TimeLineCells *cells,
 
     if (mVisible)
     {
-        if ((layerVisibility == LayerVisibility::ALL) || selected) { painter.setBrush(Qt::black); }
-        else if (layerVisibility == LayerVisibility::CURRENTONLY) { painter.setBrush(Qt::NoBrush); }
-        else if (layerVisibility == LayerVisibility::RELATED) { painter.setBrush(Qt::darkGray); }
+        if ((layerVisibility == LayerVisibility::ALL) || selected)
+        {
+            painter.setBrush(Qt::black);
+        }
+        else if (layerVisibility == LayerVisibility::CURRENTONLY)
+        {
+            painter.setBrush(Qt::NoBrush);
+        }
+        else if (layerVisibility == LayerVisibility::RELATED)
+        {
+            painter.setBrush(Qt::darkGray);
+        }
     }
     else
     {
@@ -464,10 +502,22 @@ void Layer::paintLabel(QPainter &painter, TimeLineCells *cells,
     painter.drawEllipse(x + 6, y + 4, 9, 9);
     painter.setRenderHint(QPainter::Antialiasing, false);
 
-    if (type() == BITMAP) { painter.drawPixmap(QPoint(20, y + 2), QPixmap(":/icons/layer-bitmap.png")); }
-    if (type() == VECTOR) { painter.drawPixmap(QPoint(20, y + 2), QPixmap(":/icons/layer-vector.png")); }
-    if (type() == SOUND) { painter.drawPixmap(QPoint(21, y + 2), QPixmap(":/icons/layer-sound.png")); }
-    if (type() == CAMERA) { painter.drawPixmap(QPoint(21, y + 2), QPixmap(":/icons/layer-camera.png")); }
+    if (type() == BITMAP)
+    {
+        painter.drawPixmap(QPoint(20, y + 2), QPixmap(":/icons/layer-bitmap.png"));
+    }
+    if (type() == VECTOR)
+    {
+        painter.drawPixmap(QPoint(20, y + 2), QPixmap(":/icons/layer-vector.png"));
+    }
+    if (type() == SOUND)
+    {
+        painter.drawPixmap(QPoint(21, y + 2), QPixmap(":/icons/layer-sound.png"));
+    }
+    if (type() == CAMERA)
+    {
+        painter.drawPixmap(QPoint(21, y + 2), QPixmap(":/icons/layer-camera.png"));
+    }
 
     painter.setPen(Qt::black);
     painter.drawText(QPoint(45, y + (2 * height) / 3), mName);
@@ -494,9 +544,7 @@ void Layer::mouseDoubleClick(QMouseEvent *event, int frameNumber)
     Q_UNUSED(frameNumber)
 }
 
-void Layer::editProperties()
-{
-}
+void Layer::editProperties() {}
 
 void Layer::setModified(int position, bool modified)
 {
@@ -626,12 +674,16 @@ bool Layer::moveSelectedFrames(int offset)
 
         if (offset < 0)
         {
-            // If we are moving to the left we start moving selected frames from the lowest (left) to the highest (right)
+            // If we are moving to the left we start moving selected frames from the lowest (left) to the highest
+            // (right)
             indexInSelection = 0;
             step = 1;
 
             // Check if we are not moving out of the timeline
-            if (mSelectedFrames_byPosition[0] + offset < 1) { return false; }
+            if (mSelectedFrames_byPosition[0] + offset < 1)
+            {
+                return false;
+            }
         }
 
         while (indexInSelection > -1 && indexInSelection < mSelectedFrames_byPosition.count())
@@ -679,7 +731,7 @@ bool Layer::moveSelectedFrames(int offset)
                 if (fromPos == 1)
                 {
                     // If the first frame is moving, we need to create a new first frame
-                    //addNewKeyFrameAt(1);
+                    // addNewKeyFrameAt(1);
                 }
 
                 // Update the position of the selected frame

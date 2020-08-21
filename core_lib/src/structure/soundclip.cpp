@@ -17,14 +17,12 @@ GNU General Public License for more details.
 
 #include "soundclip.h"
 
+#include "soundplayer.h"
 #include <QFile>
 #include <QMediaPlayer>
 #include <QtMath>
-#include "soundplayer.h"
 
-SoundClip::SoundClip()
-{
-}
+SoundClip::SoundClip() {}
 
 SoundClip::SoundClip(const SoundClip &s2) : KeyFrame(s2)
 {
@@ -33,7 +31,7 @@ SoundClip::SoundClip(const SoundClip &s2) : KeyFrame(s2)
 
 SoundClip::~SoundClip()
 {
-    //QFile::remove( fileName() );
+    // QFile::remove( fileName() );
 }
 
 SoundClip &SoundClip::operator=(const SoundClip &a)

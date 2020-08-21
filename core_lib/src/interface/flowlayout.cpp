@@ -48,20 +48,21 @@
 **
 ****************************************************************************/
 
-#include <QWidget>
 #include <QLayout>
+#include <QWidget>
 #include <QtMath>
 
 #include "flowlayout.h"
 //! [1]
-FlowLayout::FlowLayout(QWidget *parent, int margin, int hSpacing, int vSpacing)
-    : QLayout(parent), m_hSpace(hSpacing), m_vSpace(vSpacing)
+FlowLayout::FlowLayout(QWidget *parent, int margin, int hSpacing, int vSpacing) :
+    QLayout(parent),
+    m_hSpace(hSpacing),
+    m_vSpace(vSpacing)
 {
     setContentsMargins(margin, margin, margin, margin);
 }
 
-FlowLayout::FlowLayout(int margin, int hSpacing, int vSpacing)
-    : m_hSpace(hSpacing), m_vSpace(vSpacing)
+FlowLayout::FlowLayout(int margin, int hSpacing, int vSpacing) : m_hSpace(hSpacing), m_vSpace(vSpacing)
 {
     setContentsMargins(margin, margin, margin, margin);
 }
@@ -202,12 +203,10 @@ int FlowLayout::doLayout(const QRect &rect, bool testOnly) const
         QWidget *wid = item->widget();
         spaceX = horizontalSpacing();
         if (spaceX == -1)
-            spaceX = wid->style()->layoutSpacing(
-                         QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Horizontal);
+            spaceX = wid->style()->layoutSpacing(QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Horizontal);
         int spaceY = verticalSpacing();
         if (spaceY == -1)
-            spaceY = wid->style()->layoutSpacing(
-                         QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Vertical);
+            spaceY = wid->style()->layoutSpacing(QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Vertical);
         //! [10]
         //! [11]
         int nextX = x + item->sizeHint().width() + spaceX;

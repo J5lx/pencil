@@ -4,7 +4,7 @@
 #if defined __cplusplus
 /* Add C++ includes here */
 
+#include <QList>
 #include <QObject>
 #include <QString>
-#include <QList>
 #endif

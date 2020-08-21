@@ -27,4 +27,3 @@ ObjectData::ObjectData()
         mFps = 12;
     }
 }
-

@@ -19,12 +19,10 @@ GNU General Public License for more details.
 
 #include "basedockwidget.h"
 
-
 namespace Ui
 {
 class Timeline2;
 }
-
 
 class Timeline2 : public BaseDockWidget
 {

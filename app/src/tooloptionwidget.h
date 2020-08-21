@@ -34,7 +34,6 @@ class QGroupBox;
 class Editor;
 class BaseTool;
 
-
 class ToolOptionWidget : public BaseDockWidget
 {
     Q_OBJECT

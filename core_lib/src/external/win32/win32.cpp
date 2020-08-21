@@ -16,25 +16,25 @@ GNU General Public License for more details.
 
 */
 
-#include <cstdint>
-#include <QFile>
-#include <QProcess>
+#include <QDebug>
 #include <QDir>
-#include <QString>
-#include <QProgressDialog>
+#include <QFile>
 #include <QImageReader>
 #include <QImageWriter>
+#include <QProcess>
+#include <QProgressDialog>
 #include <QSettings>
-#include <QDebug>
+#include <QString>
+#include <cstdint>
 
-#include "object.h"
 #include "editor.h"
 #include "layersound.h"
+#include "object.h"
 #include "platformhandler.h"
 
 namespace PlatformHandler
 {
 void configurePlatformSpecificSettings() {}
 
-void initialise() {};
-}
+void initialise(){};
+} // namespace PlatformHandler

@@ -17,9 +17,9 @@ GNU General Public License for more details.
 #ifndef LAYERSOUND_H
 #define LAYERSOUND_H
 
-#include <cstdint>
 #include "keyframe.h"
 #include "layer.h"
+#include <cstdint>
 
 class SoundClip;
 class LayerSound : public Layer

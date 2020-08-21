@@ -1,18 +1,15 @@
 
 #include "popupcolorpalettewidget.h"
 
-#include <QBoxLayout>
-#include <QGraphicsDropShadowEffect>
-#include <QPushButton>
-#include <QKeyEvent>
 #include "colorbox.h"
 #include "editor.h"
 #include "scribblearea.h"
+#include <QBoxLayout>
+#include <QGraphicsDropShadowEffect>
+#include <QKeyEvent>
+#include <QPushButton>
 
-
-PopupColorPaletteWidget::PopupColorPaletteWidget(ScribbleArea *parent) :
-    QWidget(parent, Qt::Window),
-    mContainer(parent)
+PopupColorPaletteWidget::PopupColorPaletteWidget(ScribbleArea *parent) : QWidget(parent, Qt::Window), mContainer(parent)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
@@ -31,10 +28,8 @@ PopupColorPaletteWidget::PopupColorPaletteWidget(ScribbleArea *parent) :
 
     setAutoFillBackground(true);
     setWindowTitle(tr("Color palette"));
-    setWindowFlags(((windowFlags()
-                     | Qt::CustomizeWindowHint)
-                    & ~Qt::WindowMaximizeButtonHint
-                    & ~Qt::WindowMinimizeButtonHint));
+    setWindowFlags(
+        ((windowFlags() | Qt::CustomizeWindowHint) & ~Qt::WindowMaximizeButtonHint & ~Qt::WindowMinimizeButtonHint));
 
     // --- bottom buttons layout ---
     QHBoxLayout *buttonsLayout = new QHBoxLayout();
@@ -52,7 +47,7 @@ void PopupColorPaletteWidget::popup()
 {
     if (this->isVisible())
     {
-        //color = m_colorBox->color();
+        // color = m_colorBox->color();
         hide();
         return;
     }

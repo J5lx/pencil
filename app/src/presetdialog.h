@@ -1,8 +1,8 @@
 #ifndef PRESETDIALOG_H
 #define PRESETDIALOG_H
 
-#include <QDialog>
 #include "preferencemanager.h"
+#include <QDialog>
 
 namespace Ui
 {

@@ -17,29 +17,26 @@ GNU General Public License for more details.
 
 #include "brushtool.h"
 
-#include <cmath>
-#include <QSettings>
-#include <QPixmap>
-#include <QPainter>
 #include <QColor>
+#include <QPainter>
+#include <QPixmap>
+#include <QSettings>
+#include <cmath>
 
 #include "beziercurve.h"
-#include "vectorimage.h"
-#include "layervector.h"
-#include "editor.h"
-#include "colormanager.h"
-#include "strokemanager.h"
-#include "layermanager.h"
-#include "viewmanager.h"
-#include "selectionmanager.h"
-#include "scribblearea.h"
 #include "blitrect.h"
+#include "colormanager.h"
+#include "editor.h"
+#include "layermanager.h"
+#include "layervector.h"
 #include "pointerevent.h"
+#include "scribblearea.h"
+#include "selectionmanager.h"
+#include "strokemanager.h"
+#include "vectorimage.h"
+#include "viewmanager.h"
 
-
-BrushTool::BrushTool(QObject *parent) : StrokeTool(parent)
-{
-}
+BrushTool::BrushTool(QObject *parent) : StrokeTool(parent) {}
 
 ToolType BrushTool::type()
 {
@@ -64,8 +61,14 @@ void BrushTool::loadSettings()
     properties.stabilizerLevel = settings.value("brushLineStabilization", StabilizationLevel::STRONG).toInt();
     properties.useAA = DISABLED;
 
-    if (properties.width <= 0) { setWidth(15); }
-    if (std::isnan(properties.feather)) { setFeather(15); }
+    if (properties.width <= 0)
+    {
+        setWidth(15);
+    }
+    if (std::isnan(properties.feather))
+    {
+        setFeather(15);
+    }
 
     mQuickSizingProperties.insert(Qt::ShiftModifier, WIDTH);
     mQuickSizingProperties.insert(Qt::ControlModifier, FEATHER);
@@ -191,7 +194,7 @@ void BrushTool::pointerReleaseEvent(PointerEvent *)
 // draw a single paint dab at the given location
 void BrushTool::paintAt(QPointF point)
 {
-    //qDebug() << "Made a single dab at " << point;
+    // qDebug() << "Made a single dab at " << point;
     Layer *layer = mEditor->layers()->currentLayer();
     if (layer->type() == Layer::BITMAP)
     {
@@ -201,12 +204,7 @@ void BrushTool::paintAt(QPointF point)
         mCurrentWidth = brushWidth;
 
         BlitRect rect(point.toPoint());
-        mScribbleArea->drawBrush(point,
-                                 brushWidth,
-                                 properties.feather,
-                                 mEditor->color()->frontColor(),
-                                 opacity,
-                                 true);
+        mScribbleArea->drawBrush(point, brushWidth, properties.feather, mEditor->color()->frontColor(), opacity, true);
 
         int rad = qRound(brushWidth) / 2 + 2;
         mScribbleArea->refreshBitmap(rect, rad);
@@ -248,12 +246,8 @@ void BrushTool::drawStroke()
             QPointF point = mLastBrushPoint + (i + 1) * brushStep * (getCurrentPoint() - mLastBrushPoint) / distance;
 
             rect.extend(point.toPoint());
-            mScribbleArea->drawBrush(point,
-                                     brushWidth,
-                                     properties.feather,
-                                     mEditor->color()->frontColor(),
-                                     opacity,
-                                     true);
+            mScribbleArea
+                ->drawBrush(point, brushWidth, properties.feather, mEditor->color()->frontColor(), opacity, true);
             if (i == (steps - 1))
             {
                 mLastBrushPoint = getCurrentPoint();
@@ -279,7 +273,6 @@ void BrushTool::drawStroke()
         //                   Qt::RoundCap,
         //                   Qt::RoundJoin );
         //        mScribbleArea->drawPolyline(tempPath, pen, true);
-
     }
     else if (layer->type() == Layer::VECTOR)
     {
@@ -337,7 +330,8 @@ void BrushTool::paintVectorStroke()
         curve.setVariableWidth(properties.pressure);
         curve.setColorNumber(mEditor->color()->frontColorNumber());
 
-        VectorImage *vectorImage = static_cast<VectorImage *>(layer->getLastKeyFrameAtPosition(mEditor->currentFrame()));
+        VectorImage *vectorImage =
+            static_cast<VectorImage *>(layer->getLastKeyFrameAtPosition(mEditor->currentFrame()));
         vectorImage->addCurve(curve, mEditor->view()->scaling(), false);
 
         if (vectorImage->isAnyCurveSelected() || mEditor->select()->somethingSelected())

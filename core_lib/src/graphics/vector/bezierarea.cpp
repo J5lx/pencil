@@ -15,16 +15,13 @@ GNU General Public License for more details.
 
 */
 
-
 #include "bezierarea.h"
 #include "pencilerror.h"
 
-#include <QXmlStreamWriter>
 #include <QDomElement>
+#include <QXmlStreamWriter>
 
-BezierArea::BezierArea()
-{
-}
+BezierArea::BezierArea() {}
 
 BezierArea::BezierArea(QList<VertexRef> vertexList, int color)
 {
@@ -99,7 +96,8 @@ void BezierArea::loadDomElement(const QDomElement &element)
         {
             if (vertexElement.tagName() == "vertex")
             {
-                mVertex.append(VertexRef(vertexElement.attribute("curve").toInt(), vertexElement.attribute("vertex").toInt()));
+                mVertex.append(
+                    VertexRef(vertexElement.attribute("curve").toInt(), vertexElement.attribute("vertex").toInt()));
             }
         }
         vertexTag = vertexTag.nextSibling();

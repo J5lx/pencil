@@ -17,22 +17,19 @@ GNU General Public License for more details.
 
 #include "handtool.h"
 
-#include <QtMath>
 #include <QPixmap>
 #include <QVector2D>
+#include <QtMath>
 #include <pointerevent.h>
 
+#include "editor.h"
 #include "layer.h"
 #include "layercamera.h"
-#include "editor.h"
+#include "scribblearea.h"
 #include "strokemanager.h"
 #include "viewmanager.h"
-#include "scribblearea.h"
 
-
-HandTool::HandTool(QObject *parent) : BaseTool(parent)
-{
-}
+HandTool::HandTool(QObject *parent) : BaseTool(parent) {}
 
 void HandTool::loadSettings()
 {

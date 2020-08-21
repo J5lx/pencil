@@ -17,9 +17,8 @@ GNU General Public License for more details.
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <QTransform>
 #include "keyframe.h"
-
+#include <QTransform>
 
 class Camera : public KeyFrame
 {

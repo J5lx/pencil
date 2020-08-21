@@ -16,24 +16,21 @@ GNU General Public License for more details.
 */
 #include "erasertool.h"
 
-#include <QSettings>
-#include <QPixmap>
 #include <QPainter>
+#include <QPixmap>
+#include <QSettings>
 
-#include "editor.h"
 #include "blitrect.h"
+#include "editor.h"
+#include "layermanager.h"
+#include "layervector.h"
+#include "pointerevent.h"
 #include "scribblearea.h"
 #include "strokemanager.h"
-#include "layermanager.h"
-#include "viewmanager.h"
-#include "layervector.h"
 #include "vectorimage.h"
-#include "pointerevent.h"
+#include "viewmanager.h"
 
-
-EraserTool::EraserTool(QObject *parent) : StrokeTool(parent)
-{
-}
+EraserTool::EraserTool(QObject *parent) : StrokeTool(parent) {}
 
 ToolType EraserTool::type()
 {
@@ -61,7 +58,10 @@ void EraserTool::loadSettings()
     properties.stabilizerLevel = settings.value("stabilizerLevel", StabilizationLevel::NONE).toInt();
     properties.useAA = settings.value("eraserAA", 1).toInt();
 
-    if (properties.useFeather) { properties.useAA = -1; }
+    if (properties.useFeather)
+    {
+        properties.useAA = -1;
+    }
 
     mQuickSizingProperties.insert(Qt::ShiftModifier, WIDTH);
     mQuickSizingProperties.insert(Qt::ControlModifier, FEATHER);
@@ -141,7 +141,6 @@ void EraserTool::setStabilizerLevel(const int level)
     settings.sync();
 }
 
-
 QCursor EraserTool::cursor()
 {
     return Qt::CrossCursor;
@@ -208,7 +207,7 @@ void EraserTool::paintAt(QPointF point)
 
         int rad = qRound(brushWidth / 2 + 2);
 
-        //continuously update buffer to update stroke behind grid.
+        // continuously update buffer to update stroke behind grid.
         mScribbleArea->paintBitmapBufferRect(rect);
 
         mScribbleArea->refreshBitmap(rect, rad);
@@ -283,9 +282,7 @@ void EraserTool::drawStroke()
         if (p.size() == 4)
         {
             QPainterPath path(p[0]);
-            path.cubicTo(p[1],
-                         p[2],
-                         p[3]);
+            path.cubicTo(p[1], p[2], p[3]);
             qDebug() << path;
             mScribbleArea->drawPath(path, pen, Qt::NoBrush, QPainter::CompositionMode_Source);
             mScribbleArea->refreshVector(path.boundingRect().toRect(), rad);
@@ -305,10 +302,14 @@ void EraserTool::removeVectorPaint()
     else if (layer->type() == Layer::VECTOR)
     {
         mScribbleArea->clearBitmapBuffer();
-        VectorImage *vectorImage = static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
-        if (vectorImage == nullptr) { return; } // Can happen if the first frame is deleted while drawing
+        VectorImage *vectorImage =
+            static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+        if (vectorImage == nullptr)
+        {
+            return;
+        } // Can happen if the first frame is deleted while drawing
         // Clear the area containing the last point
-        //vectorImage->removeArea(lastPoint);
+        // vectorImage->removeArea(lastPoint);
         // Clear the temporary pixel path
         vectorImage->deleteSelectedPoints();
 

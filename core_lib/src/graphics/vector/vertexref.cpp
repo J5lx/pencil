@@ -17,9 +17,7 @@ GNU General Public License for more details.
 
 #include "vertexref.h"
 
-VertexRef::VertexRef()
-{
-}
+VertexRef::VertexRef() {}
 
 VertexRef::VertexRef(int curveN, int vertexN)
 {
@@ -60,5 +58,3 @@ bool VertexRef::operator!=(VertexRef vertexRef1)
         return false;
     }
 }
-
-

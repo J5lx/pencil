@@ -17,15 +17,15 @@ GNU General Public License for more details.
 #include "tooloptionwidget.h"
 #include "ui_tooloptions.h"
 
-#include <QSettings>
 #include <QDebug>
+#include <QSettings>
 
-#include "spinslider.h"
 #include "editor.h"
-#include "util.h"
 #include "layer.h"
 #include "layermanager.h"
+#include "spinslider.h"
 #include "toolmanager.h"
+#include "util.h"
 
 ToolOptionWidget::ToolOptionWidget(QWidget *parent) : BaseDockWidget(parent)
 {
@@ -83,8 +83,7 @@ void ToolOptionWidget::updateUI()
     setFillContour(p.useFillContour);
 }
 
-void ToolOptionWidget::createUI()
-{}
+void ToolOptionWidget::createUI() {}
 
 void ToolOptionWidget::makeConnectionToEditor(Editor *editor)
 {
@@ -109,10 +108,16 @@ void ToolOptionWidget::makeConnectionToEditor(Editor *editor)
     connect(ui->vectorMergeBox, &QCheckBox::clicked, toolManager, &ToolManager::setVectorMergeEnabled);
     connect(ui->useAABox, &QCheckBox::clicked, toolManager, &ToolManager::setAA);
 
-    connect(ui->inpolLevelsCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated), toolManager, &ToolManager::setStabilizerLevel);
+    connect(ui->inpolLevelsCombo,
+            static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+            toolManager,
+            &ToolManager::setStabilizerLevel);
 
     connect(ui->toleranceSlider, &SpinSlider::valueChanged, toolManager, &ToolManager::setTolerance);
-    connect(ui->toleranceSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), toolManager, &ToolManager::setTolerance);
+    connect(ui->toleranceSpinBox,
+            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            toolManager,
+            &ToolManager::setTolerance);
     clearFocusOnFinished(ui->toleranceSpinBox);
 
     connect(ui->fillContourBox, &QCheckBox::clicked, toolManager, &ToolManager::setUseFillContour);

@@ -16,47 +16,46 @@ GNU General Public License for more details.
 
 #include "actioncommands.h"
 
+#include <QApplication>
+#include <QDesktopServices>
+#include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QProgressDialog>
-#include <QApplication>
-#include <QDesktopServices>
 #include <QStandardPaths>
-#include <QFileDialog>
 
-#include "pencildef.h"
-#include "editor.h"
-#include "object.h"
-#include "viewmanager.h"
-#include "layermanager.h"
-#include "scribblearea.h"
-#include "soundmanager.h"
-#include "playbackmanager.h"
-#include "colormanager.h"
-#include "preferencemanager.h"
-#include "selectionmanager.h"
-#include "util.h"
 #include "app_util.h"
+#include "colormanager.h"
+#include "editor.h"
+#include "layermanager.h"
+#include "object.h"
+#include "pencildef.h"
+#include "playbackmanager.h"
+#include "preferencemanager.h"
+#include "scribblearea.h"
+#include "selectionmanager.h"
+#include "soundmanager.h"
+#include "util.h"
+#include "viewmanager.h"
 
+#include "bitmapimage.h"
+#include "camera.h"
+#include "layerbitmap.h"
 #include "layercamera.h"
 #include "layersound.h"
-#include "layerbitmap.h"
 #include "layervector.h"
-#include "bitmapimage.h"
-#include "vectorimage.h"
 #include "soundclip.h"
-#include "camera.h"
+#include "vectorimage.h"
 
-#include "movieimporter.h"
-#include "movieexporter.h"
-#include "filedialogex.h"
-#include "exportmoviedialog.h"
-#include "exportimagedialog.h"
 #include "aboutdialog.h"
-#include "doubleprogressdialog.h"
 #include "checkupdatesdialog.h"
+#include "doubleprogressdialog.h"
 #include "errordialog.h"
-
+#include "exportimagedialog.h"
+#include "exportmoviedialog.h"
+#include "filedialogex.h"
+#include "movieexporter.h"
+#include "movieimporter.h"
 
 ActionCommands::ActionCommands(QWidget *parent) : QObject(parent)
 {
@@ -83,7 +82,8 @@ Status ActionCommands::importMovieVideo()
 
     QMessageBox information(mParent);
     information.setIcon(QMessageBox::Warning);
-    information.setText(tr("You are importing a lot of frames, beware this could take some time. Are you sure you want to proceed?"));
+    information.setText(
+        tr("You are importing a lot of frames, beware this could take some time. Are you sure you want to proceed?"));
     information.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     information.setDefaultButton(QMessageBox::Yes);
 
@@ -92,19 +92,19 @@ Status ActionCommands::importMovieVideo()
 
     connect(&progressDialog, &QProgressDialog::canceled, &importer, &MovieImporter::cancel);
 
-    Status st = importer.run(filePath, mEditor->playback()->fps(), FileType::MOVIE, [&progressDialog](int prog)
-    {
-        progressDialog.setValue(prog);
-        QApplication::processEvents();
-    }, [&progressDialog](QString progMessage)
-    {
-        progressDialog.setLabelText(progMessage);
-    }, [&information]()
-    {
-
-        int ret = information.exec();
-        return ret == QMessageBox::Yes;
-    });
+    Status st = importer.run(
+        filePath,
+        mEditor->playback()->fps(),
+        FileType::MOVIE,
+        [&progressDialog](int prog) {
+            progressDialog.setValue(prog);
+            QApplication::processEvents();
+        },
+        [&progressDialog](QString progMessage) { progressDialog.setLabelText(progMessage); },
+        [&information]() {
+            int ret = information.exec();
+            return ret == QMessageBox::Yes;
+        });
 
     if (!st.ok() && st != Status::CANCELED)
     {
@@ -140,18 +140,19 @@ Status ActionCommands::importMovieAudio()
 
     connect(&progressDialog, &QProgressDialog::canceled, &importer, &MovieImporter::cancel);
 
-    Status st = importer.run(filePath, mEditor->playback()->fps(), FileType::SOUND, [&progressDialog](int prog)
-    {
-        progressDialog.setValue(prog);
-        QApplication::processEvents();
-    }, [](QString progressMessage)
-    {
-        Q_UNUSED(progressMessage)
-        // Not neeeded
-    }, []()
-    {
-        return true;
-    });
+    Status st = importer.run(
+        filePath,
+        mEditor->playback()->fps(),
+        FileType::SOUND,
+        [&progressDialog](int prog) {
+            progressDialog.setValue(prog);
+            QApplication::processEvents();
+        },
+        [](QString progressMessage) {
+            Q_UNUSED(progressMessage)
+            // Not neeeded
+        },
+        []() { return true; });
 
     if (!st.ok() && st != Status::CANCELED)
     {
@@ -191,9 +192,12 @@ Status ActionCommands::importSound()
 
         // Create new sound layer.
         bool ok = false;
-        QString strLayerName = QInputDialog::getText(mParent, tr("Layer Properties", "Dialog title on creating a sound layer"),
-                                                     tr("Layer name:"), QLineEdit::Normal,
-                                                     tr("Sound Layer", "Default name on creating a sound layer"), &ok);
+        QString strLayerName = QInputDialog::getText(mParent,
+                                                     tr("Layer Properties", "Dialog title on creating a sound layer"),
+                                                     tr("Layer name:"),
+                                                     QLineEdit::Normal,
+                                                     tr("Sound Layer", "Default name on creating a sound layer"),
+                                                     &ok);
         if (ok && !strLayerName.isEmpty())
         {
             Layer *newLayer = mEditor->layers()->createSoundLayer(strLayerName);
@@ -208,7 +212,6 @@ Status ActionCommands::importSound()
 
     layer = mEditor->layers()->currentLayer();
     Q_ASSERT(layer->type() == Layer::SOUND);
-
 
     int currentFrame = mEditor->currentFrame();
 
@@ -258,18 +261,19 @@ Status ActionCommands::convertSoundToWav(const QString &filePath)
     MovieImporter importer(this);
     importer.setCore(mEditor);
 
-    Status st = importer.run(filePath, mEditor->playback()->fps(), FileType::SOUND, [&progressDialog](int prog)
-    {
-        progressDialog.setValue(prog);
-        QApplication::processEvents();
-    }, [](QString progressMessage)
-    {
-        Q_UNUSED(progressMessage)
-        // Not needed
-    }, []()
-    {
-        return true;
-    });
+    Status st = importer.run(
+        filePath,
+        mEditor->playback()->fps(),
+        FileType::SOUND,
+        [&progressDialog](int prog) {
+            progressDialog.setValue(prog);
+            QApplication::processEvents();
+        },
+        [](QString progressMessage) {
+            Q_UNUSED(progressMessage)
+            // Not needed
+        },
+        []() { return true; });
 
     connect(&progressDialog, &QProgressDialog::canceled, &importer, &MovieImporter::cancel);
 
@@ -302,8 +306,8 @@ Status ActionCommands::exportMovie(bool isGif)
 
     dialog->init();
 
-    std::vector< std::pair<QString, QSize> > camerasInfo;
-    auto cameraLayers = mEditor->object()->getLayersByType< LayerCamera >();
+    std::vector<std::pair<QString, QSize>> camerasInfo;
+    auto cameraLayers = mEditor->object()->getLayersByType<LayerCamera>();
     for (LayerCamera *i : cameraLayers)
     {
         camerasInfo.push_back(std::make_pair(i->name(), i->getViewSize()));
@@ -313,9 +317,7 @@ Status ActionCommands::exportMovie(bool isGif)
     if (currLayer->type() == Layer::CAMERA)
     {
         QString strName = currLayer->name();
-        auto it = std::find_if(camerasInfo.begin(), camerasInfo.end(),
-                               [strName](std::pair<QString, QSize> p)
-        {
+        auto it = std::find_if(camerasInfo.begin(), camerasInfo.end(), [strName](std::pair<QString, QSize> p) {
             return p.first == strName;
         });
 
@@ -357,38 +359,33 @@ Status ActionCommands::exportMovie(bool isGif)
 
     MovieExporter ex;
 
-    connect(&progressDlg, &DoubleProgressDialog::canceled, [&ex]
-    {
-        ex.cancel();
-    });
+    connect(&progressDlg, &DoubleProgressDialog::canceled, [&ex] { ex.cancel(); });
 
     // The start points and length for the current minor operation segment on the major progress bar
     float minorStart, minorLength;
 
-    Status st = ex.run(mEditor->object(), desc,
-                       [&progressDlg, &minorStart, &minorLength](float f, float final)
-    {
-        progressDlg.major->setValue(f);
+    Status st = ex.run(
+        mEditor->object(),
+        desc,
+        [&progressDlg, &minorStart, &minorLength](float f, float final) {
+            progressDlg.major->setValue(f);
 
-        minorStart = f;
-        minorLength = qMax(0.f, final - minorStart);
+            minorStart = f;
+            minorLength = qMax(0.f, final - minorStart);
 
-        QApplication::processEvents();
-    },
-    [&progressDlg, &minorStart, &minorLength](float f)
-    {
-        progressDlg.minor->setValue(f);
+            QApplication::processEvents();
+        },
+        [&progressDlg, &minorStart, &minorLength](float f) {
+            progressDlg.minor->setValue(f);
 
-        progressDlg.major->setValue(minorStart + f * minorLength);
+            progressDlg.major->setValue(minorStart + f * minorLength);
 
-        QApplication::processEvents();
-    },
-    [&progressDlg](QString s)
-    {
-        progressDlg.setStatus(s);
-        QApplication::processEvents();
-    }
-                      );
+            QApplication::processEvents();
+        },
+        [&progressDlg](QString s) {
+            progressDlg.setStatus(s);
+            QApplication::processEvents();
+        });
 
     if (st.ok())
     {
@@ -396,8 +393,7 @@ Status ActionCommands::exportMovie(bool isGif)
         {
             if (isGif)
             {
-                auto btn = QMessageBox::question(mParent, "Pencil2D",
-                                                 tr("Finished. Open file location?"));
+                auto btn = QMessageBox::question(mParent, "Pencil2D", tr("Finished. Open file location?"));
 
                 if (btn == QMessageBox::Yes)
                 {
@@ -406,8 +402,8 @@ Status ActionCommands::exportMovie(bool isGif)
                 }
                 return Status::OK;
             }
-            auto btn = QMessageBox::question(mParent, "Pencil2D",
-                                             tr("Finished. Open movie now?", "When movie export done."));
+            auto btn =
+                QMessageBox::question(mParent, "Pencil2D", tr("Finished. Open movie now?", "When movie export done."));
             if (btn == QMessageBox::Yes)
             {
                 QDesktopServices::openUrl(QUrl::fromLocalFile(strMoviePath));
@@ -415,7 +411,11 @@ Status ActionCommands::exportMovie(bool isGif)
         }
         else
         {
-            ErrorDialog errorDialog(tr("Unknown export error"), tr("The export did not produce any errors, however we can't find the output file. Your export may not have completed successfully."), QString(), mParent);
+            ErrorDialog errorDialog(tr("Unknown export error"),
+                                    tr("The export did not produce any errors, however we can't find the output file. "
+                                       "Your export may not have completed successfully."),
+                                    QString(),
+                                    mParent);
             errorDialog.exec();
         }
     }
@@ -435,8 +435,8 @@ Status ActionCommands::exportImageSequence()
 
     dialog->init();
 
-    std::vector< std::pair<QString, QSize> > camerasInfo;
-    auto cameraLayers = mEditor->object()->getLayersByType< LayerCamera >();
+    std::vector<std::pair<QString, QSize>> camerasInfo;
+    auto cameraLayers = mEditor->object()->getLayersByType<LayerCamera>();
     for (LayerCamera *i : cameraLayers)
     {
         camerasInfo.push_back(std::make_pair(i->name(), i->getViewSize()));
@@ -446,9 +446,7 @@ Status ActionCommands::exportImageSequence()
     if (currLayer->type() == Layer::CAMERA)
     {
         QString strName = currLayer->name();
-        auto it = std::find_if(camerasInfo.begin(), camerasInfo.end(),
-                               [strName](std::pair<QString, QSize> p)
-        {
+        auto it = std::find_if(camerasInfo.begin(), camerasInfo.end(), [strName](std::pair<QString, QSize> p) {
             return p.first == strName;
         });
 
@@ -475,10 +473,11 @@ Status ActionCommands::exportImageSequence()
     bool exportKeyframesOnly = dialog->getExportKeyframesOnly();
     bool useTranparency = dialog->getTransparency();
     int startFrame = dialog->getStartFrame();
-    int endFrame  = dialog->getEndFrame();
+    int endFrame = dialog->getEndFrame();
 
     QString sCameraLayerName = dialog->getCameraLayerName();
-    LayerCamera *cameraLayer = static_cast<LayerCamera *>(mEditor->layers()->findLayerByName(sCameraLayerName, Layer::CAMERA));
+    LayerCamera *cameraLayer =
+        static_cast<LayerCamera *>(mEditor->layers()->findLayerByName(sCameraLayerName, Layer::CAMERA));
 
     // Show a progress dialog, as this can take a while if you have lots of frames.
     QProgressDialog progress(tr("Exporting image sequence..."), tr("Abort"), 0, 100, mParent);
@@ -486,7 +485,8 @@ Status ActionCommands::exportImageSequence()
     progress.setWindowModality(Qt::WindowModal);
     progress.show();
 
-    mEditor->object()->exportFrames(startFrame, endFrame,
+    mEditor->object()->exportFrames(startFrame,
+                                    endFrame,
                                     cameraLayer,
                                     exportSize,
                                     strFilePath,
@@ -511,8 +511,8 @@ Status ActionCommands::exportImage()
 
     dialog->init();
 
-    std::vector< std::pair<QString, QSize> > camerasInfo;
-    auto cameraLayers = mEditor->object()->getLayersByType< LayerCamera >();
+    std::vector<std::pair<QString, QSize>> camerasInfo;
+    auto cameraLayers = mEditor->object()->getLayersByType<LayerCamera>();
     for (LayerCamera *i : cameraLayers)
     {
         camerasInfo.push_back(std::make_pair(i->name(), i->getViewSize()));
@@ -522,9 +522,7 @@ Status ActionCommands::exportImage()
     if (currLayer->type() == Layer::CAMERA)
     {
         QString strName = currLayer->name();
-        auto it = std::find_if(camerasInfo.begin(), camerasInfo.end(),
-                               [strName](std::pair<QString, QSize> p)
-        {
+        auto it = std::find_if(camerasInfo.begin(), camerasInfo.end(), [strName](std::pair<QString, QSize> p) {
             return p.first == strName;
         });
 
@@ -547,7 +545,8 @@ Status ActionCommands::exportImage()
 
     // Export
     QString sCameraLayerName = dialog->getCameraLayerName();
-    LayerCamera *cameraLayer = static_cast<LayerCamera *>(mEditor->layers()->findLayerByName(sCameraLayerName, Layer::CAMERA));
+    LayerCamera *cameraLayer =
+        static_cast<LayerCamera *>(mEditor->layers()->findLayerByName(sCameraLayerName, Layer::CAMERA));
 
     QTransform view = cameraLayer->getViewAtFrame(mEditor->currentFrame());
 
@@ -562,10 +561,7 @@ Status ActionCommands::exportImage()
 
     if (!bOK)
     {
-        QMessageBox::warning(mParent,
-                             tr("Warning"),
-                             tr("Unable to export image."),
-                             QMessageBox::Ok);
+        QMessageBox::warning(mParent, tr("Warning"), tr("Unable to export image."), QMessageBox::Ok);
         return Status::FAIL;
     }
     return Status::OK;
@@ -719,7 +715,10 @@ void ActionCommands::removeKey()
 void ActionCommands::duplicateKey()
 {
     Layer *layer = mEditor->layers()->currentLayer();
-    if (layer == nullptr) { return; }
+    if (layer == nullptr)
+    {
+        return;
+    }
     if (!layer->visible())
     {
         mEditor->getScribbleArea()->showLayerNotVisibleWarning();
@@ -727,7 +726,10 @@ void ActionCommands::duplicateKey()
     }
 
     KeyFrame *key = layer->getKeyFrameAt(mEditor->currentFrame());
-    if (key == nullptr) { return; }
+    if (key == nullptr)
+    {
+        return;
+    }
 
     KeyFrame *dupKey = key->clone();
 
@@ -782,9 +784,12 @@ void ActionCommands::moveFrameBackward()
 Status ActionCommands::addNewBitmapLayer()
 {
     bool ok;
-    QString text = QInputDialog::getText(nullptr, tr("Layer Properties"),
-                                         tr("Layer name:"), QLineEdit::Normal,
-                                         mEditor->layers()->nameSuggestLayer(tr("Bitmap Layer")), &ok);
+    QString text = QInputDialog::getText(nullptr,
+                                         tr("Layer Properties"),
+                                         tr("Layer name:"),
+                                         QLineEdit::Normal,
+                                         mEditor->layers()->nameSuggestLayer(tr("Bitmap Layer")),
+                                         &ok);
     if (ok && !text.isEmpty())
     {
         mEditor->layers()->createBitmapLayer(text);
@@ -795,9 +800,12 @@ Status ActionCommands::addNewBitmapLayer()
 Status ActionCommands::addNewVectorLayer()
 {
     bool ok;
-    QString text = QInputDialog::getText(nullptr, tr("Layer Properties"),
-                                         tr("Layer name:"), QLineEdit::Normal,
-                                         mEditor->layers()->nameSuggestLayer(tr("Vector Layer")), &ok);
+    QString text = QInputDialog::getText(nullptr,
+                                         tr("Layer Properties"),
+                                         tr("Layer name:"),
+                                         QLineEdit::Normal,
+                                         mEditor->layers()->nameSuggestLayer(tr("Vector Layer")),
+                                         &ok);
     if (ok && !text.isEmpty())
     {
         mEditor->layers()->createVectorLayer(text);
@@ -808,9 +816,12 @@ Status ActionCommands::addNewVectorLayer()
 Status ActionCommands::addNewCameraLayer()
 {
     bool ok;
-    QString text = QInputDialog::getText(nullptr, tr("Layer Properties", "A popup when creating a new layer"),
-                                         tr("Layer name:"), QLineEdit::Normal,
-                                         mEditor->layers()->nameSuggestLayer(tr("Camera Layer")), &ok);
+    QString text = QInputDialog::getText(nullptr,
+                                         tr("Layer Properties", "A popup when creating a new layer"),
+                                         tr("Layer name:"),
+                                         QLineEdit::Normal,
+                                         mEditor->layers()->nameSuggestLayer(tr("Camera Layer")),
+                                         &ok);
     if (ok && !text.isEmpty())
     {
         mEditor->layers()->createCameraLayer(text);
@@ -821,9 +832,12 @@ Status ActionCommands::addNewCameraLayer()
 Status ActionCommands::addNewSoundLayer()
 {
     bool ok = false;
-    QString strLayerName = QInputDialog::getText(nullptr, tr("Layer Properties"),
-                                                 tr("Layer name:"), QLineEdit::Normal,
-                                                 mEditor->layers()->nameSuggestLayer(tr("Sound Layer")), &ok);
+    QString strLayerName = QInputDialog::getText(nullptr,
+                                                 tr("Layer Properties"),
+                                                 tr("Layer name:"),
+                                                 QLineEdit::Normal,
+                                                 mEditor->layers()->nameSuggestLayer(tr("Sound Layer")),
+                                                 &ok);
     if (ok && !strLayerName.isEmpty())
     {
         Layer *layer = mEditor->layers()->createSoundLayer(strLayerName);
@@ -847,8 +861,10 @@ Status ActionCommands::deleteCurrentLayer()
         Status st = layerMgr->deleteLayer(mEditor->currentLayerIndex());
         if (st == Status::ERROR_NEED_AT_LEAST_ONE_CAMERA_LAYER)
         {
-            QMessageBox::information(mParent, "",
-                                     tr("Please keep at least one camera layer in project", "text when failed to delete camera layer"));
+            QMessageBox::information(
+                mParent,
+                "",
+                tr("Please keep at least one camera layer in project", "text when failed to delete camera layer"));
         }
     }
     return Status::OK;
@@ -939,7 +955,12 @@ void ActionCommands::checkForUpdates()
 // This action is a temporary measure until we have an automated recover mechanism in place
 void ActionCommands::openTemporaryDirectory()
 {
-    int ret = QMessageBox::warning(mParent, tr("Warning"), tr("The temporary directory is meant to be used only by Pencil2D. Do not modify it unless you know what you are doing."), QMessageBox::Cancel, QMessageBox::Ok);
+    int ret = QMessageBox::warning(mParent,
+                                   tr("Warning"),
+                                   tr("The temporary directory is meant to be used only by Pencil2D. Do not modify it "
+                                      "unless you know what you are doing."),
+                                   QMessageBox::Cancel,
+                                   QMessageBox::Ok);
     if (ret == QMessageBox::Ok)
     {
         QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::temp().filePath("Pencil2D")));

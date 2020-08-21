@@ -16,24 +16,21 @@ GNU General Public License for more details.
 */
 #include "toolmanager.h"
 
-#include <cmath>
-#include "pentool.h"
-#include "penciltool.h"
 #include "brushtool.h"
 #include "buckettool.h"
+#include "editor.h"
 #include "erasertool.h"
 #include "eyedroppertool.h"
 #include "handtool.h"
 #include "movetool.h"
+#include "penciltool.h"
+#include "pentool.h"
 #include "polylinetool.h"
 #include "selecttool.h"
 #include "smudgetool.h"
-#include "editor.h"
+#include <cmath>
 
-
-ToolManager::ToolManager(Editor *editor) : BaseManager(editor)
-{
-}
+ToolManager::ToolManager(Editor *editor) : BaseManager(editor) {}
 
 bool ToolManager::init()
 {
@@ -214,7 +211,6 @@ void ToolManager::setUseFillContour(bool useFillContour)
     currentTool()->setUseFillContour(useFillContour);
     Q_EMIT toolPropertyChanged(currentTool()->type(), FILLCONTOUR);
 }
-
 
 // Switches on/off two actions
 // eg. if x = true, then y = false

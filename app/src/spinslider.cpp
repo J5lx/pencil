@@ -17,17 +17,15 @@ GNU General Public License for more details.
 
 #include "spinslider.h"
 
-#include <cmath>
-#include <QLabel>
-#include <QSlider>
-#include <QGridLayout>
-#include <QLocale>
 #include <QDebug>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLocale>
+#include <QSlider>
 #include <QStyle>
+#include <cmath>
 
-
-SpinSlider::SpinSlider(QWidget *parent) : QWidget(parent)
-{}
+SpinSlider::SpinSlider(QWidget *parent) : QWidget(parent) {}
 
 void SpinSlider::init(QString text, GROWTH_TYPE type, VALUE_TYPE dataType, qreal min, qreal max)
 {
@@ -114,8 +112,8 @@ void SpinSlider::setValue(qreal v)
 
 void SpinSlider::setPixelPos(qreal min, qreal max, int val, int space, bool upsideDown)
 {
-    mSlider->setSliderPosition(QStyle::sliderValueFromPosition(static_cast<int>(min),
-                                                               static_cast<int>(max), val, space, upsideDown));
+    mSlider->setSliderPosition(
+        QStyle::sliderValueFromPosition(static_cast<int>(min), static_cast<int>(max), val, space, upsideDown));
 }
 
 void SpinSlider::setExponent(const qreal exp)

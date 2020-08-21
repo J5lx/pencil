@@ -17,25 +17,22 @@ GNU General Public License for more details.
 
 #include "movetool.h"
 
-#include <cassert>
 #include <QMessageBox>
+#include <cassert>
 
-#include "pointerevent.h"
 #include "editor.h"
-#include "toolmanager.h"
-#include "viewmanager.h"
-#include "strokemanager.h"
-#include "selectionmanager.h"
-#include "scribblearea.h"
-#include "layervector.h"
 #include "layermanager.h"
+#include "layervector.h"
 #include "mathutils.h"
+#include "pointerevent.h"
+#include "scribblearea.h"
+#include "selectionmanager.h"
+#include "strokemanager.h"
+#include "toolmanager.h"
 #include "vectorimage.h"
+#include "viewmanager.h"
 
-
-MoveTool::MoveTool(QObject *parent) : BaseTool(parent)
-{
-}
+MoveTool::MoveTool(QObject *parent) : BaseTool(parent) {}
 
 ToolType MoveTool::type()
 {
@@ -71,14 +68,16 @@ void MoveTool::updateSettings(const SETTING setting)
     }
     default:
         break;
-
     }
 }
 
 void MoveTool::pointerPressEvent(PointerEvent *event)
 {
     mCurrentLayer = currentPaintableLayer();
-    if (mCurrentLayer == nullptr) { return; }
+    if (mCurrentLayer == nullptr)
+    {
+        return;
+    }
 
     mEditor->select()->updatePolygons();
 
@@ -89,11 +88,14 @@ void MoveTool::pointerPressEvent(PointerEvent *event)
 void MoveTool::pointerMoveEvent(PointerEvent *event)
 {
     mCurrentLayer = currentPaintableLayer();
-    if (mCurrentLayer == nullptr) { return; }
+    if (mCurrentLayer == nullptr)
+    {
+        return;
+    }
 
     mEditor->select()->updatePolygons();
 
-    if (mScribbleArea->isPointerInUse())   // the user is also pressing the mouse (dragging)
+    if (mScribbleArea->isPointerInUse()) // the user is also pressing the mouse (dragging)
     {
         transformSelection(event->modifiers(), mCurrentLayer);
     }
@@ -151,7 +153,6 @@ void MoveTool::transformSelection(Qt::KeyboardModifiers keyMod, Layer *layer)
     auto selectMan = mEditor->select();
     if (selectMan->somethingSelected())
     {
-
         QPointF offset = offsetFromPressPos();
 
         // maintain aspect ratio
@@ -175,7 +176,6 @@ void MoveTool::transformSelection(Qt::KeyboardModifiers keyMod, Layer *layer)
 
         selectMan->calculateSelectionTransformation();
         paintTransformedSelection();
-
     }
     else // there is nothing selected
     {
@@ -218,7 +218,8 @@ void MoveTool::beginInteraction(Qt::KeyboardModifiers keyMod, Layer *layer)
     {
         QPointF curPoint = getCurrentPoint();
         QPointF anchorPoint = selectionRect.center();
-        mRotatedAngle = qRadiansToDegrees(MathUtils::getDifferenceAngle(anchorPoint, curPoint)) - selectMan->myRotation();
+        mRotatedAngle =
+            qRadiansToDegrees(MathUtils::getDifferenceAngle(anchorPoint, curPoint)) - selectMan->myRotation();
     }
 }
 
@@ -232,7 +233,10 @@ void MoveTool::createVectorSelection(Qt::KeyboardModifiers keyMod, Layer *layer)
     assert(layer->type() == Layer::VECTOR);
     LayerVector *vecLayer = static_cast<LayerVector *>(layer);
     VectorImage *vectorImage = vecLayer->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
-    if (vectorImage == nullptr) { return; }
+    if (vectorImage == nullptr)
+    {
+        return;
+    }
 
     if (!mEditor->select()->closestCurves().empty()) // the user clicks near a curve
     {
@@ -282,7 +286,10 @@ void MoveTool::storeClosestVectorCurve(Layer *layer)
     auto selectMan = mEditor->select();
     auto layerVector = static_cast<LayerVector *>(layer);
     VectorImage *pVecImg = layerVector->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
-    if (pVecImg == nullptr) { return; }
+    if (pVecImg == nullptr)
+    {
+        return;
+    }
     selectMan->setCurves(pVecImg->getCurvesCloseTo(getCurrentPoint(), selectMan->selectionTolerance()));
 }
 

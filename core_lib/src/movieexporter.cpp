@@ -16,31 +16,27 @@ GNU General Public License for more details.
 
 #include "movieexporter.h"
 
-#include <ctime>
-#include <vector>
-#include <cstdint>
-#include <QDir>
-#include <QDebug>
-#include <QProcess>
 #include <QApplication>
+#include <QDebug>
+#include <QDir>
+#include <QPainter>
+#include <QProcess>
 #include <QStandardPaths>
 #include <QThread>
 #include <QtMath>
-#include <QPainter>
+#include <cstdint>
+#include <ctime>
+#include <vector>
 
-#include "object.h"
 #include "layercamera.h"
 #include "layersound.h"
+#include "object.h"
 #include "soundclip.h"
 #include "util.h"
 
-MovieExporter::MovieExporter()
-{
-}
+MovieExporter::MovieExporter() {}
 
-MovieExporter::~MovieExporter()
-{
-}
+MovieExporter::~MovieExporter() {}
 
 /** Begin exporting the movie described by exportDesc.
  *
@@ -152,9 +148,7 @@ QString MovieExporter::error()
  *  @return Returns the final status of the operation. Ok if successful,
  *          or safe if there was intentionally no output.
  */
-Status MovieExporter::assembleAudio(const Object *obj,
-                                    QString ffmpegPath,
-                                    std::function<void(float)> progress)
+Status MovieExporter::assembleAudio(const Object *obj, QString ffmpegPath, std::function<void(float)> progress)
 {
     // Quicktime assemble call
     const int startFrame = mDesc.startFrame;
@@ -170,18 +164,19 @@ Status MovieExporter::assembleAudio(const Object *obj,
     QString tempAudioPath = QDir(mTempWorkDir).filePath("tmpaudio.wav");
     qDebug() << "TempAudio=" << tempAudioPath;
 
-    std::vector< SoundClip * > allSoundClips;
+    std::vector<SoundClip *> allSoundClips;
 
-    std::vector< LayerSound * > allSoundLayers = obj->getLayersByType<LayerSound>();
+    std::vector<LayerSound *> allSoundLayers = obj->getLayersByType<LayerSound>();
     for (LayerSound *layer : allSoundLayers)
     {
-        layer->foreachKeyFrame([&allSoundClips](KeyFrame * key)
-        {
-            allSoundClips.push_back(static_cast<SoundClip *>(key));
-        });
+        layer->foreachKeyFrame(
+            [&allSoundClips](KeyFrame *key) { allSoundClips.push_back(static_cast<SoundClip *>(key)); });
     }
 
-    if (allSoundClips.empty()) { return Status::SAFE; }
+    if (allSoundClips.empty())
+    {
+        return Status::SAFE;
+    }
 
     int clipCount = 0;
 
@@ -201,8 +196,12 @@ Status MovieExporter::assembleAudio(const Object *obj,
 
         // Offset the sound to its correct position
         // See https://superuser.com/questions/716320/ffmpeg-placing-audio-at-specific-location
-        filterComplex += QString("[%1:a:0] aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=mono,volume=1,adelay=%2S|%2S,apad=whole_len=%3[ad%1];")
-                         .arg(clipCount).arg(qRound(44100.0 * (clip->pos() - 1) / fps)).arg(wholeLen);
+        filterComplex += QString("[%1:a:0] "
+                                 "aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=mono,volume=1,adelay=%2S|"
+                                 "%2S,apad=whole_len=%3[ad%1];")
+                             .arg(clipCount)
+                             .arg(qRound(44100.0 * (clip->pos() - 1) / fps))
+                             .arg(wholeLen);
         amergeInput += QString("[ad%1]").arg(clipCount);
         panChannelLayout += QString("c%1+").arg(clipCount);
 
@@ -212,18 +211,33 @@ Status MovieExporter::assembleAudio(const Object *obj,
     panChannelLayout.chop(1);
     // Output arguments
     // Mix audio
-    args << "-filter_complex" << QString("%1%2 amerge=inputs=%3, pan=mono|c0=%4 [out]")
-         .arg(filterComplex).arg(amergeInput).arg(clipCount).arg(panChannelLayout);
+    args << "-filter_complex"
+         << QString("%1%2 amerge=inputs=%3, pan=mono|c0=%4 [out]")
+                .arg(filterComplex)
+                .arg(amergeInput)
+                .arg(clipCount)
+                .arg(panChannelLayout);
     // Convert audio file: 44100Hz sampling rate, stereo, signed 16 bit little endian
     // Supported audio file types: wav, mp3, ogg... ( all file types supported by ffmpeg )
-    args << "-ar" << "44100" << "-acodec" << "pcm_s16le" << "-ac" << "2" << "-map" << "[out]" << "-y";
+    args << "-ar"
+         << "44100"
+         << "-acodec"
+         << "pcm_s16le"
+         << "-ac"
+         << "2"
+         << "-map"
+         << "[out]"
+         << "-y";
     // Trim audio
     args << "-ss" << QString::number((startFrame - 1) / static_cast<double>(fps));
     args << "-to" << QString::number(endFrame / static_cast<double>(fps));
     // Output path
     args << tempAudioPath;
 
-    STATUS_CHECK(MovieExporter::executeFFmpeg(ffmpegPath, args, [&progress, this](int frame) { progress(frame / static_cast<float>(mDesc.endFrame - mDesc.startFrame)); return !mCanceled; }))
+    STATUS_CHECK(MovieExporter::executeFFmpeg(ffmpegPath, args, [&progress, this](int frame) {
+        progress(frame / static_cast<float>(mDesc.endFrame - mDesc.startFrame));
+        return !mCanceled;
+    }))
     qDebug() << "audio file: " + tempAudioPath;
 
     return Status::OK;
@@ -245,11 +259,10 @@ Status MovieExporter::assembleAudio(const Object *obj,
  *
  *  @return Returns the final status of the operation (ok or canceled)
  */
-Status MovieExporter::generateMovie(
-    const Object *obj,
-    QString ffmpegPath,
-    QString strOutputFile,
-    std::function<void(float)> progress)
+Status MovieExporter::generateMovie(const Object *obj,
+                                    QString ffmpegPath,
+                                    QString strOutputFile,
+                                    std::function<void(float)> progress)
 {
     if (mCanceled)
     {
@@ -268,7 +281,7 @@ Status MovieExporter::generateMovie(
     auto cameraLayer = static_cast<LayerCamera *>(obj->findLayerByName(strCameraName, Layer::CAMERA));
     if (cameraLayer == nullptr)
     {
-        cameraLayer = obj->getLayersByType< LayerCamera >().front();
+        cameraLayer = obj->getLayersByType<LayerCamera>().front();
     }
     int currentFrame = frameStart;
 
@@ -301,15 +314,16 @@ Status MovieExporter::generateMovie(
 
     // Build FFmpeg command
 
-    //int exportFps = mDesc.videoFps;
+    // int exportFps = mDesc.videoFps;
     const QString tempAudioPath = QDir(mTempWorkDir).filePath("tmpaudio.wav");
 
     QStringList args = {"-f", "rawvideo", "-pixel_format", "bgra"};
     args << "-video_size" << QString("%1x%2").arg(exportSize.width()).arg(exportSize.height());
     args << "-framerate" << QString::number(mDesc.fps);
 
-    //args << "-r" << QString::number(exportFps);
-    args << "-i" << "-";
+    // args << "-r" << QString::number(exportFps);
+    args << "-i"
+         << "-";
     args << "-threads" << (QThread::idealThreadCount() == 1 ? "0" : QString::number(QThread::idealThreadCount()));
 
     if (QFile::exists(tempAudioPath))
@@ -324,12 +338,14 @@ Status MovieExporter::generateMovie(
 
     if (strOutputFile.endsWith("mp4", Qt::CaseInsensitive))
     {
-        args << "-pix_fmt" << "yuv420p";
+        args << "-pix_fmt"
+             << "yuv420p";
     }
 
     if (strOutputFile.endsWith(".avi", Qt::CaseInsensitive))
     {
-        args << "-q:v" << "5";
+        args << "-q:v"
+             << "5";
     }
 
     args << "-y";
@@ -337,8 +353,7 @@ Status MovieExporter::generateMovie(
 
     // Run FFmpeg command
 
-    STATUS_CHECK(executeFFMpegPipe(ffmpegPath, args, progress, [&](QProcess & ffmpeg, int framesProcessed)
-    {
+    STATUS_CHECK(executeFFMpegPipe(ffmpegPath, args, progress, [&](QProcess &ffmpeg, int framesProcessed) {
         if (framesProcessed < 0)
         {
             failCounter++;
@@ -350,7 +365,8 @@ Status MovieExporter::generateMovie(
             return false;
         }
 
-        if ((currentFrame - frameStart <= framesProcessed + frameWindow || failCounter > 10) && currentFrame <= frameEnd)
+        if ((currentFrame - frameStart <= framesProcessed + frameWindow || failCounter > 10) &&
+            currentFrame <= frameEnd)
         {
             QImage imageToExport = imageToExportBase.copy();
             QPainter painter(&imageToExport);
@@ -364,7 +380,8 @@ Status MovieExporter::generateMovie(
 
             // Should use sizeInBytes instead of byteCount to support large images,
             // but this is only supported in QT 5.10+
-            int bytesWritten = ffmpeg.write(reinterpret_cast<const char *>(imageToExport.constBits()), imageToExport.byteCount());
+            int bytesWritten =
+                ffmpeg.write(reinterpret_cast<const char *>(imageToExport.constBits()), imageToExport.byteCount());
             Q_ASSERT(bytesWritten == imageToExport.byteCount());
 
             currentFrame++;
@@ -390,13 +407,11 @@ Status MovieExporter::generateMovie(
  *
  *  @return Returns the final status of the operation (ok or canceled)
  */
-Status MovieExporter::generateGif(
-    const Object *obj,
-    QString ffmpegPath,
-    QString strOut,
-    std::function<void(float)> progress)
+Status MovieExporter::generateGif(const Object *obj,
+                                  QString ffmpegPath,
+                                  QString strOut,
+                                  std::function<void(float)> progress)
 {
-
     if (mCanceled)
     {
         return Status::CANCELED;
@@ -415,7 +430,7 @@ Status MovieExporter::generateGif(
     auto cameraLayer = static_cast<LayerCamera *>(obj->findLayerByName(strCameraName, Layer::CAMERA));
     if (cameraLayer == nullptr)
     {
-        cameraLayer = obj->getLayersByType< LayerCamera >().front();
+        cameraLayer = obj->getLayersByType<LayerCamera>().front();
     }
     int currentFrame = frameStart;
 
@@ -442,19 +457,20 @@ Status MovieExporter::generateGif(
     args << "-video_size" << QString("%1x%2").arg(exportSize.width()).arg(exportSize.height());
     args << "-framerate" << QString::number(mDesc.fps);
 
-    args << "-i" << "-";
+    args << "-i"
+         << "-";
 
     args << "-y";
 
-    args << "-filter_complex" << "[0:v]palettegen [p]; [0:v][p] paletteuse";
+    args << "-filter_complex"
+         << "[0:v]palettegen [p]; [0:v][p] paletteuse";
 
     args << "-loop" << (loop ? "0" : "-1");
     args << strOut;
 
     // Run FFmpeg command
 
-    STATUS_CHECK(executeFFMpegPipe(ffmpegPath, args, progress, [&](QProcess & ffmpeg, int framesProcessed)
-    {
+    STATUS_CHECK(executeFFMpegPipe(ffmpegPath, args, progress, [&](QProcess &ffmpeg, int framesProcessed) {
         /* The GIF FFmpeg command requires the entires stream to be
          * written before FFmpeg can encode the GIF. This is because
          * the generated pallete is based off of the colors in all
@@ -479,7 +495,8 @@ Status MovieExporter::generateGif(
 
         obj->paintImage(painter, currentFrame, false, true);
 
-        bytesWritten = ffmpeg.write(reinterpret_cast<const char *>(imageToExport.constBits()), imageToExport.byteCount());
+        bytesWritten =
+            ffmpeg.write(reinterpret_cast<const char *>(imageToExport.constBits()), imageToExport.byteCount());
         Q_ASSERT(bytesWritten == imageToExport.byteCount());
 
         currentFrame++;
@@ -523,7 +540,10 @@ Status MovieExporter::executeFFmpeg(const QString &cmd, const QStringList &args,
     {
         while (ffmpeg.state() == QProcess::Running)
         {
-            if (!ffmpeg.waitForReadyRead()) { break; }
+            if (!ffmpeg.waitForReadyRead())
+            {
+                break;
+            }
 
             QString output(ffmpeg.readAll());
             QStringList sList = output.split(QRegExp("[\r\n]"), QString::SkipEmptyParts);
@@ -542,7 +562,10 @@ Status MovieExporter::executeFFmpeg(const QString &cmd, const QStringList &args,
                 {
                     ffmpeg.terminate();
                     ffmpeg.waitForFinished(3000);
-                    if (ffmpeg.state() == QProcess::Running) { ffmpeg.kill(); }
+                    if (ffmpeg.state() == QProcess::Running)
+                    {
+                        ffmpeg.kill();
+                    }
                     ffmpeg.waitForFinished();
                     return Status::CANCELED;
                 }
@@ -561,7 +584,9 @@ Status MovieExporter::executeFFmpeg(const QString &cmd, const QStringList &args,
         {
             status = Status::FAIL;
             status.setTitle(QObject::tr("Something went wrong"));
-            status.setDescription(QObject::tr("Looks like our video backend did not exit normally. Your movie may not have exported correctly. Please try again and report this if it persists."));
+            status.setDescription(
+                QObject::tr("Looks like our video backend did not exit normally. Your movie may not have exported "
+                            "correctly. Please try again and report this if it persists."));
             dd << QString("Exit status: ").append(QProcess::NormalExit ? "NormalExit" : "CrashExit")
                << QString("Exit code: %1").arg(ffmpeg.exitCode());
             status.setDetails(dd);
@@ -622,7 +647,10 @@ Status MovieExporter::executeFFmpeg(const QString &cmd, const QStringList &args,
  *  @return Returns Status::OK if everything went well, and Status::FAIL
  *  and error is detected (usually a non-zero exit code for ffmpeg).
  */
-Status MovieExporter::executeFFMpegPipe(const QString &cmd, const QStringList &args, std::function<void(float)> progress, std::function<bool(QProcess &, int)> writeFrame)
+Status MovieExporter::executeFFMpegPipe(const QString &cmd,
+                                        const QStringList &args,
+                                        std::function<void(float)> progress,
+                                        std::function<bool(QProcess &, int)> writeFrame)
 {
     qDebug() << cmd;
 
@@ -646,7 +674,10 @@ Status MovieExporter::executeFFMpegPipe(const QString &cmd, const QStringList &a
             if (mCanceled)
             {
                 ffmpeg.terminate();
-                if (ffmpeg.state() == QProcess::Running) { ffmpeg.kill(); }
+                if (ffmpeg.state() == QProcess::Running)
+                {
+                    ffmpeg.kill();
+                }
                 return Status::CANCELED;
             }
 
@@ -694,11 +725,13 @@ Status MovieExporter::executeFFMpegPipe(const QString &cmd, const QStringList &a
             dd << s;
         }
 
-        if (ffmpeg.exitStatus() != QProcess::NormalExit  || ffmpeg.exitCode() != 0)
+        if (ffmpeg.exitStatus() != QProcess::NormalExit || ffmpeg.exitCode() != 0)
         {
             status = Status::FAIL;
             status.setTitle(QObject::tr("Something went wrong"));
-            status.setDescription(QObject::tr("Looks like our video backend did not exit normally. Your movie may not have exported correctly. Please try again and report this if it persists."));
+            status.setDescription(
+                QObject::tr("Looks like our video backend did not exit normally. Your movie may not have exported "
+                            "correctly. Please try again and report this if it persists."));
             dd << QString("Exit status: ").append(QProcess::NormalExit ? "NormalExit" : "CrashExit")
                << QString("Exit code: %1").arg(ffmpeg.exitCode());
             status.setDetails(dd);

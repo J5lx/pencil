@@ -53,7 +53,7 @@ void ExportImageDialog::setCamerasInfo(const std::vector<std::pair<QString, QSiz
         ui->cameraCombo->addItem(it.first, it.second);
     }
 
-    const auto indexChanged = static_cast<void(QComboBox::*)(int i)>(&QComboBox::currentIndexChanged);
+    const auto indexChanged = static_cast<void (QComboBox::*)(int i)>(&QComboBox::currentIndexChanged);
     connect(ui->cameraCombo, indexChanged, this, &ExportImageDialog::cameraComboChanged);
 
     cameraComboChanged(0);

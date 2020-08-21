@@ -15,11 +15,10 @@ GNU General Public License for more details.
 */
 #include "catch.hpp"
 
-#include "object.h"
 #include "editor.h"
 #include "layermanager.h"
+#include "object.h"
 #include "pencilerror.h"
-
 
 TEST_CASE("LayerManager::init()")
 {

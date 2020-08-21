@@ -21,21 +21,17 @@ GNU General Public License for more details.
 #include <QFile>
 #include <QFileInfo>
 
-
 LayerVector::LayerVector(Object *object) : Layer(object, Layer::VECTOR)
 {
     setName(tr("Vector Layer"));
 }
 
-LayerVector::~LayerVector()
-{
-}
+LayerVector::~LayerVector() {}
 
 bool LayerVector::usesColor(int colorIndex)
 {
     bool bUseColor = false;
-    foreachKeyFrame([&](KeyFrame * pKeyFrame)
-    {
+    foreachKeyFrame([&](KeyFrame *pKeyFrame) {
         auto pVecImage = static_cast<VectorImage *>(pKeyFrame);
 
         bUseColor = bUseColor || pVecImage->usesColor(colorIndex);
@@ -46,8 +42,7 @@ bool LayerVector::usesColor(int colorIndex)
 
 void LayerVector::removeColor(int colorIndex)
 {
-    foreachKeyFrame([ = ](KeyFrame * pKeyFrame)
-    {
+    foreachKeyFrame([=](KeyFrame *pKeyFrame) {
         auto pVecImage = static_cast<VectorImage *>(pKeyFrame);
         pVecImage->removeColor(colorIndex);
     });
@@ -55,8 +50,7 @@ void LayerVector::removeColor(int colorIndex)
 
 void LayerVector::moveColor(int start, int end)
 {
-    foreachKeyFrame([ = ](KeyFrame * pKeyFrame)
-    {
+    foreachKeyFrame([=](KeyFrame *pKeyFrame) {
         auto pVecImage = static_cast<VectorImage *>(pKeyFrame);
         pVecImage->moveColor(start, end);
     });
@@ -140,8 +134,7 @@ QDomElement LayerVector::createDomElement(QDomDocument &doc)
 {
     QDomElement layerElem = this->createBaseDomElement(doc);
 
-    foreachKeyFrame([&](KeyFrame * keyframe)
-    {
+    foreachKeyFrame([&](KeyFrame *keyframe) {
         QDomElement imageTag = doc.createElement("image");
         imageTag.setAttribute("frame", keyframe->pos());
         imageTag.setAttribute("src", fileName(keyframe));
@@ -167,9 +160,13 @@ void LayerVector::loadDomElement(const QDomElement &element, QString dataDirPath
             {
                 if (!imageElement.attribute("src").isNull())
                 {
-                    QString path = dataDirPath + "/" + imageElement.attribute("src"); // the file is supposed to be in the data directory
+                    QString path = dataDirPath + "/" +
+                                   imageElement.attribute("src"); // the file is supposed to be in the data directory
                     QFileInfo fi(path);
-                    if (!fi.exists()) { path = imageElement.attribute("src"); }
+                    if (!fi.exists())
+                    {
+                        path = imageElement.attribute("src");
+                    }
                     int position = imageElement.attribute("frame").toInt();
                     loadImageAtFrame(path, position);
                 }

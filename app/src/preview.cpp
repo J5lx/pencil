@@ -18,7 +18,6 @@ GNU General Public License for more details.
 #include "preview.h"
 #include <QPainter>
 
-
 PreviewCanvas::PreviewCanvas(QWidget *parent) : QWidget(parent)
 {
     setFixedSize(200, 200);

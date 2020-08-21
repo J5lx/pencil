@@ -18,9 +18,9 @@ GNU General Public License for more details.
 #ifndef IMPORTEXPORTDIALOG_H
 #define IMPORTEXPORTDIALOG_H
 
+#include "filedialogex.h"
 #include <QDialog>
 #include <QGroupBox>
-#include "filedialogex.h"
 
 namespace Ui
 {
@@ -34,7 +34,11 @@ class ImportExportDialog : public QDialog
     Q_OBJECT
 
 public:
-    enum Mode { Import, Export };
+    enum Mode
+    {
+        Import,
+        Export
+    };
 
     explicit ImportExportDialog(QWidget *parent, Mode eMode, FileType eFileType);
     ~ImportExportDialog();

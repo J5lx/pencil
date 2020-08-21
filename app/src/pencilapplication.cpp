@@ -20,8 +20,7 @@ GNU General Public License for more details.
 
 #include "pencilapplication.h"
 
-PencilApplication::PencilApplication(int &argc, char **argv) :
-    QApplication(argc, argv)
+PencilApplication::PencilApplication(int &argc, char **argv) : QApplication(argc, argv)
 {
     // Set organization and application name
     setOrganizationName("Pencil2D");
@@ -38,7 +37,8 @@ PencilApplication::PencilApplication(int &argc, char **argv) :
 
 bool PencilApplication::event(QEvent *event)
 {
-    if (event->type() == QEvent::ApplicationStateChange && static_cast<QApplicationStateChangeEvent *>(event)->applicationState() == Qt::ApplicationInactive)
+    if (event->type() == QEvent::ApplicationStateChange &&
+        static_cast<QApplicationStateChangeEvent *>(event)->applicationState() == Qt::ApplicationInactive)
     {
         emit lostFocus();
         return true;

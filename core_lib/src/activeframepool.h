@@ -18,10 +18,9 @@ GNU General Public License for more details.
 #ifndef ACTIVEFRAMEPOOL_H
 #define ACTIVEFRAMEPOOL_H
 
+#include "keyframe.h"
 #include <list>
 #include <unordered_map>
-#include "keyframe.h"
-
 
 /**
  * ActiveFramePool implemented a LRU cache to keep tracking the most recent accessed key frames

@@ -16,10 +16,10 @@ GNU General Public License for more details.
 #include "catch.hpp"
 
 #include "colormanager.h"
-#include "object.h"
 #include "editor.h"
 #include "layer.h"
 #include "layermanager.h"
+#include "object.h"
 
 TEST_CASE("ColorManager Initial Test")
 {
@@ -52,8 +52,7 @@ TEST_CASE("ColorManager set color tests")
     layerMgr->init();
 
     layerObj->init();
-    layerObj->createDefaultLayers();    // 0 = camera, 1 = vector, 2 = bitmap
-
+    layerObj->createDefaultLayers(); // 0 = camera, 1 = vector, 2 = bitmap
 
     SECTION("setColor non vector layer")
     {
@@ -68,7 +67,6 @@ TEST_CASE("ColorManager set color tests")
         cm->setColor(QColor(255, 255, 255));
         REQUIRE(cm->frontColor() == QColor(255, 255, 255));
     }
-
 
     delete layerEdit;
     delete editor;
@@ -103,13 +101,11 @@ TEST_CASE("Save and Load")
         REQUIRE(objToSave->data()->getCurrentColor() == QColor(45, 45, 255));
         REQUIRE(cm2->save(objToSave) == Status::OK);
         REQUIRE(objToSave->data()->getCurrentColor() == QColor(0, 255, 0));
-
     }
 
     delete objToSave;
     delete objToLoad;
     delete editor;
-
 }
 
 TEST_CASE("colorManager setColorNumber")

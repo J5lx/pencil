@@ -18,19 +18,19 @@ GNU General Public License for more details.
 #include <QPixmap>
 #include <QSettings>
 
-#include "pointerevent.h"
-#include "vectorimage.h"
 #include "editor.h"
+#include "pointerevent.h"
 #include "scribblearea.h"
+#include "vectorimage.h"
 
 #include "layermanager.h"
+#include "selectionmanager.h"
 #include "strokemanager.h"
 #include "viewmanager.h"
-#include "selectionmanager.h"
 
+#include "blitrect.h"
 #include "layerbitmap.h"
 #include "layervector.h"
-#include "blitrect.h"
 
 SmudgeTool::SmudgeTool(QObject *parent) : StrokeTool(parent)
 {
@@ -105,11 +105,11 @@ bool SmudgeTool::emptyFrameActionEnabled()
 QCursor SmudgeTool::cursor()
 {
     qDebug() << "smudge tool";
-    if (toolMode == 0)   //normal mode
+    if (toolMode == 0) // normal mode
     {
         return QCursor(QPixmap(":icons/smudge.png"), 0, 16);
     }
-    else   // blured mode
+    else // blured mode
     {
         return QCursor(QPixmap(":icons/liquify.png"), -4, 16);
     }
@@ -119,7 +119,7 @@ bool SmudgeTool::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Alt)
     {
-        toolMode = 1; // alternative mode
+        toolMode = 1;                       // alternative mode
         mScribbleArea->setCursor(cursor()); // update cursor
         return true;
     }
@@ -128,8 +128,7 @@ bool SmudgeTool::keyPressEvent(QKeyEvent *event)
 
 bool SmudgeTool::keyReleaseEvent(QKeyEvent *)
 {
-
-    toolMode = 0; // default mode
+    toolMode = 0;                       // default mode
     mScribbleArea->setCursor(cursor()); // update cursor
 
     return true;
@@ -137,11 +136,14 @@ bool SmudgeTool::keyReleaseEvent(QKeyEvent *)
 
 void SmudgeTool::pointerPressEvent(PointerEvent *event)
 {
-    //qDebug() << "smudgetool: mousePressEvent";
+    // qDebug() << "smudgetool: mousePressEvent";
 
     Layer *layer = mEditor->layers()->currentLayer();
     auto selectMan = mEditor->select();
-    if (layer == NULL) { return; }
+    if (layer == NULL)
+    {
+        return;
+    }
 
     if (event->button() == Qt::LeftButton)
     {
@@ -156,11 +158,15 @@ void SmudgeTool::pointerPressEvent(PointerEvent *event)
             const int currentFrame = mEditor->currentFrame();
             const float distanceFrom = selectMan->selectionTolerance();
             VectorImage *vectorImage = static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(currentFrame, 0);
-            if (vectorImage == nullptr) { return; }
+            if (vectorImage == nullptr)
+            {
+                return;
+            }
             selectMan->setCurves(vectorImage->getCurvesCloseTo(getCurrentPoint(), distanceFrom));
             selectMan->setVertices(vectorImage->getVerticesCloseTo(getCurrentPoint(), distanceFrom));
             ;
-            if (selectMan->closestCurves().size() > 0 || selectMan->closestCurves().size() > 0)      // the user clicks near a vertex or a curve
+            if (selectMan->closestCurves().size() > 0 ||
+                selectMan->closestCurves().size() > 0) // the user clicks near a vertex or a curve
             {
                 // Since startStroke() isn't called, handle empty frame behaviour here.
                 // Commented out for now - leads to segfault on mouse-release event.
@@ -169,7 +175,7 @@ void SmudgeTool::pointerPressEvent(PointerEvent *event)
                 //                    mScribbleArea->handleDrawingOnEmptyFrame();
                 //                }
 
-                //qDebug() << "closestCurves:" << closestCurves << " | closestVertices" << closestVertices;
+                // qDebug() << "closestCurves:" << closestCurves << " | closestVertices" << closestVertices;
                 if (event->modifiers() != Qt::ShiftModifier && !vectorImage->isSelected(selectMan->closestVertices()))
                 {
                     mScribbleArea->paintTransformedSelection();
@@ -193,7 +199,10 @@ void SmudgeTool::pointerPressEvent(PointerEvent *event)
 void SmudgeTool::pointerMoveEvent(PointerEvent *event)
 {
     Layer *layer = mEditor->layers()->currentLayer();
-    if (layer == NULL) { return; }
+    if (layer == NULL)
+    {
+        return;
+    }
 
     if (layer->type() != Layer::BITMAP && layer->type() != Layer::VECTOR)
     {
@@ -201,31 +210,40 @@ void SmudgeTool::pointerMoveEvent(PointerEvent *event)
     }
 
     auto selectMan = mEditor->select();
-    if (event->buttons() & Qt::LeftButton)   // the user is also pressing the mouse (dragging) {
+    if (event->buttons() & Qt::LeftButton) // the user is also pressing the mouse (dragging) {
     {
         if (layer->type() == Layer::BITMAP)
         {
             drawStroke();
         }
-        else //if (layer->type() == Layer::VECTOR)
+        else // if (layer->type() == Layer::VECTOR)
         {
-            if (event->modifiers() != Qt::ShiftModifier)    // (and the user doesn't press shift)
+            if (event->modifiers() != Qt::ShiftModifier) // (and the user doesn't press shift)
             {
-                VectorImage *vectorImage = static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
-                if (vectorImage == nullptr) { return; }
+                VectorImage *vectorImage =
+                    static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+                if (vectorImage == nullptr)
+                {
+                    return;
+                }
                 // transforms the selection
 
-                selectMan->setSelectionTransform(QTransform().translate(offsetFromPressPos().x(), offsetFromPressPos().y()));
+                selectMan->setSelectionTransform(
+                    QTransform().translate(offsetFromPressPos().x(), offsetFromPressPos().y()));
                 vectorImage->setSelectionTransformation(selectMan->selectionTransform());
             }
         }
     }
-    else     // the user is moving the mouse without pressing it
+    else // the user is moving the mouse without pressing it
     {
         if (layer->type() == Layer::VECTOR)
         {
-            VectorImage *vectorImage = static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
-            if (vectorImage == nullptr) { return; }
+            VectorImage *vectorImage =
+                static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+            if (vectorImage == nullptr)
+            {
+                return;
+            }
 
             selectMan->setVertices(vectorImage->getVerticesCloseTo(getCurrentPoint(), selectMan->selectionTolerance()));
         }
@@ -237,7 +255,10 @@ void SmudgeTool::pointerMoveEvent(PointerEvent *event)
 void SmudgeTool::pointerReleaseEvent(PointerEvent *event)
 {
     Layer *layer = mEditor->layers()->currentLayer();
-    if (layer == NULL) { return; }
+    if (layer == NULL)
+    {
+        return;
+    }
 
     if (event->button() == Qt::LeftButton)
     {
@@ -252,7 +273,10 @@ void SmudgeTool::pointerReleaseEvent(PointerEvent *event)
         else if (layer->type() == Layer::VECTOR)
         {
             VectorImage *vectorImage = ((LayerVector *)layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
-            if (vectorImage == nullptr) { return; }
+            if (vectorImage == nullptr)
+            {
+                return;
+            }
             vectorImage->applySelectionTransformation();
 
             auto selectMan = mEditor->select();
@@ -269,13 +293,22 @@ void SmudgeTool::pointerReleaseEvent(PointerEvent *event)
 
 void SmudgeTool::drawStroke()
 {
-    if (!mScribbleArea->isLayerPaintable()) { return; }
+    if (!mScribbleArea->isLayerPaintable())
+    {
+        return;
+    }
 
     Layer *layer = mEditor->layers()->currentLayer();
-    if (layer == nullptr) { return; }
+    if (layer == nullptr)
+    {
+        return;
+    }
 
     BitmapImage *targetImage = static_cast<LayerBitmap *>(layer)->getLastBitmapImageAtFrame(mEditor->currentFrame(), 0);
-    if (targetImage == nullptr) { return; } // Can happen if the first frame is deleted while drawing
+    if (targetImage == nullptr)
+    {
+        return;
+    } // Can happen if the first frame is deleted while drawing
     StrokeTool::drawStroke();
     QList<QPointF> p = strokeManager()->interpolateStroke();
 
@@ -288,13 +321,12 @@ void SmudgeTool::drawStroke()
     mCurrentWidth = properties.width;
     qreal brushWidth = mCurrentWidth + 0.0 * properties.feather;
     qreal offset = qMax(0.0, mCurrentWidth - 0.5 * properties.feather) / brushWidth;
-    //opacity = currentPressure; // todo: Probably not interesting?!
-    //brushWidth = brushWidth * opacity;
+    // opacity = currentPressure; // todo: Probably not interesting?!
+    // brushWidth = brushWidth * opacity;
 
     BlitRect rect;
     QPointF a = mLastBrushPoint;
     QPointF b = getCurrentPoint();
-
 
     if (toolMode == 1) // liquify hard
     {
@@ -308,12 +340,7 @@ void SmudgeTool::drawStroke()
         {
             QPointF targetPoint = mLastBrushPoint + (i + 1) * (brushStep) * (b - mLastBrushPoint) / distance;
             rect.extend(targetPoint.toPoint());
-            mScribbleArea->liquifyBrush(targetImage,
-                                        sourcePoint,
-                                        targetPoint,
-                                        brushWidth,
-                                        offset,
-                                        opacity);
+            mScribbleArea->liquifyBrush(targetImage, sourcePoint, targetPoint, brushWidth, offset, opacity);
 
             if (i == (steps - 1))
             {
@@ -336,12 +363,7 @@ void SmudgeTool::drawStroke()
         {
             QPointF targetPoint = mLastBrushPoint + (i + 1) * (brushStep) * (b - mLastBrushPoint) / distance;
             rect.extend(targetPoint.toPoint());
-            mScribbleArea->blurBrush(targetImage,
-                                     sourcePoint,
-                                     targetPoint,
-                                     brushWidth,
-                                     offset,
-                                     opacity);
+            mScribbleArea->blurBrush(targetImage, sourcePoint, targetPoint, brushWidth, offset, opacity);
 
             if (i == (steps - 1))
             {
@@ -358,4 +380,3 @@ QPointF SmudgeTool::offsetFromPressPos()
 {
     return getCurrentPoint() - getCurrentPressPoint();
 }
-

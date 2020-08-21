@@ -16,7 +16,6 @@ class ImportPositionDialog : public QDialog
 
     struct ImportPosition
     {
-
         enum Type
         {
             CenterOfView,

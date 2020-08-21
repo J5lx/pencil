@@ -17,16 +17,13 @@ GNU General Public License for more details.
 #include "aboutdialog.h"
 #include "ui_aboutdialog.h"
 
+#include <QClipboard>
 #include <QPushButton>
 #include <QSysInfo>
-#include <QClipboard>
 
 #include "pencildef.h"
 
-
-AboutDialog::AboutDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::AboutDialog)
+AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent), ui(new Ui::AboutDialog)
 {
     ui->setupUi(this);
 
@@ -53,9 +50,7 @@ void AboutDialog::init()
     devText << ""; // An empty line
 
 #if defined(GIT_EXISTS)
-    devText << "commit: " S__GIT_COMMIT_HASH
-            << "date: " S__GIT_TIMESTAMP
-            << "";
+    devText << "commit: " S__GIT_COMMIT_HASH << "date: " S__GIT_TIMESTAMP << "";
 #endif
 
     devText << QString("Operating System: %1").arg(QSysInfo::prettyProductName())
@@ -72,8 +67,7 @@ void AboutDialog::init()
     ui->devInfoText->setText(devText.join("<br>"));
 
     QPushButton *copyToClipboardButton = new QPushButton(tr("Copy to clipboard", "Copy system info from About Dialog"));
-    connect(copyToClipboardButton, &QPushButton::clicked, this, [devText]
-    {
+    connect(copyToClipboardButton, &QPushButton::clicked, this, [devText] {
         QApplication::clipboard()->setText(devText.join("\n"));
     });
     ui->buttonBox->addButton(copyToClipboardButton, QDialogButtonBox::ActionRole);

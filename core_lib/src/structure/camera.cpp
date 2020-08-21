@@ -16,9 +16,7 @@ GNU General Public License for more details.
 
 #include "camera.h"
 
-Camera::Camera()
-{
-}
+Camera::Camera() {}
 
 Camera::Camera(QPointF translation, qreal rotation, qreal scaling)
 {
@@ -37,9 +35,7 @@ Camera::Camera(const Camera &c2) : KeyFrame(c2)
     mNeedUpdateView = true;
 }
 
-Camera::~Camera()
-{
-}
+Camera::~Camera() {}
 
 Camera *Camera::clone()
 {
@@ -141,9 +137,7 @@ void Camera::scaleWithOffset(qreal scaleValue, QPointF offset)
 
 bool Camera::operator==(const Camera &rhs) const
 {
-    bool b = (mTranslate == rhs.mTranslate)
-             && qFuzzyCompare(mRotate, rhs.mRotate)
-             && qFuzzyCompare(mScale, rhs.mScale);
+    bool b = (mTranslate == rhs.mTranslate) && qFuzzyCompare(mRotate, rhs.mRotate) && qFuzzyCompare(mScale, rhs.mScale);
 
     return b;
 }

@@ -17,9 +17,8 @@ GNU General Public License for more details.
 
 #include "backgroundwidget.h"
 
-#include <QStyleOption>
 #include <QPainter>
-
+#include <QStyleOption>
 
 BackgroundWidget::BackgroundWidget(QWidget *parent) : QWidget(parent)
 {
@@ -30,9 +29,7 @@ BackgroundWidget::BackgroundWidget(QWidget *parent) : QWidget(parent)
     setAttribute(Qt::WA_StaticContents);
 }
 
-BackgroundWidget::~BackgroundWidget()
-{
-}
+BackgroundWidget::~BackgroundWidget() {}
 
 void BackgroundWidget::init(PreferenceManager *prefs)
 {
@@ -94,19 +91,23 @@ void BackgroundWidget::loadBackgroundStyle()
     }
     else if (bgName == "checkerboard")
     {
-        mStyle = "background-image: url(:background/checkerboard.png); background-repeat: repeat-xy; border: 1px solid lightGrey;";
+        mStyle = "background-image: url(:background/checkerboard.png); background-repeat: repeat-xy; border: 1px solid "
+                 "lightGrey;";
     }
     else if (bgName == "dots")
     {
-        mStyle = "background-image: url(:background/dots.png); background-repeat: repeat-xy; border: 1px solid lightGrey;";
+        mStyle =
+            "background-image: url(:background/dots.png); background-repeat: repeat-xy; border: 1px solid lightGrey;";
     }
     else if (bgName == "weave")
     {
-        mStyle = "background-image: url(:background/weave.jpg); background-repeat: repeat-xy; border: 1px solid lightGrey;";
+        mStyle =
+            "background-image: url(:background/weave.jpg); background-repeat: repeat-xy; border: 1px solid lightGrey;";
     }
     else if (bgName == "grid")
     {
-        mStyle = "background-image: url(:background/grid.jpg); background-repeat: repeat-xy; border: 1px solid lightGrey;";
+        mStyle =
+            "background-image: url(:background/grid.jpg); background-repeat: repeat-xy; border: 1px solid lightGrey;";
     }
 
     mStyle = QString("BackgroundWidget { %1 }").arg(mStyle);

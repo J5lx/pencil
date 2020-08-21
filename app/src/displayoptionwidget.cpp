@@ -17,20 +17,17 @@ GNU General Public License for more details.
 #include "displayoptionwidget.h"
 #include "ui_displayoption.h"
 
-#include <QToolButton>
 #include <QGridLayout>
+#include <QToolButton>
 
-#include "preferencemanager.h"
-#include "viewmanager.h"
-#include "scribblearea.h"
 #include "editor.h"
-#include "util.h"
 #include "flowlayout.h"
+#include "preferencemanager.h"
+#include "scribblearea.h"
+#include "util.h"
+#include "viewmanager.h"
 
-
-DisplayOptionWidget::DisplayOptionWidget(QWidget *parent) :
-    BaseDockWidget(parent),
-    ui(new Ui::DisplayOption)
+DisplayOptionWidget::DisplayOptionWidget(QWidget *parent) : BaseDockWidget(parent), ui(new Ui::DisplayOption)
 {
     ui->setupUi(this);
 }

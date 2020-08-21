@@ -1,9 +1,9 @@
 #include "selectionmanager.h"
 #include "editor.h"
 
+#include "bitmapimage.h"
 #include "layerbitmap.h"
 #include "vectorimage.h"
-#include "bitmapimage.h"
 
 #include "layervector.h"
 #include "mathutils.h"
@@ -12,14 +12,9 @@
 #include <QDebug>
 //#endif
 
+SelectionManager::SelectionManager(Editor *editor) : BaseManager(editor) {}
 
-SelectionManager::SelectionManager(Editor *editor) : BaseManager(editor)
-{
-}
-
-SelectionManager::~SelectionManager()
-{
-}
+SelectionManager::~SelectionManager() {}
 
 bool SelectionManager::init()
 {
@@ -37,9 +32,7 @@ Status SelectionManager::save(Object *)
     return Status::OK;
 }
 
-void SelectionManager::workingLayerChanged(Layer *)
-{
-}
+void SelectionManager::workingLayerChanged(Layer *) {}
 
 void SelectionManager::resetSelectionTransformProperties()
 {
@@ -61,8 +54,7 @@ void SelectionManager::resetSelectionTransform()
 
 bool SelectionManager::isOutsideSelectionArea(QPointF point)
 {
-    return (!mTransformedSelection.contains(point)
-            && validateMoveMode(point) == MoveMode::NONE);
+    return (!mTransformedSelection.contains(point) && validateMoveMode(point) == MoveMode::NONE);
 }
 
 bool SelectionManager::transformHasBeenModified()
@@ -119,7 +111,6 @@ MoveMode SelectionManager::moveModeForAnchorInRange(QPointF lastPos)
     else if (QLineF(lastPoint, transformRect.bottomLeft()).length() < calculatedSelectionTol)
     {
         mode = MoveMode::BOTTOMLEFT;
-
     }
     else if (QLineF(lastPoint, transformRect.bottomRight()).length() < calculatedSelectionTol)
     {
@@ -141,7 +132,10 @@ MoveMode SelectionManager::getMoveModeForSelectionAnchor(QPointF pos)
 {
     const double calculatedSelectionTol = selectionTolerance();
 
-    if (mCurrentSelectionPolygonF.count() < 4) { return MoveMode::NONE; }
+    if (mCurrentSelectionPolygonF.count() < 4)
+    {
+        return MoveMode::NONE;
+    }
 
     QPointF topLeftCorner = mCurrentSelectionPolygonF[0];
 
@@ -164,7 +158,6 @@ MoveMode SelectionManager::getMoveModeForSelectionAnchor(QPointF pos)
     else if (QLineF(currentPos, bottomLeftCorner).length() < calculatedSelectionTol)
     {
         return MoveMode::BOTTOMLEFT;
-
     }
     else if (QLineF(currentPos, bottomRightCorner).length() < calculatedSelectionTol)
     {
@@ -201,7 +194,11 @@ QPointF SelectionManager::whichAnchorPoint(QPointF currentPoint)
     return anchorPoint;
 }
 
-void SelectionManager::adjustSelection(const QPointF &currentPoint, qreal offsetX, qreal offsetY, qreal rotationOffset, int rotationIncrement)
+void SelectionManager::adjustSelection(const QPointF &currentPoint,
+                                       qreal offsetX,
+                                       qreal offsetY,
+                                       qreal rotationOffset,
+                                       int rotationIncrement)
 {
     offsetX = qRound(offsetX);
     offsetY = qRound(offsetY);
@@ -233,13 +230,13 @@ void SelectionManager::adjustSelection(const QPointF &currentPoint, qreal offset
     {
         mTempTransformedSelection = transformedSelection.adjusted(0, 0, offsetX, offsetY);
         break;
-
     }
     case MoveMode::ROTATION:
     {
         mTempTransformedSelection = transformedSelection;
         QPointF anchorPoint = transformedSelection.center();
-        qreal rotatedAngle = qRadiansToDegrees(MathUtils::getDifferenceAngle(anchorPoint, currentPoint)) - rotationOffset;
+        qreal rotatedAngle =
+            qRadiansToDegrees(MathUtils::getDifferenceAngle(anchorPoint, currentPoint)) - rotationOffset;
         if (rotationIncrement > 0)
         {
             mRotatedAngle = constrainRotationToAngle(rotatedAngle, rotationIncrement);
@@ -296,10 +293,7 @@ void SelectionManager::calculateSelectionTransformation()
 QVector<QPointF> SelectionManager::calcSelectionCenterPoints()
 {
     QVector<QPointF> centerPoints;
-    qreal selectionCenterX,
-          selectionCenterY,
-          tempSelectionCenterX,
-          tempSelectionCenterY;
+    qreal selectionCenterX, selectionCenterY, tempSelectionCenterX, tempSelectionCenterY;
 
     tempSelectionCenterX = mTempTransformedSelection.center().x();
     tempSelectionCenterY = mTempTransformedSelection.center().y();
@@ -309,7 +303,6 @@ QVector<QPointF> SelectionManager::calcSelectionCenterPoints()
     centerPoints.append(QPointF(selectionCenterX, selectionCenterY));
     return centerPoints;
 }
-
 
 QPointF SelectionManager::offsetFromAspectRatio(qreal offsetX, qreal offsetY)
 {
@@ -326,13 +319,25 @@ QPointF SelectionManager::offsetFromAspectRatio(qreal offsetX, qreal offsetY)
     else if (mMoveMode == MoveMode::MIDDLE)
     {
         qreal absX = offsetX;
-        if (absX < 0) { absX = -absX; }
+        if (absX < 0)
+        {
+            absX = -absX;
+        }
 
         qreal absY = offsetY;
-        if (absY < 0) { absY = -absY; }
+        if (absY < 0)
+        {
+            absY = -absY;
+        }
 
-        if (absX > absY) { offsetY = 0; }
-        if (absY > absX) { offsetX = 0; }
+        if (absX > absY)
+        {
+            offsetY = 0;
+        }
+        if (absY > absX)
+        {
+            offsetX = 0;
+        }
     }
     return QPointF(offsetX, offsetY);
 }
@@ -340,7 +345,7 @@ QPointF SelectionManager::offsetFromAspectRatio(qreal offsetX, qreal offsetY)
 /**
  * @brief ScribbleArea::flipSelection
  * flip selection along the X or Y axis
-*/
+ */
 void SelectionManager::flipSelection(bool flipVertical)
 {
     qreal scaleX = mTempTransformedSelection.width() / mSelection.width();
@@ -384,4 +389,3 @@ void SelectionManager::resetSelectionProperties()
 
     emit selectionChanged();
 }
-

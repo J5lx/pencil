@@ -17,31 +17,29 @@ GNU General Public License for more details.
 #include "shortcutspage.h"
 #include "ui_shortcutspage.h"
 
+#include "pencilsettings.h"
 #include <QDebug>
-#include <QStringRef>
-#include <QSettings>
-#include <QStandardItemModel>
+#include <QFile>
+#include <QFileDialog>
 #include <QKeyEvent>
 #include <QKeySequence>
 #include <QMessageBox>
-#include "pencilsettings.h"
-#include <QFile>
-#include <QFileDialog>
-
+#include <QSettings>
+#include <QStandardItemModel>
+#include <QStringRef>
 
 static const int ACT_NAME_COLUMN = 0;
-static const int KEY_SEQ_COLUMN  = 1;
+static const int KEY_SEQ_COLUMN = 1;
 
 static QString getHumanReadableShortcutName(const QString &);
 
-ShortcutsPage::ShortcutsPage(QWidget *parent)
-    : QWidget(parent),
-      ui(new Ui::ShortcutsPage)
+ShortcutsPage::ShortcutsPage(QWidget *parent) : QWidget(parent), ui(new Ui::ShortcutsPage)
 {
     ui->setupUi(this);
     m_treeModel = new QStandardItemModel(this);
     m_treeModel->setColumnCount(2);
-    m_treeModel->setHorizontalHeaderLabels({ tr("Action", "Shortcut table header"), tr("Shortcut", "Shortcut table header") });
+    m_treeModel->setHorizontalHeaderLabels(
+        {tr("Action", "Shortcut table header"), tr("Shortcut", "Shortcut table header")});
     treeModelLoadShortcutsSetting();
 
     ui->treeView->setModel(m_treeModel);
@@ -54,7 +52,9 @@ ShortcutsPage::ShortcutsPage(QWidget *parent)
     connect(ui->btnLoadShortcuts, &QPushButton::clicked, this, &ShortcutsPage::loadShortcutsButtonClicked);
     connect(ui->clearButton, &QPushButton::clicked, this, &ShortcutsPage::clearButtonClicked);
 
-    ui->treeView->selectionModel()->select(QItemSelection(m_treeModel->index(0, 0), m_treeModel->index(0, m_treeModel->columnCount() - 1)), QItemSelectionModel::Select);
+    ui->treeView->selectionModel()->select(
+        QItemSelection(m_treeModel->index(0, 0), m_treeModel->index(0, m_treeModel->columnCount() - 1)),
+        QItemSelectionModel::Select);
     tableItemClicked(m_treeModel->index(0, 0));
 }
 
@@ -95,7 +95,7 @@ void ShortcutsPage::keyCapLineEditTextChanged()
     QStandardItem *keySeqItem = m_treeModel->item(row, KEY_SEQ_COLUMN);
 
     QString strCmdName = actionItem->data().toString();
-    QString strKeySeq  = keySequence.toString(QKeySequence::PortableText);
+    QString strKeySeq = keySequence.toString(QKeySequence::PortableText);
 
     QSettings setting(PENCIL2D, PENCIL2D);
     setting.beginGroup("shortcuts");
@@ -104,7 +104,8 @@ void ShortcutsPage::keyCapLineEditTextChanged()
     {
         QMessageBox msgBox(this);
         msgBox.setText(tr("Shortcut Conflict!"));
-        msgBox.setInformativeText(tr("%1 is already used, overwrite?").arg(keySequence.toString(QKeySequence::NativeText)));
+        msgBox.setInformativeText(
+            tr("%1 is already used, overwrite?").arg(keySequence.toString(QKeySequence::NativeText)));
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setDefaultButton(QMessageBox::No);
         msgBox.setIcon(QMessageBox::Warning);
@@ -246,7 +247,7 @@ void ShortcutsPage::treeModelLoadShortcutsSetting()
     {
         QString strKeySequence = settings.value(strCmdName).toString();
 
-        //convert to native format
+        // convert to native format
         strKeySequence = QKeySequence(strKeySequence).toString(QKeySequence::NativeText);
 
         if (m_treeModel->item(row, ACT_NAME_COLUMN) == nullptr)
@@ -300,8 +301,7 @@ void ShortcutsPage::clearButtonClicked()
  */
 static QString getHumanReadableShortcutName(const QString &cmdName)
 {
-    static QHash<QString, QString> humanReadableShortcutNames = QHash<QString, QString>
-    {
+    static QHash<QString, QString> humanReadableShortcutNames = QHash<QString, QString>{
         {CMD_ADD_FRAME, QObject::tr("Add Frame", "Shortcut")},
         {CMD_CLEAR_FRAME, QObject::tr("Clear Frame", "Shortcut")},
         {CMD_COPY, QObject::tr("Copy", "Shortcut")},

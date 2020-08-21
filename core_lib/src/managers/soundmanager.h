@@ -18,19 +18,17 @@ GNU General Public License for more details.
 #ifndef SOUNDMANAGER_H
 #define SOUNDMANAGER_H
 
-#include <cstdint>
 #include "basemanager.h"
+#include <cstdint>
 
 class Layer;
 class SoundClip;
 class SoundPlayer;
 
-
 class SoundManager : public BaseManager
 {
     Q_OBJECT
 public:
-
     explicit SoundManager(Editor *editor);
     ~SoundManager() override;
 

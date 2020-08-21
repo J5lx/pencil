@@ -21,31 +21,28 @@ GNU General Public License for more details.
 #include <cmath>
 
 // Qt
+#include <QAbstractItemModel>
+#include <QColorDialog>
 #include <QDebug>
+#include <QInputDialog>
 #include <QListWidget>
 #include <QListWidgetItem>
-#include <QInputDialog>
-#include <QColorDialog>
-#include <QMessageBox>
-#include <QPushButton>
-#include <QSettings>
 #include <QMenu>
-#include <QtMath>
-#include <QScrollBar>
-#include <QAbstractItemModel>
+#include <QMessageBox>
 #include <QPainter>
+#include <QPushButton>
+#include <QScrollBar>
+#include <QSettings>
+#include <QtMath>
 
 // Project
+#include "colormanager.h"
 #include "colorref.h"
-#include "object.h"
 #include "editor.h"
 #include "layerbitmap.h"
-#include "colormanager.h"
+#include "object.h"
 
-
-ColorPaletteWidget::ColorPaletteWidget(QWidget *parent) :
-    BaseDockWidget(parent),
-    ui(new Ui::ColorPalette)
+ColorPaletteWidget::ColorPaletteWidget(QWidget *parent) : BaseDockWidget(parent), ui(new Ui::ColorPalette)
 {
     ui->setupUi(this);
 }
@@ -79,10 +76,11 @@ void ColorPaletteWidget::initUI()
         setGridMode();
     }
 
-    buttonStylesheet = "::menu-indicator{ image: none; }"
-                       "QPushButton { border: 0px; }"
-                       "QPushButton:pressed { border: 1px solid #ADADAD; border-radius: 2px; background-color: #D5D5D5; }"
-                       "QPushButton:checked { border: 1px solid #ADADAD; border-radius: 2px; background-color: #D5D5D5; }";
+    buttonStylesheet =
+        "::menu-indicator{ image: none; }"
+        "QPushButton { border: 0px; }"
+        "QPushButton:pressed { border: 1px solid #ADADAD; border-radius: 2px; background-color: #D5D5D5; }"
+        "QPushButton:checked { border: 1px solid #ADADAD; border-radius: 2px; background-color: #D5D5D5; }";
 
     ui->addColorButton->setStyleSheet(buttonStylesheet);
     ui->removeColorButton->setStyleSheet(buttonStylesheet);
@@ -125,7 +123,7 @@ void ColorPaletteWidget::showContextMenu(const QPoint &pos)
     connect(menu, &QMenu::triggered, menu, &QMenu::deleteLater);
 
     menu->addAction(tr("Add"), this, &ColorPaletteWidget::addItem, 0);
-    menu->addAction(tr("Replace"),  this, &ColorPaletteWidget::replaceItem, 0);
+    menu->addAction(tr("Replace"), this, &ColorPaletteWidget::replaceItem, 0);
     menu->addAction(tr("Remove"), this, &ColorPaletteWidget::removeItem, 0);
 
     menu->exec(globalPos);
@@ -215,7 +213,7 @@ void ColorPaletteWidget::refreshColorList()
     painter.end();
 
     QPen borderShadow(QColor(0, 0, 0, 200), 1, Qt::DotLine, Qt::FlatCap, Qt::MiterJoin);
-    QVector<qreal> dashPattern{ 4, 4 };
+    QVector<qreal> dashPattern{4, 4};
     borderShadow.setDashPattern(dashPattern);
 
     QPen borderHighlight(borderShadow);
@@ -295,7 +293,11 @@ void ColorPaletteWidget::onItemChanged(QListWidgetItem *item)
     mObject->renameColor(index, newColorName);
 }
 
-void ColorPaletteWidget::onRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row)
+void ColorPaletteWidget::onRowsMoved(const QModelIndex &parent,
+                                     int start,
+                                     int end,
+                                     const QModelIndex &destination,
+                                     int row)
 {
     Q_UNUSED(parent)
     Q_UNUSED(destination)
@@ -305,7 +307,10 @@ void ColorPaletteWidget::onRowsMoved(const QModelIndex &parent, int start, int e
     if (start < row)
     {
         row -= 1; // TODO: Is this a bug?
-        if (start == row) { return; }
+        if (start == row)
+        {
+            return;
+        }
 
         startIndex = start;
         endIndex = row;
@@ -322,7 +327,10 @@ void ColorPaletteWidget::onRowsMoved(const QModelIndex &parent, int start, int e
     }
     else
     {
-        if (start == row) { return; }
+        if (start == row)
+        {
+            return;
+        }
 
         startIndex = start;
         endIndex = row;
@@ -349,7 +357,10 @@ void ColorPaletteWidget::clickColorListItem(QListWidgetItem *currentItem)
 
     // to avoid conflicts with multiple selections
     // ie. will be seen as selected twice and cause problems
-    if (modifiers & Qt::ShiftModifier || modifiers & Qt::ControlModifier) { return; }
+    if (modifiers & Qt::ShiftModifier || modifiers & Qt::ControlModifier)
+    {
+        return;
+    }
 
     int colorIndex = ui->colorListWidget->row(currentItem);
 
@@ -364,11 +375,11 @@ void ColorPaletteWidget::palettePreferences()
     mSeparator = new QAction("", this);
     mSeparator->setSeparator(true);
 
-    buttonStylesheet = "::menu-indicator{ image: none; }"
-                       "QToolButton { border: 0px; }"
-                       "QToolButton:pressed { border: 1px solid #ADADAD; border-radius: 2px; background-color: #D5D5D5; }"
-                       "QToolButton:checked { border: 1px solid #ADADAD; border-radius: 2px; background-color: #D5D5D5; }";
-
+    buttonStylesheet =
+        "::menu-indicator{ image: none; }"
+        "QToolButton { border: 0px; }"
+        "QToolButton:pressed { border: 1px solid #ADADAD; border-radius: 2px; background-color: #D5D5D5; }"
+        "QToolButton:checked { border: 1px solid #ADADAD; border-radius: 2px; background-color: #D5D5D5; }";
 
     // Add to UI
     ui->palettePref->setIcon(QIcon(":/app/icons/new/svg/more_options.svg"));
@@ -384,10 +395,22 @@ void ColorPaletteWidget::palettePreferences()
     ui->palettePref->addAction(ui->largeSwatchAction);
     ui->palettePref->addAction(ui->fitSwatchAction);
 
-    if (mFitSwatches) { ui->fitSwatchAction->setChecked(true); }
-    else if (mIconSize.width() > MEDIUM_ICON_SIZE) { ui->largeSwatchAction->setChecked(true); }
-    else if (mIconSize.width() > MIN_ICON_SIZE) { ui->mediumSwatchAction->setChecked(true); }
-    else { ui->smallSwatchAction->setChecked(true); }
+    if (mFitSwatches)
+    {
+        ui->fitSwatchAction->setChecked(true);
+    }
+    else if (mIconSize.width() > MEDIUM_ICON_SIZE)
+    {
+        ui->largeSwatchAction->setChecked(true);
+    }
+    else if (mIconSize.width() > MIN_ICON_SIZE)
+    {
+        ui->mediumSwatchAction->setChecked(true);
+    }
+    else
+    {
+        ui->smallSwatchAction->setChecked(true);
+    }
 
     if (ui->colorListWidget->viewMode() == QListView::ListMode)
     {
@@ -499,8 +522,14 @@ void ColorPaletteWidget::fitSwatchSize()
     if (ui->colorListWidget->viewMode() == QListView::ListMode)
     {
         size = qFloor((height - hScrollBar - (4 * colorCount)) / colorCount);
-        if (size < MIN_ICON_SIZE) { size = MIN_ICON_SIZE; }
-        if (size > MAX_ICON_SIZE) { size = MAX_ICON_SIZE; }
+        if (size < MIN_ICON_SIZE)
+        {
+            size = MIN_ICON_SIZE;
+        }
+        if (size > MAX_ICON_SIZE)
+        {
+            size = MAX_ICON_SIZE;
+        }
     }
     else
     {
@@ -673,7 +702,8 @@ bool ColorPaletteWidget::showPaletteWarning()
 
 void ColorPaletteWidget::showPaletteReminder()
 {
-    QMessageBox::warning(nullptr, tr("Palette Restriction"),
+    QMessageBox::warning(nullptr,
+                         tr("Palette Restriction"),
                          tr("The palette requires at least one swatch to remain functional"));
 }
 
@@ -681,7 +711,11 @@ void ColorPaletteWidget::updateItemColor(int itemIndex, QColor newColor)
 {
     QPixmap colorSwatch(mIconSize);
     QPainter swatchPainter(&colorSwatch);
-    swatchPainter.drawTiledPixmap(0, 0, mIconSize.width(), mIconSize.height(), QPixmap(":/background/checkerboard.png"));
+    swatchPainter.drawTiledPixmap(0,
+                                  0,
+                                  mIconSize.width(),
+                                  mIconSize.height(),
+                                  QPixmap(":/background/checkerboard.png"));
     swatchPainter.fillRect(0, 0, mIconSize.width(), mIconSize.height(), newColor);
 
     QPen borderShadow(QColor(0, 0, 0, 200), 1, Qt::DotLine, Qt::FlatCap, Qt::MiterJoin);

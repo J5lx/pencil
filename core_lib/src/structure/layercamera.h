@@ -17,9 +17,9 @@ GNU General Public License for more details.
 #ifndef LAYERCAMERA_H
 #define LAYERCAMERA_H
 
-#include <QList>
-#include <QDialog>
 #include "layer.h"
+#include <QDialog>
+#include <QList>
 
 class QLineEdit;
 class QSpinBox;
@@ -43,6 +43,7 @@ public:
     void setWidth(int);
     int getHeight();
     void setHeight(int);
+
 private:
     Ui::CameraPropertiesDialog *ui = nullptr;
 };

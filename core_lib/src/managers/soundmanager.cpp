@@ -17,22 +17,18 @@ GNU General Public License for more details.
 
 #include "soundmanager.h"
 
-#include <QString>
-#include <QFileInfo>
 #include "editor.h"
-#include "object.h"
+#include "layermanager.h"
 #include "layersound.h"
+#include "object.h"
 #include "soundclip.h"
 #include "soundplayer.h"
-#include "layermanager.h"
+#include <QFileInfo>
+#include <QString>
 
-SoundManager::SoundManager(Editor *editor) : BaseManager(editor)
-{
-}
+SoundManager::SoundManager(Editor *editor) : BaseManager(editor) {}
 
-SoundManager::~SoundManager()
-{
-}
+SoundManager::~SoundManager() {}
 
 bool SoundManager::init()
 {
@@ -52,8 +48,7 @@ Status SoundManager::load(Object *obj)
 
         LayerSound *soundLayer = static_cast<LayerSound *>(layer);
 
-        soundLayer->foreachKeyFrame([this](KeyFrame * key)
-        {
+        soundLayer->foreachKeyFrame([this](KeyFrame *key) {
             SoundClip *clip = dynamic_cast<SoundClip *>(key);
             Q_ASSERT(clip);
 

@@ -3,12 +3,10 @@
 
 #include <QWidget>
 
-
 class ColorSlider : public QWidget
 {
     Q_OBJECT
 public:
-
     enum ColorType
     {
         HUE,
@@ -37,21 +35,9 @@ public:
 
     QColor color() { return mColor; }
 
-    void setHsv(QColor hsv)
-    {
-        mColor.setHsv(hsv.hsvHue(),
-                      hsv.hsvSaturation(),
-                      hsv.value(),
-                      hsv.alpha());
-    }
+    void setHsv(QColor hsv) { mColor.setHsv(hsv.hsvHue(), hsv.hsvSaturation(), hsv.value(), hsv.alpha()); }
 
-    void setRgb(QColor rgb)
-    {
-        mColor.setRgb(rgb.red(),
-                      rgb.green(),
-                      rgb.blue(),
-                      rgb.alpha());
-    }
+    void setRgb(QColor rgb) { mColor.setRgb(rgb.red(), rgb.green(), rgb.blue(), rgb.alpha()); }
 
     void setColorSpecType(ColorSpecType newType) { this->mSpecType = newType; }
     void setColorType(ColorType newType) { this->mColorType = newType; }
@@ -65,14 +51,13 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
 
-    //public slots:
+    // public slots:
 
 signals:
     void valueChanged(QColor color);
     //    void valueChanged(QColor color);
 
 private:
-
     void drawColorBox(QColor color, QSize size);
     void drawPicker(QColor color);
     QLinearGradient hsvGradient(QColor color);

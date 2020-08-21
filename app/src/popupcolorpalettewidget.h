@@ -7,7 +7,6 @@ class ColorBox;
 class ScribbleArea;
 class QPushButton;
 
-
 class PopupColorPaletteWidget : public QWidget
 {
     Q_OBJECT

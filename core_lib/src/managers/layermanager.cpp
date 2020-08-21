@@ -17,22 +17,17 @@ GNU General Public License for more details.
 
 #include "layermanager.h"
 
-#include "object.h"
 #include "editor.h"
+#include "object.h"
 
-#include "layersound.h"
 #include "layerbitmap.h"
-#include "layervector.h"
 #include "layercamera.h"
+#include "layersound.h"
+#include "layervector.h"
 
+LayerManager::LayerManager(Editor *editor) : BaseManager(editor) {}
 
-LayerManager::LayerManager(Editor *editor) : BaseManager(editor)
-{
-}
-
-LayerManager::~LayerManager()
-{
-}
+LayerManager::~LayerManager() {}
 
 bool LayerManager::init()
 {
@@ -169,8 +164,7 @@ QString LayerManager::nameSuggestLayer(const QString &name)
     QString newName = name;
     do
     {
-        newName = QStringLiteral("%1 %2")
-                  .arg(name).arg(QString::number(newIndex++));
+        newName = QStringLiteral("%1 %2").arg(name).arg(QString::number(newIndex++));
     } while (sLayers.contains(newName));
     return newName;
 }
@@ -296,8 +290,7 @@ Status LayerManager::deleteLayer(int index)
     object()->deleteLayer(layer);
 
     // current layer is the last layer && we are deleting it
-    if (index == object()->getLayerCount() &&
-        index == currentLayerIndex())
+    if (index == object()->getLayerCount() && index == currentLayerIndex())
     {
         setCurrentLayer(currentLayerIndex() - 1);
     }
@@ -315,7 +308,10 @@ Status LayerManager::deleteLayer(int index)
 
 Status LayerManager::renameLayer(Layer *layer, const QString &newName)
 {
-    if (newName.isEmpty()) { return Status::FAIL; }
+    if (newName.isEmpty())
+    {
+        return Status::FAIL;
+    }
 
     layer->setName(newName);
     currentLayerChanged(getIndex(layer));
@@ -346,8 +342,7 @@ int LayerManager::animationLength(bool includeSounds)
             }
 
             Layer *soundLayer = o->getLayer(i);
-            soundLayer->foreachKeyFrame([&maxFrame](KeyFrame * keyFrame)
-            {
+            soundLayer->foreachKeyFrame([&maxFrame](KeyFrame *keyFrame) {
                 int endPosition = keyFrame->pos() + (keyFrame->length() - 1);
                 if (endPosition > maxFrame)
                 {

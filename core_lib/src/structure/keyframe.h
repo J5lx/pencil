@@ -18,13 +18,12 @@ GNU General Public License for more details.
 #ifndef KeyFrame_H
 #define KeyFrame_H
 
-#include <cstdint>
-#include <vector>
-#include <memory>
-#include <QString>
 #include "pencilerror.h"
+#include <QString>
+#include <cstdint>
+#include <memory>
+#include <vector>
 class KeyFrameEventListener;
-
 
 class KeyFrame
 {
@@ -33,7 +32,7 @@ public:
     explicit KeyFrame(const KeyFrame &k2);
     virtual ~KeyFrame();
 
-    int  pos() const { return mFrame; }
+    int pos() const { return mFrame; }
     void setPos(int position) { mFrame = position; }
 
     int length() const { return mLength; }
@@ -47,7 +46,7 @@ public:
     bool isSelected() const { return mIsSelected; }
 
     QString fileName() const { return mAttachedFileName; }
-    void    setFileName(QString strFileName) { mAttachedFileName = strFileName; }
+    void setFileName(QString strFileName) { mAttachedFileName = strFileName; }
 
     void addEventListener(KeyFrameEventListener *);
     void removeEventListner(KeyFrameEventListener *);

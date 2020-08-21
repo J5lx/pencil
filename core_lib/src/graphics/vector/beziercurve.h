@@ -35,7 +35,10 @@ class BezierCurve
 public:
     explicit BezierCurve();
     explicit BezierCurve(const QList<QPointF> &pointList, bool smooth = true);
-    explicit BezierCurve(const QList<QPointF> &pointList, const QList<qreal> &pressureList, double tol, bool smooth = true);
+    explicit BezierCurve(const QList<QPointF> &pointList,
+                         const QList<qreal> &pressureList,
+                         double tol,
+                         bool smooth = true);
 
     Status createDomElement(QXmlStreamWriter &xmlStream);
     void loadDomElement(const QDomElement &element);
@@ -47,13 +50,35 @@ public:
     void decreaseColorNumber() { colorNumber--; }
     int getVertexSize() const { return vertex.size(); }
     QPointF getOrigin() const { return origin; }
-    QPointF getVertex(int i) const { if (i == -1) { return origin; } else { return vertex.at(i);} }
+    QPointF getVertex(int i) const
+    {
+        if (i == -1)
+        {
+            return origin;
+        }
+        else
+        {
+            return vertex.at(i);
+        }
+    }
     QPointF getC1(int i) const { return c1.at(i); }
     QPointF getC2(int i) const { return c2.at(i); }
     qreal getPressure(int i) const { return pressure.at(i); }
     bool isSelected(int vertex) const { return selected.at(vertex + 1); }
-    bool isSelected() const { bool result = true; for (int i = 0; i < selected.size(); i++) result = result && selected[i]; return result; }
-    bool isPartlySelected() const { bool result = false; for (int i = 0; i < selected.size(); i++) result = result || selected[i]; return result; }
+    bool isSelected() const
+    {
+        bool result = true;
+        for (int i = 0; i < selected.size(); i++)
+            result = result && selected[i];
+        return result;
+    }
+    bool isPartlySelected() const
+    {
+        bool result = false;
+        for (int i = 0; i < selected.size(); i++)
+            result = result || selected[i];
+        return result;
+    }
     bool isInvisible() const { return invisible; }
     bool intersects(QPointF point, qreal distance);
     bool intersects(QRectF rectangle);
@@ -70,7 +95,13 @@ public:
     void setVariableWidth(bool YesOrNo);
     void setInvisibility(bool YesOrNo);
     void setColorNumber(int colorNumber) { this->colorNumber = colorNumber; }
-    void setSelected(bool YesOrNo) { for (int i = 0; i < selected.size(); i++) { selected[i] = YesOrNo; } }
+    void setSelected(bool YesOrNo)
+    {
+        for (int i = 0; i < selected.size(); i++)
+        {
+            selected[i] = YesOrNo;
+        }
+    }
     void setSelected(int i, bool YesOrNo);
     void setFilled(bool yesOrNo);
 
@@ -98,9 +129,18 @@ public:
     // general useful functions -> to be placed elsewhere?
     static qreal eLength(const QPointF point); // returns the Euclidean length of a point (seen as a vector)
     static qreal mLength(const QPointF point); // returns the Manhattan length of a point (seen as a vector)
-    static void normalise(QPointF &point); // normalises a point (seen as a vector);
-    static qreal findDistance(BezierCurve curve, int i, QPointF P, QPointF &nearestPoint, qreal &t); //finds the distance between a cubic section and a point
-    static bool findIntersection(BezierCurve curve1, int i1, BezierCurve curve2, int i2, QList<Intersection> &intersections); //finds the intersection between two cubic sections
+    static void normalise(QPointF &point);     // normalises a point (seen as a vector);
+    static qreal findDistance(BezierCurve curve,
+                              int i,
+                              QPointF P,
+                              QPointF &nearestPoint,
+                              qreal &t); // finds the distance between a cubic section and a point
+    static bool findIntersection(
+        BezierCurve curve1,
+        int i1,
+        BezierCurve curve2,
+        int i2,
+        QList<Intersection> &intersections); // finds the intersection between two cubic sections
 
 private:
     QPointF origin;

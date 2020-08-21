@@ -16,8 +16,8 @@ GNU General Public License for more details.
 #ifndef COLORSPINBOXGROUP_H
 #define COLORSPINBOXGROUP_H
 
-#include <QPaintEvent>
 #include "basedockwidget.h"
+#include <QPaintEvent>
 
 namespace Ui
 {
@@ -54,7 +54,6 @@ private slots:
     void onSliderChanged(QColor color);
 
 private:
-
     Ui::ColorInspector *ui = nullptr;
     bool isRgbColors = true;
     QColor mCurrentColor;

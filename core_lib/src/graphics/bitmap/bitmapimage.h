@@ -17,10 +17,9 @@ GNU General Public License for more details.
 #ifndef BITMAP_IMAGE_H
 #define BITMAP_IMAGE_H
 
-#include <memory>
-#include <QPainter>
 #include "keyframe.h"
-
+#include <QPainter>
+#include <memory>
 
 class BitmapImage : public KeyFrame
 {
@@ -43,7 +42,7 @@ public:
     void paintImage(QPainter &painter, QImage &image, QRect sourceRect, QRect destRect);
 
     QImage *image();
-    void    setImage(QImage *pImg);
+    void setImage(QImage *pImg);
 
     BitmapImage copy();
     BitmapImage copy(QRect rectangle);
@@ -55,7 +54,10 @@ public:
     void transform(QRectF rectangle, bool smoothTransform) { transform(rectangle.toRect(), smoothTransform); }
     BitmapImage transformed(QRect selection, QTransform transform, bool smoothTransform);
     BitmapImage transformed(QRect rectangle, bool smoothTransform);
-    BitmapImage transformed(QRectF rectangle, bool smoothTransform) { return transformed(rectangle.toRect(), smoothTransform); }
+    BitmapImage transformed(QRectF rectangle, bool smoothTransform)
+    {
+        return transformed(rectangle.toRect(), smoothTransform);
+    }
 
     bool contains(QPoint P) { return mBounds.contains(P); }
     bool contains(QPointF P) { return contains(P.toPoint()); }
@@ -81,24 +83,71 @@ public:
     void drawEllipse(QRectF rectangle, QPen pen, QBrush brush, QPainter::CompositionMode cm, bool antialiasing);
     void drawPath(QPainterPath path, QPen pen, QBrush brush, QPainter::CompositionMode cm, bool antialiasing);
 
-    QPoint topLeft() { autoCrop(); return mBounds.topLeft(); }
-    QPoint topRight() { autoCrop(); return mBounds.topRight(); }
-    QPoint bottomLeft() { autoCrop(); return mBounds.bottomLeft(); }
-    QPoint bottomRight() { autoCrop(); return mBounds.bottomRight(); }
-    int left() { autoCrop(); return mBounds.left(); }
-    int right() { autoCrop(); return mBounds.right(); }
-    int top() { autoCrop(); return mBounds.top(); }
-    int bottom() { autoCrop(); return mBounds.bottom(); }
-    int width() { autoCrop(); return mBounds.width(); }
-    int height() { autoCrop(); return mBounds.height(); }
-    QSize size() { autoCrop(); return mBounds.size(); }
+    QPoint topLeft()
+    {
+        autoCrop();
+        return mBounds.topLeft();
+    }
+    QPoint topRight()
+    {
+        autoCrop();
+        return mBounds.topRight();
+    }
+    QPoint bottomLeft()
+    {
+        autoCrop();
+        return mBounds.bottomLeft();
+    }
+    QPoint bottomRight()
+    {
+        autoCrop();
+        return mBounds.bottomRight();
+    }
+    int left()
+    {
+        autoCrop();
+        return mBounds.left();
+    }
+    int right()
+    {
+        autoCrop();
+        return mBounds.right();
+    }
+    int top()
+    {
+        autoCrop();
+        return mBounds.top();
+    }
+    int bottom()
+    {
+        autoCrop();
+        return mBounds.bottom();
+    }
+    int width()
+    {
+        autoCrop();
+        return mBounds.width();
+    }
+    int height()
+    {
+        autoCrop();
+        return mBounds.height();
+    }
+    QSize size()
+    {
+        autoCrop();
+        return mBounds.size();
+    }
 
     // peg bar alignment
     Status::StatusInt findLeft(QRectF rect, int grayValue);
     Status::StatusInt findTop(QRectF rect, int grayValue);
 
-
-    QRect &bounds() { autoCrop(); return mBounds; }
+    QRect &bounds()
+    {
+        autoCrop();
+        return mBounds;
+    }
 
     /** Determines if the BitmapImage is minimally bounded.
      *
@@ -124,8 +173,8 @@ protected:
     void setCompositionModeBounds(QRect sourceBounds, bool isSourceMinBounds, QPainter::CompositionMode cm);
 
 private:
-    std::shared_ptr< QImage > mImage;
-    QRect   mBounds;
+    std::shared_ptr<QImage> mImage;
+    QRect mBounds;
 
     /** @see isMinimallyBounded() */
     bool mMinBound = true;

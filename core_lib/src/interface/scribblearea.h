@@ -15,7 +15,6 @@ GNU General Public License for more details.
 
 */
 
-
 #ifndef SCRIBBLEAREA_H
 #define SCRIBBLEAREA_H
 
@@ -25,18 +24,18 @@ GNU General Public License for more details.
 #include <memory>
 
 #include <QColor>
+#include <QPixmapCache>
 #include <QPoint>
 #include <QWidget>
-#include <QPixmapCache>
 
-#include "movemode.h"
-#include "log.h"
-#include "pencildef.h"
 #include "bitmapimage.h"
 #include "canvaspainter.h"
+#include "log.h"
+#include "movemode.h"
+#include "pencildef.h"
 #include "preferencemanager.h"
-#include "strokemanager.h"
 #include "selectionpainter.h"
+#include "strokemanager.h"
 
 class Layer;
 class Editor;
@@ -44,7 +43,6 @@ class BaseTool;
 class PointerEvent;
 class BitmapImage;
 class VectorImage;
-
 
 class ScribbleArea : public QWidget
 {
@@ -133,7 +131,6 @@ public slots:
 
     void showLayerNotVisibleWarning();
 
-
 protected:
     void tabletEvent(QTabletEvent *) override;
     void wheelEvent(QWheelEvent *) override;
@@ -152,9 +149,25 @@ public:
     void drawPath(QPainterPath path, QPen pen, QBrush brush, QPainter::CompositionMode cm);
     void drawPen(QPointF thePoint, qreal brushWidth, QColor fillColor, bool useAA = true);
     void drawPencil(QPointF thePoint, qreal brushWidth, qreal fixedBrushFeather, QColor fillColor, qreal opacity);
-    void drawBrush(QPointF thePoint, qreal brushWidth, qreal offset, QColor fillColor, qreal opacity, bool usingFeather = true, bool useAA = false);
-    void blurBrush(BitmapImage *bmiSource_, QPointF srcPoint_, QPointF thePoint_, qreal brushWidth_, qreal offset_, qreal opacity_);
-    void liquifyBrush(BitmapImage *bmiSource_, QPointF srcPoint_, QPointF thePoint_, qreal brushWidth_, qreal offset_, qreal opacity_);
+    void drawBrush(QPointF thePoint,
+                   qreal brushWidth,
+                   qreal offset,
+                   QColor fillColor,
+                   qreal opacity,
+                   bool usingFeather = true,
+                   bool useAA = false);
+    void blurBrush(BitmapImage *bmiSource_,
+                   QPointF srcPoint_,
+                   QPointF thePoint_,
+                   qreal brushWidth_,
+                   qreal offset_,
+                   qreal opacity_);
+    void liquifyBrush(BitmapImage *bmiSource_,
+                      QPointF srcPoint_,
+                      QPointF thePoint_,
+                      qreal brushWidth_,
+                      qreal offset_,
+                      qreal opacity_);
 
     void paintBitmapBuffer();
     void paintBitmapBufferRect(const QRect &rect);
@@ -202,7 +215,7 @@ private:
     bool mShowThinLines = false;
     bool mQuickSizing = true;
     LayerVisibility mLayerVisibility = LayerVisibility::ALL;
-    bool mUsePressure   = true;
+    bool mUsePressure = true;
     bool mMakeInvisible = false;
     bool mToolCursors = true;
     qreal mCurveSmoothingLevel = 0.0;
@@ -226,8 +239,8 @@ private:
     QPoint mCursorCenterPos;
     QPointF mTransformedCursorPos;
 
-    //instant tool (temporal eg. eraser)
-    bool mInstantTool = false; //whether or not using temporal tool
+    // instant tool (temporal eg. eraser)
+    bool mInstantTool = false; // whether or not using temporal tool
 
     PreferenceManager *mPrefs = nullptr;
 

@@ -17,15 +17,15 @@ GNU General Public License for more details.
 #include "layercamera.h"
 #include "ui_camerapropertiesdialog.h"
 
-#include <QLineEdit>
-#include <QSpinBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QtDebug>
 #include "camera.h"
-#include <qsettings.h>
 #include "pencildef.h"
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QtDebug>
+#include <qsettings.h>
 
 CameraPropertiesDialog::CameraPropertiesDialog(QString name, int width, int height) :
     QDialog(),
@@ -89,9 +89,7 @@ LayerCamera::LayerCamera(Object *object) : Layer(object, Layer::CAMERA)
     dialog = nullptr;
 }
 
-LayerCamera::~LayerCamera()
-{
-}
+LayerCamera::~LayerCamera() {}
 
 Camera *LayerCamera::getCameraAtFrame(int frameNumber)
 {
@@ -140,10 +138,7 @@ QTransform LayerCamera::getViewAtFrame(int frameNumber)
     qreal c2 = (frameNumber - frame1) / (frame2 - frame1);
     qreal c1 = 1.0 - c2;
 
-    auto interpolation = [ = ](double f1, double f2) -> double
-    {
-        return f1 * c1 + f2 * c2;
-    };
+    auto interpolation = [=](double f1, double f2) -> double { return f1 * c1 + f2 * c2; };
 
     return QTransform(interpolation(camera1->view.m11(), camera2->view.m11()),
                       interpolation(camera1->view.m12(), camera2->view.m12()),
@@ -151,7 +146,6 @@ QTransform LayerCamera::getViewAtFrame(int frameNumber)
                       interpolation(camera1->view.m22(), camera2->view.m22()),
                       interpolation(camera1->view.dx(), camera2->view.dx()),
                       interpolation(camera1->view.dy(), camera2->view.dy()));
-
 }
 
 void LayerCamera::linearInterpolateTransform(Camera *cam)
@@ -191,10 +185,7 @@ void LayerCamera::linearInterpolateTransform(Camera *cam)
     // linear interpolation
     double c2 = (frameNumber - frame1) / (frame2 - frame1);
 
-    auto lerp = [](double f1, double f2, double ratio) -> double
-    {
-        return f1 * (1.0 - ratio) + f2 * ratio;
-    };
+    auto lerp = [](double f1, double f2, double ratio) -> double { return f1 * (1.0 - ratio) + f2 * ratio; };
 
     double dx = lerp(camera1->translation().x(), camera2->translation().x(), c2);
     double dy = lerp(camera1->translation().y(), camera2->translation().y(), c2);
@@ -268,8 +259,7 @@ QDomElement LayerCamera::createDomElement(QDomDocument &doc)
     layerElem.setAttribute("width", viewRect.width());
     layerElem.setAttribute("height", viewRect.height());
 
-    foreachKeyFrame([&](KeyFrame * pKeyFrame)
-    {
+    foreachKeyFrame([&](KeyFrame *pKeyFrame) {
         Camera *camera = static_cast<Camera *>(pKeyFrame);
         QDomElement keyTag = doc.createElement("camera");
         keyTag.setAttribute("frame", camera->pos());

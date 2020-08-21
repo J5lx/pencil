@@ -17,13 +17,11 @@ GNU General Public License for more details.
 
 #include "recentfilemenu.h"
 
+#include <QDebug>
 #include <QSettings>
 #include <QVariant>
-#include <QDebug>
 
-
-RecentFileMenu::RecentFileMenu(QString title, QWidget *parent) :
-    QMenu(title, parent)
+RecentFileMenu::RecentFileMenu(QString title, QWidget *parent) : QMenu(title, parent)
 {
     mClearSeparator = new QAction(this);
     mClearSeparator->setSeparator(true);
@@ -114,8 +112,7 @@ void RecentFileMenu::addRecentFile(QString filename)
         addAction(action);
         addAction(mClearSeparator);
         addAction(mClearAction);
-        QObject::connect(mClearAction, &QAction::triggered, [this]
-        {
+        QObject::connect(mClearAction, &QAction::triggered, [this] {
             clear();
             saveToDisk();
         });
