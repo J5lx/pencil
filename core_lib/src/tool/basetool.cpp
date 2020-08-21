@@ -53,7 +53,7 @@ QString BaseTool::TypeName(ToolType type)
     return map.at(type);
 }
 
-BaseTool::BaseTool(QObject* parent) : QObject(parent)
+BaseTool::BaseTool(QObject *parent) : QObject(parent)
 {
     mPropertyEnabled.insert(WIDTH, false);
     mPropertyEnabled.insert(FEATHER, false);
@@ -71,7 +71,7 @@ QCursor BaseTool::cursor()
     return Qt::ArrowCursor;
 }
 
-void BaseTool::initialize(Editor* editor)
+void BaseTool::initialize(Editor *editor)
 {
     Q_ASSERT(editor);
     mEditor = editor;
@@ -82,22 +82,22 @@ void BaseTool::initialize(Editor* editor)
     loadSettings();
 }
 
-void BaseTool::pointerPressEvent(PointerEvent* event)
+void BaseTool::pointerPressEvent(PointerEvent *event)
 {
     event->accept();
 }
 
-void BaseTool::pointerMoveEvent(PointerEvent* event)
+void BaseTool::pointerMoveEvent(PointerEvent *event)
 {
     event->accept();
 }
 
-void BaseTool::pointerReleaseEvent(PointerEvent* event)
+void BaseTool::pointerReleaseEvent(PointerEvent *event)
 {
     event->accept();
 }
 
-void BaseTool::pointerDoubleClickEvent(PointerEvent* event)
+void BaseTool::pointerDoubleClickEvent(PointerEvent *event)
 {
     pointerPressEvent(event);
 }
@@ -109,7 +109,7 @@ void BaseTool::pointerDoubleClickEvent(PointerEvent* event)
  */
 bool BaseTool::isDrawingTool()
 {
-    if (type() == ToolType::HAND || type() == ToolType::MOVE || type() == ToolType::SELECT )
+    if (type() == ToolType::HAND || type() == ToolType::MOVE || type() == ToolType::SELECT)
     {
         return false;
     }
@@ -208,32 +208,35 @@ QCursor BaseTool::selectMoveCursor(MoveMode mode, ToolType type)
         QPainter cursorPainter(&cursorPixmap);
         cursorPainter.setRenderHint(QPainter::HighQualityAntialiasing);
 
-        switch(mode)
+        switch (mode)
         {
-            case MoveMode::MIDDLE:
+        case MoveMode::MIDDLE:
+        {
+            if (type == SELECT)
             {
-                if (type == SELECT) {
-                    cursorPainter.drawImage(QPoint(6,6),QImage("://icons/new/arrow-selectmove.png"));
-                } else {
-                    return Qt::ArrowCursor;
-                }
-                break;
+                cursorPainter.drawImage(QPoint(6, 6), QImage("://icons/new/arrow-selectmove.png"));
             }
-            case MoveMode::TOPLEFT:
-            case MoveMode::BOTTOMRIGHT:
+            else
             {
-                cursorPainter.drawImage(QPoint(6,6),QImage("://icons/new/arrow-diagonalleft.png"));
-                break;
+                return Qt::ArrowCursor;
             }
-            case MoveMode::TOPRIGHT:
-            case MoveMode::BOTTOMLEFT:
-            {
-                cursorPainter.drawImage(QPoint(6,6),QImage("://icons/new/arrow-diagonalright.png"));
-                break;
-            }
-            default:
-                return (type == SELECT) ? Qt::CrossCursor : Qt::ArrowCursor;
-                break;
+            break;
+        }
+        case MoveMode::TOPLEFT:
+        case MoveMode::BOTTOMRIGHT:
+        {
+            cursorPainter.drawImage(QPoint(6, 6), QImage("://icons/new/arrow-diagonalleft.png"));
+            break;
+        }
+        case MoveMode::TOPRIGHT:
+        case MoveMode::BOTTOMLEFT:
+        {
+            cursorPainter.drawImage(QPoint(6, 6), QImage("://icons/new/arrow-diagonalright.png"));
+            break;
+        }
+        default:
+            return (type == SELECT) ? Qt::CrossCursor : Qt::ArrowCursor;
+            break;
         }
         cursorPainter.end();
     }
@@ -253,7 +256,7 @@ QPixmap BaseTool::quickSizeCursor(qreal scalingFac)
 {
     qreal propSize = qMax(0., properties.width) * scalingFac;
     qreal propFeather = qMax(0., properties.feather) * scalingFac;
-    QRectF cursorRect(0, 0, propSize+2, propSize+2);
+    QRectF cursorRect(0, 0, propSize + 2, propSize + 2);
 
     QRectF sizeRect = cursorRect.adjusted(1, 1, -1, -1);
     qreal featherRadius = (1 - propFeather / 100) * propSize / 2.;
@@ -291,7 +294,8 @@ bool BaseTool::startAdjusting(Qt::KeyboardModifiers modifiers, qreal step)
 {
     if (mQuickSizingProperties.contains(modifiers))
     {
-        switch (mQuickSizingProperties.value(modifiers)) {
+        switch (mQuickSizingProperties.value(modifiers))
+        {
         case WIDTH:
             msOriginalPropertyValue = properties.width;
             break;

@@ -34,13 +34,14 @@ const std::vector<qreal> gZoomLevels
 };
 
 
-ViewManager::ViewManager(Editor* editor) : BaseManager(editor)
+ViewManager::ViewManager(Editor *editor) : BaseManager(editor)
 {
     mDefaultEditorCamera = new Camera;
     mCurrentCamera = mDefaultEditorCamera;
 }
 
-ViewManager::~ViewManager() {
+ViewManager::~ViewManager()
+{
     delete mDefaultEditorCamera;
 }
 
@@ -50,7 +51,7 @@ bool ViewManager::init()
     return true;
 }
 
-Status ViewManager::load(Object*)
+Status ViewManager::load(Object *)
 {
     mCameraLayer = nullptr;
     mCurrentCamera = mDefaultEditorCamera;
@@ -60,13 +61,13 @@ Status ViewManager::load(Object*)
     return Status::OK;
 }
 
-Status ViewManager::save(Object* o)
+Status ViewManager::save(Object *o)
 {
     o->data()->setCurrentView(mView);
     return Status::OK;
 }
 
-void ViewManager::workingLayerChanged(Layer* layer)
+void ViewManager::workingLayerChanged(Layer *layer)
 {
     if (layer->type() == Layer::CAMERA)
     {
@@ -88,17 +89,17 @@ QPointF ViewManager::mapScreenToCanvas(QPointF p)
     return mViewCanvasInverse.map(p);
 }
 
-QPainterPath ViewManager::mapCanvasToScreen(const QPainterPath& path)
+QPainterPath ViewManager::mapCanvasToScreen(const QPainterPath &path)
 {
     return mViewCanvas.map(path);
 }
 
-QRectF ViewManager::mapCanvasToScreen(const QRectF& rect)
+QRectF ViewManager::mapCanvasToScreen(const QRectF &rect)
 {
     return mViewCanvas.mapRect(rect);
 }
 
-QRectF ViewManager::mapScreenToCanvas(const QRectF& rect)
+QRectF ViewManager::mapScreenToCanvas(const QRectF &rect)
 {
     return mViewCanvasInverse.mapRect(rect);
 }
@@ -113,7 +114,7 @@ QPolygonF ViewManager::mapPolygonToCanvas(const QPolygonF &polygon)
     return mViewCanvasInverse.map(polygon);
 }
 
-QPainterPath ViewManager::mapScreenToCanvas(const QPainterPath& path)
+QPainterPath ViewManager::mapScreenToCanvas(const QPainterPath &path)
 {
     return mViewCanvasInverse.map(path);
 }
@@ -388,7 +389,7 @@ void ViewManager::setCanvasSize(QSize size)
     Q_EMIT viewChanged();
 }
 
-void ViewManager::setCameraLayer(Layer* layer)
+void ViewManager::setCameraLayer(Layer *layer)
 {
     if (layer != nullptr)
     {
@@ -397,7 +398,7 @@ void ViewManager::setCameraLayer(Layer* layer)
             Q_ASSERT(false && "Only camera layers allowed pls");
             return;
         }
-        mCameraLayer = static_cast<LayerCamera*>(layer);
+        mCameraLayer = static_cast<LayerCamera *>(layer);
     }
     else
     {

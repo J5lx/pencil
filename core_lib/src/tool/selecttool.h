@@ -28,18 +28,18 @@ class SelectTool : public BaseTool
     Q_OBJECT
 
 public:
-    explicit SelectTool(QObject* parent = 0);
+    explicit SelectTool(QObject *parent = 0);
     ToolType type() override { return SELECT; }
     void loadSettings() override;
     QCursor cursor() override;
 
 private:
 
-    void pointerPressEvent(PointerEvent*) override;
-    void pointerReleaseEvent(PointerEvent*) override;
-    void pointerMoveEvent(PointerEvent*) override;
+    void pointerPressEvent(PointerEvent *) override;
+    void pointerReleaseEvent(PointerEvent *) override;
+    void pointerMoveEvent(PointerEvent *) override;
 
-    bool keyPressEvent(QKeyEvent* event) override;
+    bool keyPressEvent(QKeyEvent *event) override;
 
     void manageSelectionOrigin(QPointF currentPoint, QPointF originPoint);
     void controlOffsetOrigin(QPointF currentPoint, QPointF anchorPoint);
@@ -56,7 +56,7 @@ private:
     // the selection rectangle in mousePressEvent.
     QPointF mAnchorOriginPoint;
     MoveMode mMoveMode;
-    Layer* mCurrentLayer = nullptr;
+    Layer *mCurrentLayer = nullptr;
 };
 
 #endif

@@ -81,14 +81,14 @@ enum class LayerVisibility
     // If you are adding new enum values here, be sure to update the ++/-- operators below
 };
 
-inline LayerVisibility& operator++(LayerVisibility& vis)
+inline LayerVisibility &operator++(LayerVisibility &vis)
 {
-    return vis = (vis == LayerVisibility::ALL) ? LayerVisibility::CURRENTONLY : static_cast<LayerVisibility>(static_cast<int>(vis)+1);
+    return vis = (vis == LayerVisibility::ALL) ? LayerVisibility::CURRENTONLY : static_cast<LayerVisibility>(static_cast<int>(vis) + 1);
 }
 
-inline LayerVisibility& operator--(LayerVisibility& vis)
+inline LayerVisibility &operator--(LayerVisibility &vis)
 {
-    return vis = (vis == LayerVisibility::CURRENTONLY) ? LayerVisibility::ALL : static_cast<LayerVisibility>(static_cast<int>(vis)-1);
+    return vis = (vis == LayerVisibility::CURRENTONLY) ? LayerVisibility::ALL : static_cast<LayerVisibility>(static_cast<int>(vis) - 1);
 }
 
 // Max frames that can be imported and loaded onto the timeline

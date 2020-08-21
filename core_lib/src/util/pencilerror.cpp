@@ -29,9 +29,9 @@ DebugDetails::~DebugDetails()
 {
 }
 
-void DebugDetails::collect(const DebugDetails& d)
+void DebugDetails::collect(const DebugDetails &d)
 {
-    for (const QString& s : d.mDetails)
+    for (const QString &s : d.mDetails)
     {
         mDetails.append("&nbsp;&nbsp;" + s);
     }
@@ -49,7 +49,7 @@ QString DebugDetails::html()
     return mDetails.join("<br>");
 }
 
-DebugDetails& DebugDetails::operator<<(const QString& s)
+DebugDetails &DebugDetails::operator<<(const QString &s)
 {
     mDetails.append(s);
     return *this;
@@ -58,7 +58,9 @@ DebugDetails& DebugDetails::operator<<(const QString& s)
 void DebugDetails::appendSystemInfo()
 {
     if (mDetails.empty() || mDetails.last() == "end")
+    {
         return;
+    }
 
 #if QT_VERSION >= 0x050400
     mDetails << "System Info";
@@ -85,7 +87,7 @@ Status::Status(ErrorCode code)
 {
 }
 
-Status::Status(Status::ErrorCode eCode, const DebugDetails& detailsList, QString title, QString description)
+Status::Status(Status::ErrorCode eCode, const DebugDetails &detailsList, QString title, QString description)
     : mCode(eCode)
     , mTitle(title)
     , mDescription(description)

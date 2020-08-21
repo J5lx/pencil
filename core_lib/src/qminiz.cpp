@@ -23,14 +23,14 @@ GNU General Public License for more details.
 #include "util.h"
 
 
-bool MiniZ::isZip(const QString& sZipFilePath)
+bool MiniZ::isZip(const QString &sZipFilePath)
 {
-    mz_zip_archive* mz = new mz_zip_archive;
+    mz_zip_archive *mz = new mz_zip_archive;
     OnScopeExit(delete mz);
     mz_zip_zero_struct(mz);
 
     mz_bool ok = mz_zip_reader_init_file(mz, sZipFilePath.toUtf8().data(), 0);
-    if (!ok) return false;
+    if (!ok) { return false; }
 
     int num = mz_zip_reader_get_num_files(mz);
 
@@ -39,7 +39,7 @@ bool MiniZ::isZip(const QString& sZipFilePath)
 }
 
 // ReSharper disable once CppInconsistentNaming
-Status MiniZ::compressFolder(QString zipFilePath, QString srcFolderPath, const QStringList& fileList)
+Status MiniZ::compressFolder(QString zipFilePath, QString srcFolderPath, const QStringList &fileList)
 {
     DebugDetails dd;
     dd << QString("Creating Zip %1 from folder %2").arg(zipFilePath).arg(srcFolderPath);
@@ -49,7 +49,7 @@ Status MiniZ::compressFolder(QString zipFilePath, QString srcFolderPath, const Q
         srcFolderPath.append("/");
     }
 
-    mz_zip_archive* mz = new mz_zip_archive;
+    mz_zip_archive *mz = new mz_zip_archive;
     OnScopeExit(delete mz);
     mz_zip_zero_struct(mz);
 
@@ -61,7 +61,7 @@ Status MiniZ::compressFolder(QString zipFilePath, QString srcFolderPath, const Q
     }
 
     //qDebug() << "SrcFolder=" << srcFolderPath;
-    for (const QString& filePath : fileList)
+    for (const QString &filePath : fileList)
     {
         QString sRelativePath = filePath;
         sRelativePath.replace(srcFolderPath, "");
@@ -109,17 +109,19 @@ Status MiniZ::uncompressFolder(QString zipFilePath, QString destPath)
 
     baseDir.makeAbsolute();
 
-    mz_zip_archive* mz = new mz_zip_archive;
+    mz_zip_archive *mz = new mz_zip_archive;
     OnScopeExit(delete mz);
     mz_zip_zero_struct(mz);
 
     mz_bool ok = mz_zip_reader_init_file(mz, zipFilePath.toUtf8().data(), 0);
     if (!ok)
+    {
         return Status(Status::FAIL, dd);
+    }
 
     int num = mz_zip_reader_get_num_files(mz);
 
-    mz_zip_archive_file_stat* stat = new mz_zip_archive_file_stat;
+    mz_zip_archive_file_stat *stat = new mz_zip_archive_file_stat;
     OnScopeExit(delete stat);
 
     for (int i = 0; i < num; ++i)
@@ -134,7 +136,9 @@ Status MiniZ::uncompressFolder(QString zipFilePath, QString destPath)
             bool mkDirOK = baseDir.mkpath(sFolderPath);
             Q_ASSERT(mkDirOK);
             if (!mkDirOK)
+            {
                 dd << "  Make Dir failed.";
+            }
         }
     }
 

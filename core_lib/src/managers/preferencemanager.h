@@ -100,12 +100,12 @@ class PreferenceManager : public BaseManager
     Q_OBJECT
 
 public:
-    explicit PreferenceManager(Editor* editor);
+    explicit PreferenceManager(Editor *editor);
     ~PreferenceManager() override;
 
     virtual bool init() override;
-    Status load(Object*) override;
-    Status save(Object*) override;
+    Status load(Object *) override;
+    Status save(Object *) override;
 
     void loadPrefs();
     void set(SETTING option, QString value);

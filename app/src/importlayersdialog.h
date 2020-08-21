@@ -5,7 +5,8 @@
 #include "object.h"
 #include "editor.h"
 
-namespace Ui {
+namespace Ui
+{
 class ImportLayersDialog;
 }
 

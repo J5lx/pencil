@@ -31,24 +31,24 @@ class SoundManager : public BaseManager
     Q_OBJECT
 public:
 
-    explicit SoundManager(Editor* editor);
+    explicit SoundManager(Editor *editor);
     ~SoundManager() override;
 
     bool init() override;
-    Status load(Object*) override;
-    Status save(Object*) override;
+    Status load(Object *) override;
+    Status save(Object *) override;
 
-    Status loadSound(Layer* soundLayer, int frameNumber, QString strSoundFile);
-    Status loadSound(SoundClip* soundClip, QString strSoundFile);
-    Status processSound(SoundClip* soundClip);
+    Status loadSound(Layer *soundLayer, int frameNumber, QString strSoundFile);
+    Status loadSound(SoundClip *soundClip, QString strSoundFile);
+    Status processSound(SoundClip *soundClip);
 
 signals:
     void soundClipDurationChanged();
 
 private:
-    void onDurationChanged(SoundPlayer* player, int64_t duration);
+    void onDurationChanged(SoundPlayer *player, int64_t duration);
 
-    Status createMediaPlayer(SoundClip*);
+    Status createMediaPlayer(SoundClip *);
 };
 
 #endif // SOUNDMANAGER_H

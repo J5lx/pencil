@@ -29,7 +29,7 @@ GNU General Public License for more details.
 #include "timeline.h"
 
 
-TimeControls::TimeControls(TimeLine* parent) : QToolBar(parent)
+TimeControls::TimeControls(TimeLine *parent) : QToolBar(parent)
 {
     mTimeline = parent;
 }
@@ -77,9 +77,13 @@ void TimeControls::initUI()
     mLoopIcon = QIcon(":icons/controls/loop.png");
     mSoundIcon = QIcon(":icons/controls/sound.png");
     if (mEditor->preference()->isOn(SETTING::SOUND_SCRUB_ACTIVE))
+    {
         mSoundScrubIcon = QIcon(":icons/controls/soundscrub.png");
+    }
     else
+    {
         mSoundScrubIcon = QIcon(":icons/controls/soundscrub-disabled.png");
+    }
     mJumpToEndIcon = QIcon(":icons/controls/endplay.png");
     mJumpToStartIcon = QIcon(":icons/controls/startplay.png");
     mStartIcon = QIcon(":icons/controls/play.png");
@@ -123,7 +127,7 @@ void TimeControls::initUI()
 
 void TimeControls::updateUI()
 {
-    PlaybackManager* playback = mEditor->playback();
+    PlaybackManager *playback = mEditor->playback();
 
     mPlaybackRangeCheckBox->setChecked(playback->isRangedPlaybackOn()); // don't block this signal since it enables start/end range spinboxes.
 
@@ -140,7 +144,7 @@ void TimeControls::updateUI()
     mLoopButton->setChecked(playback->isLooping());
 }
 
-void TimeControls::setEditor(Editor* editor)
+void TimeControls::setEditor(Editor *editor)
 {
     Q_ASSERT(editor != nullptr);
     mEditor = editor;

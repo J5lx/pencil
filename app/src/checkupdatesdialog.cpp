@@ -36,7 +36,7 @@ CheckUpdatesDialog::CheckUpdatesDialog()
     setWindowFlags(eFlags);
     setMinimumSize(QSize(400, 150));
 
-    QLabel* logoLabel = new QLabel;
+    QLabel *logoLabel = new QLabel;
     logoLabel->setPixmap(QPixmap(":/icons/logo.png"));
     logoLabel->setFixedSize(QSize(72, 72));
 
@@ -56,18 +56,18 @@ CheckUpdatesDialog::CheckUpdatesDialog()
     mDownloadButton = new QPushButton(tr("Download"));
     mCloseButton = new QPushButton(tr("Close"));
 
-    QHBoxLayout* hButtonLayout = new QHBoxLayout;
+    QHBoxLayout *hButtonLayout = new QHBoxLayout;
     hButtonLayout->addWidget(mDownloadButton);
     hButtonLayout->addWidget(mCloseButton);
 
-    QVBoxLayout* vLayout = new QVBoxLayout;
+    QVBoxLayout *vLayout = new QVBoxLayout;
     vLayout->addWidget(mTitleLabel);
     vLayout->addWidget(mDetailLabel);
     vLayout->addWidget(mProgressBar);
     vLayout->addSpacerItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
     vLayout->addLayout(hButtonLayout);
 
-    QHBoxLayout* mainLayout = new QHBoxLayout;
+    QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->addWidget(logoLabel);
     mainLayout->addLayout(vLayout);
     setLayout(mainLayout);
@@ -143,7 +143,7 @@ void CheckUpdatesDialog::invalidReleaseXml()
     mDownloadButton->setEnabled(false);
 }
 
-void CheckUpdatesDialog::networkRequestFinished(QNetworkReply* reply)
+void CheckUpdatesDialog::networkRequestFinished(QNetworkReply *reply)
 {
     reply->deleteLater();
 

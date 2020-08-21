@@ -30,7 +30,7 @@ GNU General Public License for more details.
 #include "scribblearea.h"
 
 
-HandTool::HandTool(QObject* parent) : BaseTool(parent)
+HandTool::HandTool(QObject *parent) : BaseTool(parent)
 {
 }
 
@@ -48,7 +48,7 @@ QCursor HandTool::cursor()
     return mIsHeld ? Qt::ClosedHandCursor : Qt::OpenHandCursor;
 }
 
-void HandTool::pointerPressEvent(PointerEvent*)
+void HandTool::pointerPressEvent(PointerEvent *)
 {
     mLastPixel = getCurrentPixel();
     mStartPoint = mEditor->view()->mapScreenToCanvas(mLastPixel);
@@ -57,7 +57,7 @@ void HandTool::pointerPressEvent(PointerEvent*)
     mScribbleArea->updateToolCursor();
 }
 
-void HandTool::pointerMoveEvent(PointerEvent* event)
+void HandTool::pointerMoveEvent(PointerEvent *event)
 {
     if (event->buttons() == Qt::NoButton)
     {
@@ -68,7 +68,7 @@ void HandTool::pointerMoveEvent(PointerEvent* event)
     mLastPixel = getCurrentPixel();
 }
 
-void HandTool::pointerReleaseEvent(PointerEvent* event)
+void HandTool::pointerReleaseEvent(PointerEvent *event)
 {
     //---- stop the hand tool if this was mid button
     if (event->button() == Qt::MidButton)
@@ -80,7 +80,7 @@ void HandTool::pointerReleaseEvent(PointerEvent* event)
     mScribbleArea->updateToolCursor();
 }
 
-void HandTool::pointerDoubleClickEvent(PointerEvent* event)
+void HandTool::pointerDoubleClickEvent(PointerEvent *event)
 {
     if (event->button() == Qt::RightButton)
     {
@@ -94,7 +94,7 @@ void HandTool::transformView(Qt::KeyboardModifiers keyMod, Qt::MouseButtons butt
     bool isRotate = keyMod & Qt::AltModifier;
     bool isScale = (keyMod & Qt::ControlModifier) || (buttons & Qt::RightButton);
 
-    ViewManager* viewMgr = mEditor->view();
+    ViewManager *viewMgr = mEditor->view();
 
     if (isTranslate)
     {

@@ -2,7 +2,8 @@
 #define MOVEMODE_H
 
 
-enum class MoveMode {
+enum class MoveMode
+{
     MIDDLE,
     TOPLEFT,
     TOPRIGHT,

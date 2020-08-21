@@ -30,20 +30,20 @@ class TimeLine : public BaseDockWidget
     Q_OBJECT
 
 public:
-    TimeLine( QWidget* parent );
+    TimeLine(QWidget *parent);
 
     void initUI() override;
     void updateUI() override;
 
-    void updateFrame( int frameNumber );
-    void updateLayerNumber( int number );
+    void updateFrame(int frameNumber);
+    void updateLayerNumber(int number);
     void updateLayerView();
     void updateLength();
     void updateContent();
-    void setLoop( bool loop );
-    void setRangeState( bool range );
-    void setPlaying( bool isPlaying );
-    
+    void setLoop(bool loop);
+    void setRangeState(bool range);
+    void setPlaying(bool isPlaying);
+
     int  getLength();
     void setLength(int frame);
     void extendLength(int frame);
@@ -65,8 +65,8 @@ Q_SIGNALS:
     void newSoundLayer();
     void newCameraLayer();
 
-    void soundClick( bool );
-    void fpsChanged( int );
+    void soundClick(bool);
+    void fpsChanged(int);
     void onionPrevClick();
     void onionNextClick();
     void playButtonTriggered();
@@ -75,18 +75,18 @@ public:
     bool scrubbing = false;
 
 protected:
-    void resizeEvent( QResizeEvent* event ) override;
-    void wheelEvent( QWheelEvent* ) override;
+    void resizeEvent(QResizeEvent *event) override;
+    void wheelEvent(QWheelEvent *) override;
 
 private:
     void deleteCurrentLayer();
 
 
-    QScrollBar* mHScrollbar = nullptr;
-    QScrollBar* mVScrollbar = nullptr;
-    TimeLineCells* mTracks = nullptr;
-    TimeLineCells* mLayerList = nullptr;
-    TimeControls* mTimeControls = nullptr;
+    QScrollBar *mHScrollbar = nullptr;
+    QScrollBar *mVScrollbar = nullptr;
+    TimeLineCells *mTracks = nullptr;
+    TimeLineCells *mLayerList = nullptr;
+    TimeControls *mTimeControls = nullptr;
 
     int mNumLayers = 0;
     int mLastUpdatedFrame = 0;

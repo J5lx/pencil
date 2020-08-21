@@ -11,13 +11,13 @@ SelectionPainter::SelectionPainter()
 
 }
 
-void SelectionPainter::paint(QPainter& painter,
-                             const Object* object,
+void SelectionPainter::paint(QPainter &painter,
+                             const Object *object,
                              int layerIndex,
-                             BaseTool* tool,
-                             TransformParameters& tParams)
+                             BaseTool *tool,
+                             TransformParameters &tParams)
 {
-    Layer* layer = object->getLayer(layerIndex);
+    Layer *layer = object->getLayer(layerIndex);
 
     if (layer == nullptr) { return; }
 

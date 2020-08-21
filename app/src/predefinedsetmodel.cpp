@@ -1,14 +1,14 @@
 // PredefinedSetModel.cpp
 #include "predefinedsetmodel.h"
 
-PredefinedSetModel::PredefinedSetModel(QObject *parent, const PredefinedKeySet& mKeySet)
-    :QAbstractTableModel(parent), mKeySet(mKeySet)
+PredefinedSetModel::PredefinedSetModel(QObject *parent, const PredefinedKeySet &mKeySet)
+    : QAbstractTableModel(parent), mKeySet(mKeySet)
 {
 }
 
 int PredefinedSetModel::rowCount(const QModelIndex & /*parent*/) const
 {
-   return mKeySet.size();
+    return mKeySet.size();
 }
 
 int PredefinedSetModel::columnCount(const QModelIndex & /*parent*/) const
@@ -20,7 +20,8 @@ QVariant PredefinedSetModel::headerData(int section, Qt::Orientation orientation
 {
     if (role == Qt::DisplayRole)
     {
-        if (orientation == Qt::Horizontal) {
+        if (orientation == Qt::Horizontal)
+        {
             return mKeySet.type(section);
         }
     }
@@ -34,12 +35,14 @@ QVariant PredefinedSetModel::data(const QModelIndex &index, int role) const
         const int row = index.row();
         const int column = index.column();
 
-        const int& keyFrameIndex = mKeySet.keyFrameIndexAt(row);
-        const QString& filePath = mKeySet.filePathAt(row);
-        if (column == PredefinedKeySet::ColumnType::FILES) {
+        const int &keyFrameIndex = mKeySet.keyFrameIndexAt(row);
+        const QString &filePath = mKeySet.filePathAt(row);
+        if (column == PredefinedKeySet::ColumnType::FILES)
+        {
             return QString("%1").arg(filePath);
         }
-        if (column == PredefinedKeySet::ColumnType::KEYFRAMEPOS) {
+        if (column == PredefinedKeySet::ColumnType::KEYFRAMEPOS)
+        {
             return QString("%1").arg(keyFrameIndex);
         }
     }

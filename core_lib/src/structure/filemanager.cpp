@@ -27,25 +27,25 @@ GNU General Public License for more details.
 
 namespace
 {
-    QString openErrorTitle = QObject::tr("Could not open file");
-    QString openErrorDesc = QObject::tr("There was an error processing your file. This usually means that your project has "
-                             "been at least partially corrupted. You can try again with a newer version of Pencil2D, "
-                             "or you can try to use a backup file if you have one. If you contact us through one of "
-                             "our official channels we may be able to help you. For reporting issues, "
-                             "the best places to reach us are:");
-    QString contactLinks = "<ul>"
-                           "<li><a href=\"https://discuss.pencil2d.org/c/bugs\">Pencil2D Forum</a></li>"
-                           "<li><a href=\"https://github.com/pencil2d/pencil/issues/new\">Github</a></li>"
-                           "<li><a href=\"https://discord.gg/8FxdV2g\">Discord<\a></li>"
-                           "</ul>";
+QString openErrorTitle = QObject::tr("Could not open file");
+QString openErrorDesc = QObject::tr("There was an error processing your file. This usually means that your project has "
+                                    "been at least partially corrupted. You can try again with a newer version of Pencil2D, "
+                                    "or you can try to use a backup file if you have one. If you contact us through one of "
+                                    "our official channels we may be able to help you. For reporting issues, "
+                                    "the best places to reach us are:");
+QString contactLinks = "<ul>"
+                       "<li><a href=\"https://discuss.pencil2d.org/c/bugs\">Pencil2D Forum</a></li>"
+                       "<li><a href=\"https://github.com/pencil2d/pencil/issues/new\">Github</a></li>"
+                       "<li><a href=\"https://discord.gg/8FxdV2g\">Discord<\a></li>"
+                       "</ul>";
 }
 
-FileManager::FileManager(QObject* parent) : QObject(parent)
+FileManager::FileManager(QObject *parent) : QObject(parent)
 {
     srand(static_cast<uint>(time(nullptr)));
 }
 
-Object* FileManager::load(QString sFileName)
+Object *FileManager::load(QString sFileName)
 {
     DebugDetails dd;
     dd << QString("File name: ").append(sFileName);
@@ -54,12 +54,12 @@ Object* FileManager::load(QString sFileName)
         FILEMANAGER_LOG("ERROR - File doesn't exist");
         return cleanUpWithErrorCode(Status(Status::FILE_NOT_FOUND, dd, tr("Could not open file"),
                                            tr("The file does not exist, so we are unable to open it. Please check "
-                                           "to make sure the path is correct and that the file is accessible and try again.")));
+                                              "to make sure the path is correct and that the file is accessible and try again.")));
     }
 
     progressForward();
 
-    Object* obj = new Object;
+    Object *obj = new Object;
     obj->setFilePath(sFileName);
     obj->createWorkingDir();
 
@@ -159,11 +159,13 @@ Object* FileManager::load(QString sFileName)
     return obj;
 }
 
-bool FileManager::loadObject(Object* object, const QDomElement& root)
+bool FileManager::loadObject(Object *object, const QDomElement &root)
 {
     QDomElement e = root.firstChildElement("object");
     if (e.isNull())
+    {
         return false;
+    }
 
     bool ok = true;
     for (QDomNode node = root.firstChild(); !node.isNull(); node = node.nextSibling())
@@ -176,13 +178,13 @@ bool FileManager::loadObject(Object* object, const QDomElement& root)
 
         if (element.tagName() == "object")
         {
-            ok = object->loadXML(element, [this]{ progressForward(); });
-            if (!ok) FILEMANAGER_LOG("Failed to Load object");
+            ok = object->loadXML(element, [this] { progressForward(); });
+            if (!ok) { FILEMANAGER_LOG("Failed to Load object"); }
 
         }
         else if (element.tagName() == "editor" || element.tagName() == "projectdata")
         {
-            ObjectData* projectData = loadProjectData(element);
+            ObjectData *projectData = loadProjectData(element);
             object->setData(projectData);
         }
         else
@@ -193,17 +195,17 @@ bool FileManager::loadObject(Object* object, const QDomElement& root)
     return ok;
 }
 
-bool FileManager::loadObjectOldWay(Object* object, const QDomElement& root)
+bool FileManager::loadObjectOldWay(Object *object, const QDomElement &root)
 {
     return object->loadXML(root, [this] { progressForward(); });
 }
 
-bool FileManager::isOldForamt(const QString& fileName) const
+bool FileManager::isOldForamt(const QString &fileName) const
 {
     return !(MiniZ::isZip(fileName));
 }
 
-Status FileManager::save(Object* object, QString sFileName)
+Status FileManager::save(Object *object, QString sFileName)
 {
     DebugDetails dd;
     dd << "FileManager::save";
@@ -297,7 +299,7 @@ Status FileManager::save(Object* object, QString sFileName)
 
     for (int i = 0; i < numLayers; ++i)
     {
-        Layer* layer = object->getLayer(i);
+        Layer *layer = object->getLayer(i);
         layer->presave(sDataFolder);
     }
 
@@ -306,7 +308,7 @@ Status FileManager::save(Object* object, QString sFileName)
     bool saveLayersOK = true;
     for (int i = 0; i < numLayers; ++i)
     {
-        Layer* layer = object->getLayer(i);
+        Layer *layer = object->getLayer(i);
 
         dd << QString("Layer[%1] = [id=%2, name=%3, type=%4]").arg(i).arg(layer->id()).arg(layer->name()).arg(layer->type());
 
@@ -323,9 +325,13 @@ Status FileManager::save(Object* object, QString sFileName)
     // save palette
     QString sPaletteFile = object->savePalette(sDataFolder);
     if (!sPaletteFile.isEmpty())
+    {
         zippedFiles.append(sPaletteFile);
+    }
     else
+    {
         dd << "Failed to save the palette xml";
+    }
 
     progressForward();
 
@@ -384,7 +390,9 @@ Status FileManager::save(Object* object, QString sFileName)
         dd << "Zip file saved successfully";
 
         if (s.ok() && saveLayersOK)
+        {
             deleteBackupFile(sBackupFile);
+        }
     }
 
     progressForward();
@@ -399,9 +407,9 @@ Status FileManager::save(Object* object, QString sFileName)
     return Status::OK;
 }
 
-ObjectData* FileManager::loadProjectData(const QDomElement& docElem)
+ObjectData *FileManager::loadProjectData(const QDomElement &docElem)
 {
-    ObjectData* data = new ObjectData;
+    ObjectData *data = new ObjectData;
     if (docElem.isNull())
     {
         return data;
@@ -424,7 +432,7 @@ ObjectData* FileManager::loadProjectData(const QDomElement& docElem)
     return data;
 }
 
-QDomElement FileManager::saveProjectData(ObjectData* data, QDomDocument& xmlDoc)
+QDomElement FileManager::saveProjectData(ObjectData *data, QDomDocument &xmlDoc)
 {
     QDomElement rootTag = xmlDoc.createElement("projectdata");
 
@@ -483,7 +491,7 @@ QDomElement FileManager::saveProjectData(ObjectData* data, QDomDocument& xmlDoc)
     return rootTag;
 }
 
-void FileManager::extractProjectData(const QDomElement& element, ObjectData* data)
+void FileManager::extractProjectData(const QDomElement &element, ObjectData *data)
 {
     Q_ASSERT(data);
 
@@ -538,17 +546,19 @@ void FileManager::extractProjectData(const QDomElement& element, ObjectData* dat
     }
 }
 
-Object* FileManager::cleanUpWithErrorCode(Status error)
+Object *FileManager::cleanUpWithErrorCode(Status error)
 {
     mError = error;
     removePFFTmpDirectory(mstrLastTempFolder);
     return nullptr;
 }
 
-QString FileManager::backupPreviousFile(const QString& fileName)
+QString FileManager::backupPreviousFile(const QString &fileName)
 {
     if (!QFile::exists(fileName))
+    {
         return "";
+    }
 
     QFileInfo info(fileName);
     QString sBackupFile = info.completeBaseName() + ".backup." + info.suffix();
@@ -563,7 +573,7 @@ QString FileManager::backupPreviousFile(const QString& fileName)
     return sBackupFileFullPath;
 }
 
-void FileManager::deleteBackupFile(const QString& fileName)
+void FileManager::deleteBackupFile(const QString &fileName)
 {
     if (QFile::exists(fileName))
     {
@@ -577,7 +587,7 @@ void FileManager::progressForward()
     emit progressChanged(mCurrentProgress);
 }
 
-bool FileManager::loadPalette(Object* obj)
+bool FileManager::loadPalette(Object *obj)
 {
     FILEMANAGER_LOG("Load Palette..");
 
@@ -589,7 +599,7 @@ bool FileManager::loadPalette(Object* obj)
     return true;
 }
 
-void FileManager::unzip(const QString& strZipFile, const QString& strUnzipTarget)
+void FileManager::unzip(const QString &strZipFile, const QString &strUnzipTarget)
 {
     // removes the previous directory first  - better approach
     removePFFTmpDirectory(strUnzipTarget);
@@ -612,7 +622,7 @@ QList<ColorRef> FileManager::loadPaletteFile(QString strFilename)
     return QList<ColorRef>();
 }
 
-Status FileManager::verifyObject(Object* obj)
+Status FileManager::verifyObject(Object *obj)
 {
     // check current layer.
     int curLayer = obj->data()->getCurrentLayer();
@@ -623,7 +633,7 @@ Status FileManager::verifyObject(Object* obj)
     }
 
     // Must have at least 1 camera layer
-    std::vector<LayerCamera*> camLayers = obj->getLayersByType<LayerCamera>();
+    std::vector<LayerCamera *> camLayers = obj->getLayersByType<LayerCamera>();
     if (camLayers.empty())
     {
         obj->addNewCameraLayer();

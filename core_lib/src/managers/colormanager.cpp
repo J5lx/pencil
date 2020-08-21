@@ -21,7 +21,7 @@ GNU General Public License for more details.
 #include "editor.h"
 
 
-ColorManager::ColorManager(Editor* editor) : BaseManager(editor)
+ColorManager::ColorManager(Editor *editor) : BaseManager(editor)
 {
 }
 
@@ -34,7 +34,7 @@ bool ColorManager::init()
     return true;
 }
 
-Status ColorManager::load(Object* o)
+Status ColorManager::load(Object *o)
 {
     mCurrentColorIndex = 0;
     mCurrentFrontColor = o->data()->getCurrentColor();
@@ -42,13 +42,13 @@ Status ColorManager::load(Object* o)
     return Status::OK;
 }
 
-Status ColorManager::save(Object* o)
+Status ColorManager::save(Object *o)
 {
     o->data()->setCurrentColor(mCurrentFrontColor);
     return Status::OK;
 }
 
-void ColorManager::workingLayerChanged(Layer* layer)
+void ColorManager::workingLayerChanged(Layer *layer)
 {
     mIsWorkingOnVectorLayer = (layer->type() == Layer::VECTOR);
     if (mIsWorkingOnVectorLayer)
@@ -62,9 +62,13 @@ QColor ColorManager::frontColor()
 {
 
     if (mIsWorkingOnVectorLayer)
+    {
         return object()->getColor(mCurrentColorIndex).color;
+    }
     else
+    {
         return mCurrentFrontColor;
+    }
 }
 
 void ColorManager::setColorNumber(int n)
@@ -79,7 +83,7 @@ void ColorManager::setColorNumber(int n)
     emit colorChanged(currentColor, mCurrentColorIndex);
 }
 
-void ColorManager::setColor(const QColor& newColor)
+void ColorManager::setColor(const QColor &newColor)
 {
     if (mCurrentFrontColor != newColor)
     {

@@ -34,38 +34,42 @@ GNU General Public License for more details.
 
 namespace PlatformHandler
 {
-    void configurePlatformSpecificSettings() {}
+void configurePlatformSpecificSettings() {}
 
-    void initialise()
+void initialise()
+{
+    /* If running as an AppImage, sets GStreamer environment variables to ensure
+     * the plugins contained in the AppImage are found
+     */
+    QString appDir = QString::fromLocal8Bit(qgetenv("APPDIR"));
+    if (!appDir.isEmpty())
     {
-        /* If running as an AppImage, sets GStreamer environment variables to ensure
-         * the plugins contained in the AppImage are found
-         */
-        QString appDir = QString::fromLocal8Bit(qgetenv("APPDIR"));
-        if (!appDir.isEmpty())
+        bool success = qputenv("GST_PLUGIN_SYSTEM_PATH_1_0",
+                               QString("%1/usr/lib/gstreamer-1.0:%2")
+                               .arg(appDir, QString::fromLocal8Bit(qgetenv("GST_PLUGIN_SYSTEM_PATH_1_0")))
+                               .toLocal8Bit());
+        success = qputenv("GST_PLUGIN_SCANNER_1_0",
+                          QString("%1/usr/lib/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner")
+                          .arg(appDir).toLocal8Bit()) && success;
+        if (!success)
         {
-            bool success = qputenv("GST_PLUGIN_SYSTEM_PATH_1_0",
-                                   QString("%1/usr/lib/gstreamer-1.0:%2")
-                                       .arg(appDir, QString::fromLocal8Bit(qgetenv("GST_PLUGIN_SYSTEM_PATH_1_0")))
-                                       .toLocal8Bit());
-            success = qputenv("GST_PLUGIN_SCANNER_1_0",
-                              QString("%1/usr/lib/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner")
-                                 .arg(appDir).toLocal8Bit()) && success;
-            if (!success)
-            {
-                qWarning() << "Unable to set up GStreamer environment";
-            }
+            qWarning() << "Unable to set up GStreamer environment";
         }
     }
 }
+}
 
-qint16 safeSum ( qint16 a, qint16 b)
+qint16 safeSum(qint16 a, qint16 b)
 {
     if (((int)a + (int)b) > 32767)
+    {
         return 32767;
+    }
     if (((int)a + (int)b) < -32768)
+    {
         return -32768;
-    return a+b;
+    }
+    return a + b;
 }
 
 void initialise()

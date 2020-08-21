@@ -26,18 +26,18 @@ class PolylineTool : public BaseTool
 {
     Q_OBJECT
 public:
-    explicit PolylineTool(QObject* parent = 0);
+    explicit PolylineTool(QObject *parent = 0);
     ToolType type() override;
     void loadSettings() override;
     QCursor cursor() override;
     void resetToDefault() override;
 
-    void pointerPressEvent(PointerEvent*) override;
-    void pointerReleaseEvent(PointerEvent*) override;
-    void pointerMoveEvent(PointerEvent* event) override;
-    void pointerDoubleClickEvent(PointerEvent*) override;
+    void pointerPressEvent(PointerEvent *) override;
+    void pointerReleaseEvent(PointerEvent *) override;
+    void pointerMoveEvent(PointerEvent *event) override;
+    void pointerDoubleClickEvent(PointerEvent *) override;
 
-    bool keyPressEvent(QKeyEvent* event) override;
+    bool keyPressEvent(QKeyEvent *event) override;
 
     void clearToolData() override;
 

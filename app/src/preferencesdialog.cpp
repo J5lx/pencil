@@ -35,7 +35,7 @@ GNU General Public License for more details.
 #include "errordialog.h"
 
 
-PreferencesDialog::PreferencesDialog(QWidget* parent) :
+PreferencesDialog::PreferencesDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PreferencesDialog)
 {
@@ -47,7 +47,7 @@ PreferencesDialog::~PreferencesDialog()
     delete ui;
 }
 
-void PreferencesDialog::init(PreferenceManager* m)
+void PreferencesDialog::init(PreferenceManager *m)
 {
     Q_ASSERT(m != nullptr);
     mPrefManager = m;
@@ -72,19 +72,21 @@ void PreferencesDialog::init(PreferenceManager* m)
     connect(ui->filesPage, &FilesPage::clearRecentList, this, &PreferencesDialog::clearRecentList);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &PreferencesDialog::close);
 
-    auto onCurrentItemChanged = static_cast<void (QListWidget::*)(QListWidgetItem*, QListWidgetItem*)>(&QListWidget::currentItemChanged);
+    auto onCurrentItemChanged = static_cast<void (QListWidget::*)(QListWidgetItem *, QListWidgetItem *)>(&QListWidget::currentItemChanged);
     connect(ui->contentsWidget, onCurrentItemChanged, this, &PreferencesDialog::changePage);
 }
 
-void PreferencesDialog::closeEvent(QCloseEvent*)
+void PreferencesDialog::closeEvent(QCloseEvent *)
 {
     done(QDialog::Accepted);
 }
 
-void PreferencesDialog::changePage(QListWidgetItem* current, QListWidgetItem* previous)
+void PreferencesDialog::changePage(QListWidgetItem *current, QListWidgetItem *previous)
 {
     if (!current)
+    {
         current = previous;
+    }
 
     ui->pagesWidget->setCurrentIndex(ui->contentsWidget->row(current));
 }
@@ -134,7 +136,7 @@ GeneralPage::GeneralPage() : ui(new Ui::GeneralPage)
         { tr("Chinese \u2013 Taiwan"), QStringLiteral("繁體中文"), "zh_TW" },
     };
 
-    for (auto& lang : languages)
+    for (auto &lang : languages)
     {
         const QString itemText = QStringLiteral("%1 (%2)").arg(lang[0]).arg(lang[1]);
         const QString localeCode = lang[2];
@@ -245,12 +247,12 @@ void GeneralPage::updateValues()
     ui->framePoolSizeSpin->setValue(mManager->getInt(SETTING::FRAME_POOL_SIZE));
 
     int buttonIdx = 1;
-    if (bgName == "checkerboard") buttonIdx = 1;
-    else if (bgName == "white")   buttonIdx = 2;
-    else if (bgName == "grey")    buttonIdx = 3;
-    else if (bgName == "dots")    buttonIdx = 4;
-    else if (bgName == "weave")   buttonIdx = 5;
-    else Q_ASSERT(false);
+    if (bgName == "checkerboard") { buttonIdx = 1; }
+    else if (bgName == "white") { buttonIdx = 2; }
+    else if (bgName == "grey") { buttonIdx = 3; }
+    else if (bgName == "dots") { buttonIdx = 4; }
+    else if (bgName == "weave") { buttonIdx = 5; }
+    else { Q_ASSERT(false); }
 
     ui->backgroundButtons->button(buttonIdx)->setChecked(true);
 }
@@ -270,11 +272,21 @@ void GeneralPage::backgroundChanged(int value)
     QString brushName = "white";
     switch (value)
     {
-    case 1: brushName = "checkerboard"; break;
-    case 2: brushName = "white"; break;
-    case 3: brushName = "grey"; break;
-    case 4: brushName = "dots"; break;
-    case 5: brushName = "weave"; break;
+    case 1:
+        brushName = "checkerboard";
+        break;
+    case 2:
+        brushName = "white";
+        break;
+    case 3:
+        brushName = "grey";
+        break;
+    case 4:
+        brushName = "dots";
+        break;
+    case 5:
+        brushName = "weave";
+        break;
     default:
         break;
     }
@@ -340,10 +352,13 @@ void GeneralPage::titleSafeCheckBoxStateChanged(int b)
 
 void GeneralPage::updateSafeHelperTextEnabledState()
 {
-    if (ui->actionSafeCheckBox->isChecked() == false && ui->titleSafeCheckBox->isChecked() == false) {
+    if (ui->actionSafeCheckBox->isChecked() == false && ui->titleSafeCheckBox->isChecked() == false)
+    {
         ui->safeHelperTextCheckbox->setEnabled(false);
         ui->labSafeHelperText->setEnabled(false);
-    } else {
+    }
+    else
+    {
         ui->safeHelperTextCheckbox->setEnabled(true);
         ui->labSafeHelperText->setEnabled(true);
     }
@@ -411,7 +426,9 @@ void TimelinePage::updateValues()
     QSignalBlocker b3(ui->timelineLength);
     ui->timelineLength->setValue(mManager->getInt(SETTING::TIMELINE_SIZE));
     if (mManager->getString(SETTING::TIMELINE_SIZE).toInt() <= 0)
+    {
         ui->timelineLength->setValue(240);
+    }
 
     QSignalBlocker b4(ui->radioButtonAddNewKey);
     QSignalBlocker b5(ui->radioButtonDuplicate);
@@ -448,7 +465,7 @@ void TimelinePage::updateValues()
     ui->soundScrubSpinBox->setValue(mManager->getInt(SETTING::SOUND_SCRUB_MSEC));
     ui->soundScrubSlider->setValue(mManager->getInt(SETTING::SOUND_SCRUB_MSEC));
 
-    int convertedVisibilityThreshold = static_cast<int>(mManager->getFloat(SETTING::LAYER_VISIBILITY_THRESHOLD)*100);
+    int convertedVisibilityThreshold = static_cast<int>(mManager->getFloat(SETTING::LAYER_VISIBILITY_THRESHOLD) * 100);
 
     ui->visibilitySlider->setValue(convertedVisibilityThreshold);
     ui->visibilitySpinbox->setValue(convertedVisibilityThreshold);
@@ -482,7 +499,7 @@ void TimelinePage::layerVisibilityChanged(int value)
 
 void TimelinePage::layerVisibilityThresholdChanged(int value)
 {
-    float percentage = static_cast<float>(value/100.0f);
+    float percentage = static_cast<float>(value / 100.0f);
     mManager->set(SETTING::LAYER_VISIBILITY_THRESHOLD, percentage);
 
     QSignalBlocker b8(ui->visibilitySlider);
@@ -548,7 +565,9 @@ void TimelinePage::soundScrubActiveChanged(int i)
 {
     bool b = true;
     if (i == 0)
+    {
         b = false;
+    }
     mManager->set(SETTING::SOUND_SCRUB_ACTIVE, b);
     emit soundScrubChanged(b);
 }
@@ -598,23 +617,25 @@ void FilesPage::initPreset()
 
     mPresetSettings = new QSettings(mPresetDir.filePath("presets.ini"), QSettings::IniFormat, this);
 
-    QListWidgetItem* defaultItem = new QListWidgetItem("Blank");
+    QListWidgetItem *defaultItem = new QListWidgetItem("Blank");
     defaultItem->setData(Qt::UserRole, 0);
     ui->presetListWidget->addItem(defaultItem);
 
     bool ok = true;
-    for (const QString& key : mPresetSettings->allKeys())
+    for (const QString &key : mPresetSettings->allKeys())
     {
         int index = key.toInt(&ok);
-        if (!ok || index == 0 || !mPresetDir.exists(QString("%1.pclx").arg(index))) continue;
+        if (!ok || index == 0 || !mPresetDir.exists(QString("%1.pclx").arg(index))) { continue; }
 
         mMaxPresetIndex = qMax(index, mMaxPresetIndex);
 
         QString name = mPresetSettings->value(key).toString();
         if (name.isEmpty())
+        {
             continue;
+        }
 
-        QListWidgetItem* item = new QListWidgetItem(name);
+        QListWidgetItem *item = new QListWidgetItem(name);
         item->setFlags(item->flags() | Qt::ItemIsEditable);
         item->setData(Qt::UserRole, index);
         ui->presetListWidget->addItem(item);
@@ -645,7 +666,7 @@ void FilesPage::addPreset()
     mMaxPresetIndex = newPresetIndex;
 
     // 3. update the list widget
-    QListWidgetItem* newItem = new QListWidgetItem(presetName);
+    QListWidgetItem *newItem = new QListWidgetItem(presetName);
     newItem->setFlags(newItem->flags() | Qt::ItemIsEditable);
     newItem->setData(Qt::UserRole, newPresetIndex);
     ui->presetListWidget->addItem(newItem);
@@ -660,14 +681,14 @@ void FilesPage::removePreset()
     if (ui->presetListWidget->selectedItems().empty()) { return; }
 
     // 1. Remove the items from list widget
-    QList<QListWidgetItem*> itemsToRemove = ui->presetListWidget->selectedItems();
-    for (QListWidgetItem* item : itemsToRemove)
+    QList<QListWidgetItem *> itemsToRemove = ui->presetListWidget->selectedItems();
+    for (QListWidgetItem *item : itemsToRemove)
     {
         ui->presetListWidget->removeItemWidget(item);
     }
 
     // 2. Delete preset pclx files
-    for (QListWidgetItem* item : itemsToRemove)
+    for (QListWidgetItem *item : itemsToRemove)
     {
         int index = item->data(Qt::UserRole).toInt();
         QFile presetFile(PresetDialog::getPresetPath(index));
@@ -675,7 +696,7 @@ void FilesPage::removePreset()
     }
 
     // 3. Delete items from the ini settings
-    for (QListWidgetItem* item : itemsToRemove)
+    for (QListWidgetItem *item : itemsToRemove)
     {
         int index = item->data(Qt::UserRole).toInt();
         mPresetSettings->remove(QString::number(index));
@@ -683,7 +704,7 @@ void FilesPage::removePreset()
 
     // 4. check if the default preset has been deleted
     int prevDefaultIndex = mManager->getInt(SETTING::DEFAULT_PRESET);
-    for (QListWidgetItem* item : itemsToRemove)
+    for (QListWidgetItem *item : itemsToRemove)
     {
         int index = item->data(Qt::UserRole).toInt();
         if (index == prevDefaultIndex)
@@ -693,7 +714,7 @@ void FilesPage::removePreset()
     }
 
     // 5. delete items
-    for (QListWidgetItem* item : itemsToRemove)
+    for (QListWidgetItem *item : itemsToRemove)
     {
         delete item;
     }
@@ -704,7 +725,7 @@ void FilesPage::setDefaultPreset()
 {
     bool ok = true;
 
-    QListWidgetItem* newDefaultPresetItem = ui->presetListWidget->currentItem();
+    QListWidgetItem *newDefaultPresetItem = ui->presetListWidget->currentItem();
     if (newDefaultPresetItem)
     {
         int newDefaultIndex = newDefaultPresetItem->data(Qt::UserRole).toInt(&ok);
@@ -715,7 +736,7 @@ void FilesPage::setDefaultPreset()
     }
 }
 
-void FilesPage::presetNameChanged(QListWidgetItem* item)
+void FilesPage::presetNameChanged(QListWidgetItem *item)
 {
     // Remove characters that may be problematic for ini files
     item->setText(item->text().remove(QChar('@')).remove(QChar('/')).remove(QChar('\\')));
@@ -735,7 +756,7 @@ void FilesPage::updateValues()
 
     for (int i = 0; i < ui->presetListWidget->count(); i++)
     {
-        QListWidgetItem* item = ui->presetListWidget->item(i);
+        QListWidgetItem *item = ui->presetListWidget->item(i);
         int presetIndex = item->data(Qt::UserRole).toInt(&ok);
 
         bool isDefault = presetIndex == defaultPresetIndex;
@@ -801,7 +822,8 @@ void ToolsPage::rotationIncrementChange(int value)
     // Use log scale
     int angle = qPow(value / 359.0, 2) * 359 + 1;
     // Basically round up to the nearest number that is a divisor of 360
-    while (360 % angle != 0) {
+    while (360 % angle != 0)
+    {
         angle++;
     }
     ui->rotationIncrementDisplay->setText(tr("%1 degrees").arg(angle)); // don't use tr()'s plural settings, it breaks Transifex.

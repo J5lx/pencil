@@ -5,7 +5,8 @@
 #include <QStringList>
 #include "editor.h"
 
-namespace Ui {
+namespace Ui
+{
 class PegBarAlignmentDialog;
 }
 
@@ -14,7 +15,7 @@ class PegBarAlignmentDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit PegBarAlignmentDialog(Editor* editor, QWidget *parent = nullptr);
+    explicit PegBarAlignmentDialog(Editor *editor, QWidget *parent = nullptr);
     ~PegBarAlignmentDialog();
 
     void setLayerList(QStringList layerList);
@@ -42,7 +43,7 @@ signals:
 private:
     Ui::PegBarAlignmentDialog *ui;
     QStringList mLayernames;
-    Editor* mEditor = nullptr;
+    Editor *mEditor = nullptr;
     bool areaSelected = false;
     bool referenceSelected = false;
     bool layerSelected = false;

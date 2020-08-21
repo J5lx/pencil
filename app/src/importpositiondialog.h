@@ -3,7 +3,8 @@
 
 #include <QDialog>
 
-namespace Ui {
+namespace Ui
+{
 class ImportPositionDialog;
 }
 
@@ -13,9 +14,11 @@ class ImportPositionDialog : public QDialog
 {
     Q_OBJECT
 
-    struct ImportPosition {
+    struct ImportPosition
+    {
 
-        enum Type {
+        enum Type
+        {
             CenterOfView,
             CenterOfCanvas,
             CenterOfCamera,
@@ -23,8 +26,10 @@ class ImportPositionDialog : public QDialog
             None
         };
 
-        static Type getTypeFromIndex(int index) {
-            switch (index) {
+        static Type getTypeFromIndex(int index)
+        {
+            switch (index)
+            {
             case 0:
                 return CenterOfView;
             case 1:
@@ -43,7 +48,7 @@ public:
     explicit ImportPositionDialog(QWidget *parent = nullptr);
     ~ImportPositionDialog();
 
-    void setCore(Editor* editor) { mEditor = editor; }
+    void setCore(Editor *editor) { mEditor = editor; }
 
 private slots:
     void didChangeComboBoxIndex(const int index);
@@ -53,7 +58,7 @@ private:
     Ui::ImportPositionDialog *ui;
 
     ImportPosition::Type mImportOption;
-    Editor* mEditor = nullptr;
+    Editor *mEditor = nullptr;
 };
 
 #endif // IMPORTPOSITIONDIALOG_H

@@ -37,7 +37,7 @@ GNU General Public License for more details.
 #include "pointerevent.h"
 
 
-BrushTool::BrushTool(QObject* parent) : StrokeTool(parent)
+BrushTool::BrushTool(QObject *parent) : StrokeTool(parent)
 {
 }
 
@@ -139,7 +139,7 @@ QCursor BrushTool::cursor()
     return Qt::CrossCursor;
 }
 
-void BrushTool::pointerPressEvent(PointerEvent*)
+void BrushTool::pointerPressEvent(PointerEvent *)
 {
     mScribbleArea->setAllDirty();
     mMouseDownPoint = getCurrentPoint();
@@ -148,20 +148,22 @@ void BrushTool::pointerPressEvent(PointerEvent*)
     startStroke();
 }
 
-void BrushTool::pointerMoveEvent(PointerEvent* event)
+void BrushTool::pointerMoveEvent(PointerEvent *event)
 {
     if (event->buttons() & Qt::LeftButton)
     {
         mCurrentPressure = strokeManager()->getPressure();
         drawStroke();
         if (properties.stabilizerLevel != strokeManager()->getStabilizerLevel())
+        {
             strokeManager()->setStabilizerLevel(properties.stabilizerLevel);
+        }
     }
 }
 
-void BrushTool::pointerReleaseEvent(PointerEvent*)
+void BrushTool::pointerReleaseEvent(PointerEvent *)
 {
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
     mEditor->backup(typeName());
 
     qreal distance = QLineF(getCurrentPoint(), mMouseDownPoint).length();
@@ -175,9 +177,13 @@ void BrushTool::pointerReleaseEvent(PointerEvent*)
     }
 
     if (layer->type() == Layer::BITMAP)
+    {
         paintBitmapStroke();
+    }
     else if (layer->type() == Layer::VECTOR)
+    {
         paintVectorStroke();
+    }
 
     endStroke();
 }
@@ -186,7 +192,7 @@ void BrushTool::pointerReleaseEvent(PointerEvent*)
 void BrushTool::paintAt(QPointF point)
 {
     //qDebug() << "Made a single dab at " << point;
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
     if (layer->type() == Layer::BITMAP)
     {
         qreal pressure = (properties.pressure) ? mCurrentPressure : 1.0;
@@ -212,7 +218,7 @@ void BrushTool::drawStroke()
     StrokeTool::drawStroke();
     QList<QPointF> p = strokeManager()->interpolateStroke();
 
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
 
     if (layer->type() == Layer::BITMAP)
     {
@@ -261,18 +267,18 @@ void BrushTool::drawStroke()
 
         // Line visualizer
         // for debugging
-//        QPainterPath tempPath;
+        //        QPainterPath tempPath;
 
-//        QPointF mappedMousePos = mEditor->view()->mapScreenToCanvas(strokeManager()->getMousePos());
-//        tempPath.moveTo(getCurrentPoint());
-//        tempPath.lineTo(mappedMousePos);
+        //        QPointF mappedMousePos = mEditor->view()->mapScreenToCanvas(strokeManager()->getMousePos());
+        //        tempPath.moveTo(getCurrentPoint());
+        //        tempPath.lineTo(mappedMousePos);
 
-//        QPen pen( Qt::black,
-//                   1,
-//                   Qt::SolidLine,
-//                   Qt::RoundCap,
-//                   Qt::RoundJoin );
-//        mScribbleArea->drawPolyline(tempPath, pen, true);
+        //        QPen pen( Qt::black,
+        //                   1,
+        //                   Qt::SolidLine,
+        //                   Qt::RoundCap,
+        //                   Qt::RoundJoin );
+        //        mScribbleArea->drawPolyline(tempPath, pen, true);
 
     }
     else if (layer->type() == Layer::VECTOR)
@@ -311,9 +317,11 @@ void BrushTool::paintBitmapStroke()
 void BrushTool::paintVectorStroke()
 {
     if (mStrokePoints.empty())
+    {
         return;
+    }
 
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
 
     if (layer->type() == Layer::VECTOR && mStrokePoints.size() > -1)
     {
@@ -329,7 +337,7 @@ void BrushTool::paintVectorStroke()
         curve.setVariableWidth(properties.pressure);
         curve.setColorNumber(mEditor->color()->frontColorNumber());
 
-        VectorImage* vectorImage = static_cast<VectorImage*>(layer->getLastKeyFrameAtPosition(mEditor->currentFrame()));
+        VectorImage *vectorImage = static_cast<VectorImage *>(layer->getLastKeyFrameAtPosition(mEditor->currentFrame()));
         vectorImage->addCurve(curve, mEditor->view()->scaling(), false);
 
         if (vectorImage->isAnyCurveSelected() || mEditor->select()->somethingSelected())

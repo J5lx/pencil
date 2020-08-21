@@ -30,7 +30,7 @@ class KeyFrame
 {
 public:
     explicit KeyFrame();
-    explicit KeyFrame(const KeyFrame& k2);
+    explicit KeyFrame(const KeyFrame &k2);
     virtual ~KeyFrame();
 
     int  pos() const { return mFrame; }
@@ -49,10 +49,10 @@ public:
     QString fileName() const { return mAttachedFileName; }
     void    setFileName(QString strFileName) { mAttachedFileName = strFileName; }
 
-    void addEventListener(KeyFrameEventListener*);
-    void removeEventListner(KeyFrameEventListener*);
+    void addEventListener(KeyFrameEventListener *);
+    void removeEventListner(KeyFrameEventListener *);
 
-    virtual KeyFrame* clone() { return nullptr; }
+    virtual KeyFrame *clone() { return nullptr; }
     virtual void loadFile() {}
     virtual void unloadFile() {}
     virtual bool isLoaded() { return true; }
@@ -64,13 +64,13 @@ private:
     bool mIsSelected = false;
     QString mAttachedFileName;
 
-    std::vector<KeyFrameEventListener*> mEventListeners;
+    std::vector<KeyFrameEventListener *> mEventListeners;
 };
 
 class KeyFrameEventListener
 {
 public:
-    virtual void onKeyFrameDestroy(KeyFrame*) = 0;
+    virtual void onKeyFrameDestroy(KeyFrame *) = 0;
 };
 
 #endif // KeyFrame_H

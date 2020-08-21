@@ -30,14 +30,14 @@ class MoveTool : public BaseTool
 {
     Q_OBJECT
 public:
-    explicit MoveTool(QObject* parent);
+    explicit MoveTool(QObject *parent);
     ToolType type() override;
     void loadSettings() override;
     QCursor cursor() override;
 
-    void pointerPressEvent(PointerEvent*) override;
-    void pointerReleaseEvent(PointerEvent*) override;
-    void pointerMoveEvent(PointerEvent*) override;
+    void pointerPressEvent(PointerEvent *) override;
+    void pointerReleaseEvent(PointerEvent *) override;
+    void pointerMoveEvent(PointerEvent *) override;
 
     bool leavingThisTool() override;
     bool switchingLayer() override;
@@ -53,20 +53,20 @@ private:
 
     int showTransformWarning();
 
-    void beginInteraction(Qt::KeyboardModifiers keyMod, Layer* layer);
-    void createVectorSelection(Qt::KeyboardModifiers keyMod, Layer* layer);
-    void transformSelection(Qt::KeyboardModifiers keyMod, Layer* layer);
-    void storeClosestVectorCurve(Layer* layer);
+    void beginInteraction(Qt::KeyboardModifiers keyMod, Layer *layer);
+    void createVectorSelection(Qt::KeyboardModifiers keyMod, Layer *layer);
+    void transformSelection(Qt::KeyboardModifiers keyMod, Layer *layer);
+    void storeClosestVectorCurve(Layer *layer);
 
-    void setCurveSelected(VectorImage* vectorImage, Qt::KeyboardModifiers keyMod);
-    void setAreaSelected(VectorImage* vectorImage, Qt::KeyboardModifiers keyMod);
+    void setCurveSelected(VectorImage *vectorImage, Qt::KeyboardModifiers keyMod);
+    void setAreaSelected(VectorImage *vectorImage, Qt::KeyboardModifiers keyMod);
 
     QPointF offsetFromPressPos();
 
-    Layer* currentPaintableLayer();
+    Layer *currentPaintableLayer();
 
     QPointF anchorOriginPoint;
-    Layer* mCurrentLayer = nullptr;
+    Layer *mCurrentLayer = nullptr;
     qreal mRotatedAngle = 0.0;
     int mRotationIncrement = 0;
 };

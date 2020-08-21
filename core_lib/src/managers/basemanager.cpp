@@ -18,7 +18,7 @@ GNU General Public License for more details.
 #include "basemanager.h"
 #include "editor.h"
 
-BaseManager::BaseManager(Editor* editor) : QObject(editor)
+BaseManager::BaseManager(Editor *editor) : QObject(editor)
 {
     Q_ASSERT(editor != nullptr);
     mEditor = editor;
@@ -29,7 +29,7 @@ BaseManager::~BaseManager()
     mEditor = nullptr;
 }
 
-Object* BaseManager::object() const
+Object *BaseManager::object() const
 {
     return mEditor->object();
 }

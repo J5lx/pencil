@@ -25,7 +25,7 @@ GNU General Public License for more details.
 #include "toolmanager.h"
 #include "selectionmanager.h"
 
-SelectTool::SelectTool(QObject* parent) : BaseTool(parent)
+SelectTool::SelectTool(QObject *parent) : BaseTool(parent)
 {
 }
 
@@ -60,8 +60,9 @@ void SelectTool::beginSelection()
     {
         if (mCurrentLayer->type() == Layer::VECTOR)
         {
-            VectorImage* vectorImage = static_cast<LayerVector*>(mCurrentLayer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
-            if (vectorImage != nullptr) {
+            VectorImage *vectorImage = static_cast<LayerVector *>(mCurrentLayer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+            if (vectorImage != nullptr)
+            {
                 vectorImage->deselectAll();
             }
         }
@@ -75,10 +76,10 @@ void SelectTool::beginSelection()
     mScribbleArea->update();
 }
 
-void SelectTool::pointerPressEvent(PointerEvent* event)
+void SelectTool::pointerPressEvent(PointerEvent *event)
 {
     mCurrentLayer = mEditor->layers()->currentLayer();
-    if (mCurrentLayer == nullptr) return;
+    if (mCurrentLayer == nullptr) { return; }
     if (!mCurrentLayer->isPaintable()) { return; }
     if (event->button() != Qt::LeftButton) { return; }
     auto selectMan = mEditor->select();
@@ -90,7 +91,7 @@ void SelectTool::pointerPressEvent(PointerEvent* event)
     beginSelection();
 }
 
-void SelectTool::pointerMoveEvent(PointerEvent*)
+void SelectTool::pointerMoveEvent(PointerEvent *)
 {
     mCurrentLayer = mEditor->layers()->currentLayer();
     if (mCurrentLayer == nullptr) { return; }
@@ -109,8 +110,9 @@ void SelectTool::pointerMoveEvent(PointerEvent*)
 
         if (mCurrentLayer->type() == Layer::VECTOR)
         {
-            VectorImage* vectorImage = static_cast<LayerVector*>(mCurrentLayer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
-            if (vectorImage != nullptr) {
+            VectorImage *vectorImage = static_cast<LayerVector *>(mCurrentLayer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+            if (vectorImage != nullptr)
+            {
                 vectorImage->select(selectMan->myTempTransformedSelectionRect());
             }
         }
@@ -119,11 +121,11 @@ void SelectTool::pointerMoveEvent(PointerEvent*)
     mScribbleArea->updateCurrentFrame();
 }
 
-void SelectTool::pointerReleaseEvent(PointerEvent* event)
+void SelectTool::pointerReleaseEvent(PointerEvent *event)
 {
     mCurrentLayer = mEditor->layers()->currentLayer();
-    if (mCurrentLayer == nullptr) return;
-    if (event->button() != Qt::LeftButton) return;
+    if (mCurrentLayer == nullptr) { return; }
+    if (event->button() != Qt::LeftButton) { return; }
     auto selectMan = mEditor->select();
 
     // if there's a small very small distance between current and last point
@@ -146,7 +148,7 @@ void SelectTool::pointerReleaseEvent(PointerEvent* event)
 
     mScribbleArea->updateToolCursor();
     mScribbleArea->updateCurrentFrame();
-//    mScribbleArea->setAllDirty();
+    //    mScribbleArea->setAllDirty();
 }
 
 bool SelectTool::maybeDeselect()
@@ -161,7 +163,8 @@ bool SelectTool::maybeDeselect()
 void SelectTool::keepSelection()
 {
     auto selectMan = mEditor->select();
-    if (mCurrentLayer->type() == Layer::BITMAP) {
+    if (mCurrentLayer->type() == Layer::BITMAP)
+    {
         if (!selectMan->myTempTransformedSelectionRect().isValid())
         {
             selectMan->setSelection(selectMan->myTempTransformedSelectionRect().normalized(), true);
@@ -173,7 +176,7 @@ void SelectTool::keepSelection()
     }
     else if (mCurrentLayer->type() == Layer::VECTOR)
     {
-        VectorImage* vectorImage = static_cast<LayerVector*>(mCurrentLayer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+        VectorImage *vectorImage = static_cast<LayerVector *>(mCurrentLayer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
         if (vectorImage == nullptr) { return; }
         selectMan->setSelection(vectorImage->getSelectionRect(), false);
     }
@@ -185,7 +188,8 @@ void SelectTool::controlOffsetOrigin(QPointF currentPoint, QPointF anchorPoint)
 
     if (mMoveMode != MoveMode::NONE)
     {
-        if (editor()->layers()->currentLayer()->type() == Layer::BITMAP) {
+        if (editor()->layers()->currentLayer()->type() == Layer::BITMAP)
+        {
             offset = QPointF(offset).toPoint();
         }
 
@@ -236,7 +240,7 @@ void SelectTool::manageSelectionOrigin(QPointF currentPoint, QPointF originPoint
     mEditor->select()->setTempTransformedSelectionRect(selectRect);
 }
 
-bool SelectTool::keyPressEvent(QKeyEvent* event)
+bool SelectTool::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key())
     {

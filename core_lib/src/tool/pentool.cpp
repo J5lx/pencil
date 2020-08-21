@@ -32,7 +32,7 @@ GNU General Public License for more details.
 #include "pointerevent.h"
 
 
-PenTool::PenTool(QObject* parent) : StrokeTool(parent)
+PenTool::PenTool(QObject *parent) : StrokeTool(parent)
 {
 }
 
@@ -126,22 +126,24 @@ void PenTool::pointerPressEvent(PointerEvent *)
     startStroke();
 }
 
-void PenTool::pointerMoveEvent(PointerEvent* event)
+void PenTool::pointerMoveEvent(PointerEvent *event)
 {
     if (event->buttons() & Qt::LeftButton)
     {
         mCurrentPressure = strokeManager()->getPressure();
         drawStroke();
         if (properties.stabilizerLevel != strokeManager()->getStabilizerLevel())
+        {
             strokeManager()->setStabilizerLevel(properties.stabilizerLevel);
+        }
     }
 }
 
-void PenTool::pointerReleaseEvent(PointerEvent*)
+void PenTool::pointerReleaseEvent(PointerEvent *)
 {
     mEditor->backup(typeName());
 
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
 
     qreal distance = QLineF(getCurrentPoint(), mMouseDownPoint).length();
     if (distance < 1)
@@ -154,9 +156,13 @@ void PenTool::pointerReleaseEvent(PointerEvent*)
     }
 
     if (layer->type() == Layer::BITMAP)
+    {
         paintBitmapStroke();
+    }
     else if (layer->type() == Layer::VECTOR)
+    {
         paintVectorStroke(layer);
+    }
     endStroke();
 }
 
@@ -165,7 +171,7 @@ void PenTool::paintAt(QPointF point)
 {
     //qDebug() << "Made a single dab at " << point;
 
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
     if (layer->type() == Layer::BITMAP)
     {
         qreal pressure = (properties.pressure) ? mCurrentPressure : 1.0;
@@ -189,7 +195,7 @@ void PenTool::drawStroke()
     StrokeTool::drawStroke();
     QList<QPointF> p = strokeManager()->interpolateStroke();
 
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
 
     if (layer->type() == Layer::BITMAP)
     {
@@ -265,10 +271,12 @@ void PenTool::paintBitmapStroke()
     mScribbleArea->clearBitmapBuffer();
 }
 
-void PenTool::paintVectorStroke(Layer* layer)
+void PenTool::paintVectorStroke(Layer *layer)
 {
     if (mStrokePoints.empty())
+    {
         return;
+    }
 
     // Clear the temporary pixel path
     mScribbleArea->clearBitmapBuffer();
@@ -282,8 +290,8 @@ void PenTool::paintVectorStroke(Layer* layer)
     curve.setVariableWidth(properties.pressure);
     curve.setColorNumber(mEditor->color()->frontColorNumber());
 
-    auto pLayerVector = static_cast<LayerVector*>(layer);
-    VectorImage* vectorImage = pLayerVector->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+    auto pLayerVector = static_cast<LayerVector *>(layer);
+    VectorImage *vectorImage = pLayerVector->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
     if (vectorImage == nullptr) { return; } // Can happen if the first frame is deleted while drawing
     vectorImage->addCurve(curve, mEditor->view()->scaling(), false);
 

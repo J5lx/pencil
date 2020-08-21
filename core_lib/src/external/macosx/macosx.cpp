@@ -25,7 +25,7 @@ GNU General Public License for more details.
 #include <QDebug>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0)
-  #include <QOperatingSystemVersion>
+#include <QOperatingSystemVersion>
 #endif
 
 #include "object.h"
@@ -38,54 +38,54 @@ GNU General Public License for more details.
 namespace PlatformHandler
 {
 
-    void configurePlatformSpecificSettings()
-    {
-        MacOSXNative::removeUnwantedMenuItems();
-    }
-
-    bool isDarkMode()
-    {
-        return MacOSXNative::isDarkMode();
-    }
-
-    void initialise()
-    {
-        QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-    }
-}
-
-extern "C" {
-// this is not declared in Carbon.h anymore, but it's in the framework
-OSStatus
-SetMouseCoalescingEnabled(
- Boolean    inNewState,
- Boolean *  outOldState);
-}
-
-extern "C" {
-
-bool gIsMouseCoalecing = false;
-
-void detectWhichOSX()
+void configurePlatformSpecificSettings()
 {
- #if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0)
-    QOperatingSystemVersion current = QOperatingSystemVersion::current();
-    gIsMouseCoalecing = ( current >= QOperatingSystemVersion::OSXElCapitan );
+    MacOSXNative::removeUnwantedMenuItems();
+}
+
+bool isDarkMode()
+{
+    return MacOSXNative::isDarkMode();
+}
+
+void initialise()
+{
+    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+}
+}
+
+extern "C" {
+    // this is not declared in Carbon.h anymore, but it's in the framework
+    OSStatus
+    SetMouseCoalescingEnabled(
+        Boolean    inNewState,
+        Boolean   *outOldState);
+}
+
+extern "C" {
+
+    bool gIsMouseCoalecing = false;
+
+    void detectWhichOSX()
+    {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0)
+        QOperatingSystemVersion current = QOperatingSystemVersion::current();
+        gIsMouseCoalecing = (current >= QOperatingSystemVersion::OSXElCapitan);
 #else
-    gIsMouseCoalecing = false;
+        gIsMouseCoalecing = false;
 #endif
-}
+    }
 
-void disableCoalescing()
-{
-    SetMouseCoalescingEnabled(gIsMouseCoalecing, NULL);
-    //MacOSXNative::setMouseCoalescingEnabled(false);
-}
+    void disableCoalescing()
+    {
+        SetMouseCoalescingEnabled(gIsMouseCoalecing, NULL);
+        //MacOSXNative::setMouseCoalescingEnabled(false);
+    }
 
-void enableCoalescing()
-{
-    SetMouseCoalescingEnabled(true, NULL);
-    //MacOSXNative::setMouseCoalescingEnabled(true);
-}
+    void enableCoalescing()
+    {
+        SetMouseCoalescingEnabled(true, NULL);
+        //MacOSXNative::setMouseCoalescingEnabled(true);
+    }
 
 } // extern "C"

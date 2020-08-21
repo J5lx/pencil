@@ -14,10 +14,10 @@ class MovieImporter : public QObject
 {
     Q_OBJECT
 public:
-    MovieImporter(QObject* parent);
+    MovieImporter(QObject *parent);
     virtual ~MovieImporter();
 
-    void setCore(Editor* editor) { mEditor = editor; }
+    void setCore(Editor *editor) { mEditor = editor; }
 
     /** Attempts to load a video and determine it's duration.
      *
@@ -29,7 +29,7 @@ public:
      * @param[out] frameEstimate An estimate of the number of frames if successful, unchanged otherwise.
      * @return Will FAIL if an error occurs during loading the video or calculating the duration, or OK if everything succeded.
      */
-    Status estimateFrames(const QString& filePath, int fps, int* frameEstimate);
+    Status estimateFrames(const QString &filePath, int fps, int *frameEstimate);
 
     /**
      * @param type FileType to import, should be either MOVIE or SOUND
@@ -38,7 +38,7 @@ public:
      * @param askPermission a function that when called, could would be used to notify UI for permission
      * @return whether the run suceeded, failed or canceled
      */
-    Status run(const QString& filePath, int fps, FileType type,
+    Status run(const QString &filePath, int fps, FileType type,
                std::function<void(int)> progress,
                std::function<void(QString)> progressMessage,
                std::function<bool()> askPermission);
@@ -48,16 +48,16 @@ public:
 private:
 
     Status verifyFFmpegExists();
-    Status importMovieVideo(const QString& filePath, int fps, int frameEstimate,
+    Status importMovieVideo(const QString &filePath, int fps, int frameEstimate,
                             std::function<bool(int)> progress,
                             std::function<void(QString)> progressMessage);
-    Status importMovieAudio(const QString& filePath, std::function<bool(int)> progress);
+    Status importMovieAudio(const QString &filePath, std::function<bool(int)> progress);
 
     Status generateFrames(std::function<bool(int)> progress);
 
-    Editor* mEditor = nullptr;
+    Editor *mEditor = nullptr;
 
-    QTemporaryDir* mTempDir = nullptr;
+    QTemporaryDir *mTempDir = nullptr;
 
     bool mCanceled = false;
 };

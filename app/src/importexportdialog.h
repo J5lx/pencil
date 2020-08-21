@@ -22,7 +22,8 @@ GNU General Public License for more details.
 #include <QGroupBox>
 #include "filedialogex.h"
 
-namespace Ui {
+namespace Ui
+{
 class ImportExportDialog;
 }
 
@@ -35,7 +36,7 @@ class ImportExportDialog : public QDialog
 public:
     enum Mode { Import, Export };
 
-    explicit ImportExportDialog(QWidget* parent, Mode eMode, FileType eFileType);
+    explicit ImportExportDialog(QWidget *parent, Mode eMode, FileType eFileType);
     ~ImportExportDialog();
 
     void init();
@@ -48,25 +49,25 @@ signals:
     void filePathsChanged(QStringList filePaths);
 
 protected:
-    QGroupBox* getOptionsGroupBox();
-    QGroupBox* getPreviewGroupBox();
-    QDialogButtonBox* getDialogButtonBox();
+    QGroupBox *getOptionsGroupBox();
+    QGroupBox *getPreviewGroupBox();
+    QDialogButtonBox *getDialogButtonBox();
 
     void setFileExtension(QString extension);
     void hideOptionsGroupBox(bool hide);
     void hidePreviewGroupBox(bool hide);
     void hideInstructionsLabel(bool hide);
 
-    void setInstructionsLabel(const QString& text);
+    void setInstructionsLabel(const QString &text);
 
 private slots:
     void browse();
     void setPosIndex(int index) { mPosIndex = index; }
 
 private:
-    Ui::ImportExportDialog* ui = nullptr;
+    Ui::ImportExportDialog *ui = nullptr;
 
-    FileDialog* m_fileDialog = nullptr;
+    FileDialog *m_fileDialog = nullptr;
     QStringList m_filePaths;
 
     FileType mFileType = FileType::ANIMATION;

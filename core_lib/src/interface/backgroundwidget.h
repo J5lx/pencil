@@ -26,16 +26,16 @@ class BackgroundWidget : public QWidget
 {
     Q_OBJECT
 public:
-    BackgroundWidget( QWidget* parent );
+    BackgroundWidget(QWidget *parent);
     ~BackgroundWidget() override;
 
-    void init(PreferenceManager* prefs);
+    void init(PreferenceManager *prefs);
 
 public slots:
 
 protected:
 
-    void paintEvent( QPaintEvent* ) override;
+    void paintEvent(QPaintEvent *) override;
 
 
 private slots:
@@ -44,10 +44,10 @@ private slots:
 
 private:
 
-    void drawShadow(QPainter& painter);
+    void drawShadow(QPainter &painter);
     void loadBackgroundStyle();
 
-    PreferenceManager* mPrefs = nullptr;
+    PreferenceManager *mPrefs = nullptr;
 
     QString mStyle;
     bool mHasShadow = false;

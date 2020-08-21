@@ -79,7 +79,7 @@ void DisplayOptionWidget::initUI()
 }
 
 void DisplayOptionWidget::makeConnections()
-{    
+{
     connect(ui->mirrorButton, &QToolButton::clicked, this, &DisplayOptionWidget::toggleMirror);
     connect(ui->mirrorVButton, &QToolButton::clicked, this, &DisplayOptionWidget::toggleMirrorV);
     connect(ui->overlayCenterButton, &QToolButton::clicked, this, &DisplayOptionWidget::toggleOverlayCenter);
@@ -87,20 +87,20 @@ void DisplayOptionWidget::makeConnections()
     connect(ui->overlayGoldenRatioButton, &QToolButton::clicked, this, &DisplayOptionWidget::toggleOverlayGoldenRatio);
     connect(ui->overlaySafeAreaButton, &QToolButton::clicked, this, &DisplayOptionWidget::toggleOverlaySafeAreas);
 
-    PreferenceManager* prefs = editor()->preference();
-    ScribbleArea* pScriArea = editor()->getScribbleArea();
+    PreferenceManager *prefs = editor()->preference();
+    ScribbleArea *pScriArea = editor()->getScribbleArea();
 
     connect(ui->thinLinesButton, &QToolButton::clicked, pScriArea, &ScribbleArea::toggleThinLines);
     connect(ui->outLinesButton, &QToolButton::clicked, pScriArea, &ScribbleArea::toggleOutlines);
     connect(prefs, &PreferenceManager::optionChanged, this, &DisplayOptionWidget::updateUI);
 
-    ViewManager* view = editor()->view();
+    ViewManager *view = editor()->view();
     connect(view, &ViewManager::viewFlipped, this, &DisplayOptionWidget::updateUI);
 }
 
 void DisplayOptionWidget::updateUI()
 {
-    PreferenceManager* prefs = editor()->preference();
+    PreferenceManager *prefs = editor()->preference();
 
     QSignalBlocker b1(ui->thinLinesButton);
     ui->thinLinesButton->setChecked(prefs->isOn(SETTING::INVISIBLE_LINES));
@@ -123,11 +123,13 @@ void DisplayOptionWidget::updateUI()
     if (prefs->isOn(SETTING::ACTION_SAFE_ON) || prefs->isOn(SETTING::TITLE_SAFE_ON))
     {
         ui->overlaySafeAreaButton->setEnabled(true);
-    } else {
+    }
+    else
+    {
         ui->overlaySafeAreaButton->setEnabled(false);
     }
 
-    ViewManager* view = editor()->view();
+    ViewManager *view = editor()->view();
 
     QSignalBlocker b3(ui->mirrorButton);
     ui->mirrorButton->setChecked(view->isFlipHorizontal());

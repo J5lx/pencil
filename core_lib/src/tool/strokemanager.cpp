@@ -56,7 +56,7 @@ void StrokeManager::setPressure(float pressure)
     mTabletPressure = pressure;
 }
 
-void StrokeManager::pointerPressEvent(PointerEvent* event)
+void StrokeManager::pointerPressEvent(PointerEvent *event)
 {
     reset();
     if (!(event->button() == Qt::NoButton)) // if the user is pressing the left/right button
@@ -72,7 +72,7 @@ void StrokeManager::pointerPressEvent(PointerEvent* event)
     setPressure(event->pressure());
 }
 
-void StrokeManager::pointerMoveEvent(PointerEvent* event)
+void StrokeManager::pointerMoveEvent(PointerEvent *event)
 {
     // only applied to drawing tools.
     if (mStabilizerLevel != -1)
@@ -86,13 +86,13 @@ void StrokeManager::pointerMoveEvent(PointerEvent* event)
         mCurrentPixel = event->posF();
         mLastInterpolated = mCurrentPixel;
     }
-    if(event->isTabletEvent())
+    if (event->isTabletEvent())
     {
         setPressure(event->pressure());
     }
 }
 
-void StrokeManager::pointerReleaseEvent(PointerEvent* event)
+void StrokeManager::pointerReleaseEvent(PointerEvent *event)
 {
     // flush out stroke
     if (mStrokeStarted)
@@ -179,7 +179,7 @@ QPointF StrokeManager::interpolateStart(QPointF firstPoint)
         // Clear queue
         strokeQueue.clear();
         pressureQueue.clear();
-    
+
         const int sampleSize = 5;
         Q_ASSERT(sampleSize > 0);
 

@@ -34,7 +34,7 @@ GNU General Public License for more details.
 #include "vectorimage.h"
 
 
-PencilTool::PencilTool(QObject* parent) : StrokeTool(parent)
+PencilTool::PencilTool(QObject *parent) : StrokeTool(parent)
 {
 }
 
@@ -115,7 +115,7 @@ void PencilTool::setPressure(const bool pressure)
 void PencilTool::setPreserveAlpha(const bool preserveAlpha)
 {
     // force value
-    Q_UNUSED( preserveAlpha );
+    Q_UNUSED(preserveAlpha);
     properties.preserveAlpha = 0;
 }
 
@@ -146,7 +146,7 @@ QCursor PencilTool::cursor()
     return Qt::CrossCursor;
 }
 
-void PencilTool::pointerPressEvent(PointerEvent*)
+void PencilTool::pointerPressEvent(PointerEvent *)
 {
     mScribbleArea->setAllDirty();
 
@@ -162,18 +162,20 @@ void PencilTool::pointerPressEvent(PointerEvent*)
     }
 }
 
-void PencilTool::pointerMoveEvent(PointerEvent* event)
+void PencilTool::pointerMoveEvent(PointerEvent *event)
 {
     if (event->buttons() & Qt::LeftButton)
     {
         mCurrentPressure = strokeManager()->getPressure();
         drawStroke();
         if (properties.stabilizerLevel != strokeManager()->getStabilizerLevel())
+        {
             strokeManager()->setStabilizerLevel(properties.stabilizerLevel);
+        }
     }
 }
 
-void PencilTool::pointerReleaseEvent(PointerEvent*)
+void PencilTool::pointerReleaseEvent(PointerEvent *)
 {
     mEditor->backup(typeName());
     qreal distance = QLineF(getCurrentPoint(), mMouseDownPoint).length();
@@ -186,11 +188,15 @@ void PencilTool::pointerReleaseEvent(PointerEvent*)
         drawStroke();
     }
 
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
     if (layer->type() == Layer::BITMAP)
+    {
         paintBitmapStroke();
+    }
     else if (layer->type() == Layer::VECTOR)
+    {
         paintVectorStroke(layer);
+    }
     endStroke();
 }
 
@@ -198,7 +204,7 @@ void PencilTool::pointerReleaseEvent(PointerEvent*)
 void PencilTool::paintAt(QPointF point)
 {
     //qDebug() << "Made a single dab at " << point;
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
     if (layer->type() == Layer::BITMAP)
     {
         qreal opacity = (properties.pressure) ? (mCurrentPressure * 0.5) : 1.0;
@@ -226,7 +232,7 @@ void PencilTool::drawStroke()
     StrokeTool::drawStroke();
     QList<QPointF> p = strokeManager()->interpolateStroke();
 
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
 
     if (layer->type() == Layer::BITMAP)
     {
@@ -299,10 +305,12 @@ void PencilTool::paintBitmapStroke()
     mScribbleArea->clearBitmapBuffer();
 }
 
-void PencilTool::paintVectorStroke(Layer* layer)
+void PencilTool::paintVectorStroke(Layer *layer)
 {
     if (mStrokePoints.empty())
+    {
         return;
+    }
 
     // Clear the temporary pixel path
     mScribbleArea->clearBitmapBuffer();
@@ -315,7 +323,7 @@ void PencilTool::paintVectorStroke(Layer* layer)
     curve.setInvisibility(true);
     curve.setVariableWidth(false);
     curve.setColorNumber(mEditor->color()->frontColorNumber());
-    VectorImage* vectorImage = static_cast<LayerVector*>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+    VectorImage *vectorImage = static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
     if (vectorImage == nullptr) { return; } // Can happen if the first frame is deleted while drawing
     vectorImage->addCurve(curve, qAbs(mEditor->view()->scaling()), properties.vectorMergeEnabled);
 

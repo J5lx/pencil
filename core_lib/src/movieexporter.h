@@ -45,8 +45,8 @@ public:
     MovieExporter();
     ~MovieExporter();
 
-    Status run(const Object* obj,
-               const ExportMovieDesc& desc,
+    Status run(const Object *obj,
+               const ExportMovieDesc &desc,
                std::function<void(float, float)> majorProgress,
                std::function<void(float)> minorProgress,
                std::function<void(QString)> progressMessage);
@@ -54,14 +54,14 @@ public:
 
     void cancel() { mCanceled = true; }
 
-    static Status executeFFmpeg(const QString& cmd, const QStringList& args, std::function<bool(int)> progress);
+    static Status executeFFmpeg(const QString &cmd, const QStringList &args, std::function<bool(int)> progress);
 private:
-    Status assembleAudio(const Object* obj, QString ffmpegPath, std::function<void(float)> progress);
+    Status assembleAudio(const Object *obj, QString ffmpegPath, std::function<void(float)> progress);
     Status generateMovie(const Object *obj, QString ffmpegPath, QString strOutputFile, std::function<void(float)> progress);
     Status generateGif(const Object *obj, QString ffmpeg, QString strOut, std::function<void(float)>  progress);
 
-    Status executeFFMpegPipe(const QString& cmd, const QStringList& args, std::function<void(float)> progress, std::function<bool(QProcess&,int)> writeFrame);
-    Status checkInputParameters(const ExportMovieDesc&);
+    Status executeFFMpegPipe(const QString &cmd, const QStringList &args, std::function<void(float)> progress, std::function<bool(QProcess &, int)> writeFrame);
+    Status checkInputParameters(const ExportMovieDesc &);
 
 private:
     QTemporaryDir mTempDir;

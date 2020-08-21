@@ -27,11 +27,11 @@ GNU General Public License for more details.
 #include "layermanager.h"
 #include "toolmanager.h"
 
-ToolOptionWidget::ToolOptionWidget(QWidget* parent) : BaseDockWidget(parent)
+ToolOptionWidget::ToolOptionWidget(QWidget *parent) : BaseDockWidget(parent)
 {
     setWindowTitle(tr("Options", "Window title of tool option panel like pen width, feather etc.."));
 
-    QWidget* innerWidget = new QWidget;
+    QWidget *innerWidget = new QWidget;
     setWidget(innerWidget);
     ui = new Ui::ToolOptions;
     ui->setupUi(innerWidget);
@@ -61,14 +61,14 @@ void ToolOptionWidget::initUI()
 
 void ToolOptionWidget::updateUI()
 {
-    BaseTool* currentTool = editor()->tools()->currentTool();
+    BaseTool *currentTool = editor()->tools()->currentTool();
     Q_ASSERT(currentTool);
 
     disableAllOptions();
 
     setVisibility(currentTool);
 
-    const Properties& p = currentTool->properties;
+    const Properties &p = currentTool->properties;
 
     setPenWidth(p.width);
     setPenFeather(p.feather);
@@ -86,7 +86,7 @@ void ToolOptionWidget::updateUI()
 void ToolOptionWidget::createUI()
 {}
 
-void ToolOptionWidget::makeConnectionToEditor(Editor* editor)
+void ToolOptionWidget::makeConnectionToEditor(Editor *editor)
 {
     auto toolManager = editor->tools();
 
@@ -123,29 +123,53 @@ void ToolOptionWidget::makeConnectionToEditor(Editor* editor)
 
 void ToolOptionWidget::onToolPropertyChanged(ToolType, ToolPropertyType ePropertyType)
 {
-    const Properties& p = editor()->tools()->currentTool()->properties;
+    const Properties &p = editor()->tools()->currentTool()->properties;
 
     switch (ePropertyType)
     {
-    case WIDTH: setPenWidth(p.width); break;
-    case FEATHER: setPenFeather(p.feather); break;
-    case USEFEATHER: setUseFeather(p.useFeather); break;
-    case PRESSURE: setPressure(p.pressure); break;
-    case INVISIBILITY: setPenInvisibility(p.invisibility); break;
-    case PRESERVEALPHA: setPreserveAlpha(p.preserveAlpha); break;
-    case VECTORMERGE: setVectorMergeEnabled(p.vectorMergeEnabled); break;
-    case ANTI_ALIASING: setAA(p.useAA); break;
-    case STABILIZATION: setStabilizerLevel(p.stabilizerLevel); break;
-    case TOLERANCE: setTolerance(static_cast<int>(p.tolerance)); break;
-    case FILLCONTOUR: setFillContour(p.useFillContour); break;
-    case BEZIER: setBezier(p.bezier_state); break;
+    case WIDTH:
+        setPenWidth(p.width);
+        break;
+    case FEATHER:
+        setPenFeather(p.feather);
+        break;
+    case USEFEATHER:
+        setUseFeather(p.useFeather);
+        break;
+    case PRESSURE:
+        setPressure(p.pressure);
+        break;
+    case INVISIBILITY:
+        setPenInvisibility(p.invisibility);
+        break;
+    case PRESERVEALPHA:
+        setPreserveAlpha(p.preserveAlpha);
+        break;
+    case VECTORMERGE:
+        setVectorMergeEnabled(p.vectorMergeEnabled);
+        break;
+    case ANTI_ALIASING:
+        setAA(p.useAA);
+        break;
+    case STABILIZATION:
+        setStabilizerLevel(p.stabilizerLevel);
+        break;
+    case TOLERANCE:
+        setTolerance(static_cast<int>(p.tolerance));
+        break;
+    case FILLCONTOUR:
+        setFillContour(p.useFillContour);
+        break;
+    case BEZIER:
+        setBezier(p.bezier_state);
+        break;
     default:
         Q_ASSERT(false);
         break;
     }
 }
 
-void ToolOptionWidget::setVisibility(BaseTool* tool)
+void ToolOptionWidget::setVisibility(BaseTool *tool)
 {
     ui->sizeSlider->setVisible(tool->isPropertyEnabled(WIDTH));
     ui->brushSpinBox->setVisible(tool->isPropertyEnabled(WIDTH));

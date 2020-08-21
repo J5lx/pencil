@@ -35,11 +35,11 @@ BezierArea::BezierArea(QList<VertexRef> vertexList, int color)
 
 VertexRef BezierArea::getVertexRef(int i)
 {
-    while (i >= mVertex.size() )
+    while (i >= mVertex.size())
     {
         i = i - mVertex.size();
     }
-    while (i < 0 )
+    while (i < 0)
     {
         i = i + mVertex.size();
     }
@@ -51,20 +51,20 @@ void BezierArea::setSelected(bool YesOrNo)
     mSelected = YesOrNo;
 }
 
-Status BezierArea::createDomElement( QXmlStreamWriter& xmlStream )
+Status BezierArea::createDomElement(QXmlStreamWriter &xmlStream)
 {
-    xmlStream.writeStartElement( "area" );
-    xmlStream.writeAttribute( "colourNumber", QString::number( mColorNumber ) );
-    xmlStream.writeAttribute("filled", QString::number( mIsFilled ) );
+    xmlStream.writeStartElement("area");
+    xmlStream.writeAttribute("colourNumber", QString::number(mColorNumber));
+    xmlStream.writeAttribute("filled", QString::number(mIsFilled));
 
     int errorLocation = -1;
-    for ( int i = 0; i < mVertex.size(); i++ )
+    for (int i = 0; i < mVertex.size(); i++)
     {
-        xmlStream.writeEmptyElement( "vertex" );
-        xmlStream.writeAttribute( "curve", QString::number( mVertex.at( i ).curveNumber ) );
-        xmlStream.writeAttribute( "vertex", QString::number( mVertex.at( i ).vertexNumber ) );
+        xmlStream.writeEmptyElement("vertex");
+        xmlStream.writeAttribute("curve", QString::number(mVertex.at(i).curveNumber));
+        xmlStream.writeAttribute("vertex", QString::number(mVertex.at(i).vertexNumber));
 
-        if ( errorLocation < 0 && xmlStream.hasError() )
+        if (errorLocation < 0 && xmlStream.hasError())
         {
             errorLocation = i;
         }
@@ -72,7 +72,7 @@ Status BezierArea::createDomElement( QXmlStreamWriter& xmlStream )
 
     xmlStream.writeEndElement(); // Close area element
 
-    if ( xmlStream.hasError() && errorLocation >= 0 )
+    if (xmlStream.hasError() && errorLocation >= 0)
     {
         DebugDetails debugInfo;
         debugInfo << "BezierArea::createDomElement";
@@ -81,13 +81,13 @@ Status BezierArea::createDomElement( QXmlStreamWriter& xmlStream )
         debugInfo << QString("&nbsp;&nbsp;curve = %1").arg(mVertex.at(errorLocation).curveNumber);
         debugInfo << QString("&nbsp;&nbsp;vertex = %1 ").arg(mVertex.at(errorLocation).vertexNumber);
 
-        return Status( Status::FAIL, debugInfo );
+        return Status(Status::FAIL, debugInfo);
     }
 
     return Status::OK;
 }
 
-void BezierArea::loadDomElement(const QDomElement& element)
+void BezierArea::loadDomElement(const QDomElement &element)
 {
     mColorNumber = element.attribute("colourNumber").toInt();
 
@@ -99,7 +99,7 @@ void BezierArea::loadDomElement(const QDomElement& element)
         {
             if (vertexElement.tagName() == "vertex")
             {
-                mVertex.append( VertexRef(vertexElement.attribute("curve").toInt() , vertexElement.attribute("vertex").toInt() )  );
+                mVertex.append(VertexRef(vertexElement.attribute("curve").toInt(), vertexElement.attribute("vertex").toInt()));
             }
         }
         vertexTag = vertexTag.nextSibling();

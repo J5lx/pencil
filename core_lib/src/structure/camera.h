@@ -26,15 +26,15 @@ class Camera : public KeyFrame
 public:
     explicit Camera();
     explicit Camera(QPointF translation, qreal rotation, qreal scaling);
-    explicit Camera(const Camera&);
+    explicit Camera(const Camera &);
     ~Camera() override;
 
-    Camera* clone() override;
+    Camera *clone() override;
 
     QTransform getView();
     void reset();
     void updateViewTransform();
-    void assign(const Camera& rhs);
+    void assign(const Camera &rhs);
 
     void translate(qreal dx, qreal dy);
     void translate(const QPointF);
@@ -49,7 +49,7 @@ public:
 
     QTransform view;
 
-    bool operator==(const Camera& rhs) const;
+    bool operator==(const Camera &rhs) const;
 
 private:
     QPointF mTranslate;

@@ -34,9 +34,9 @@ class StrokeManager : public QObject
 public:
     StrokeManager();
 
-    void pointerPressEvent(PointerEvent* event);
-    void pointerMoveEvent(PointerEvent* event);
-    void pointerReleaseEvent(PointerEvent* event);
+    void pointerPressEvent(PointerEvent *event);
+    void pointerMoveEvent(PointerEvent *event);
+    void pointerReleaseEvent(PointerEvent *event);
     void setPressure(float pressure);
     void setStabilizerLevel(int level);
 

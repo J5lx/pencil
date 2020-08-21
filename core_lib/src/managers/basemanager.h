@@ -29,20 +29,20 @@ class BaseManager : public QObject
 {
     Q_OBJECT
 protected:
-    explicit BaseManager(Editor* editor = nullptr);
+    explicit BaseManager(Editor *editor = nullptr);
     virtual ~BaseManager();
 
 public:
-    Editor* editor() const { return mEditor; }
-    Object* object() const;
+    Editor *editor() const { return mEditor; }
+    Object *object() const;
 
     virtual bool init() = 0;
-    virtual Status load(Object* o) = 0;
-    virtual Status save(Object* o) = 0;
-    virtual void workingLayerChanged(Layer*) {}
+    virtual Status load(Object *o) = 0;
+    virtual Status save(Object *o) = 0;
+    virtual void workingLayerChanged(Layer *) {}
 
 private:
-    Editor* mEditor = nullptr;
+    Editor *mEditor = nullptr;
 };
 
 #endif // BASEMANAGER_H

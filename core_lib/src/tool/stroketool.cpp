@@ -37,7 +37,7 @@ extern "C" {
 }
 #endif
 
-StrokeTool::StrokeTool(QObject* parent) : BaseTool(parent)
+StrokeTool::StrokeTool(QObject *parent) : BaseTool(parent)
 {
     detectWhichOSX();
 }
@@ -66,7 +66,8 @@ void StrokeTool::startStroke()
 
 bool StrokeTool::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key()) {
+    switch (event->key())
+    {
     case Qt::Key_Alt:
         mScribbleArea->setTemporaryTool(EYEDROPPER);
         return true;

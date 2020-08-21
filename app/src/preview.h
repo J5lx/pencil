@@ -23,17 +23,17 @@ GNU General Public License for more details.
 
 class PreviewCanvas : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	PreviewCanvas( QWidget* );
-	void setImage( BitmapImage* img ) { mBitmapImage = img; }
+    PreviewCanvas(QWidget *);
+    void setImage(BitmapImage *img) { mBitmapImage = img; }
 
 protected:
-	void paintEvent( QPaintEvent* ) override;
+    void paintEvent(QPaintEvent *) override;
 
 private:
-	BitmapImage* mBitmapImage = nullptr;
+    BitmapImage *mBitmapImage = nullptr;
 };
 
 
@@ -43,12 +43,12 @@ class PreviewWidget : public QDockWidget
     Q_OBJECT
 public:
     PreviewWidget(QWidget *parent = nullptr);
-	void setImage( BitmapImage* img ) { mCanvas->setImage( img ); }
-	void updateImage();
+    void setImage(BitmapImage *img) { mCanvas->setImage(img); }
+    void updateImage();
 
 private:
-	PreviewCanvas* mCanvas = nullptr;
-	
+    PreviewCanvas *mCanvas = nullptr;
+
 };
 
 #endif // PREVIEW_H

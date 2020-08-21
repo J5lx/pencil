@@ -22,7 +22,7 @@ GNU General Public License for more details.
 #include <QFileInfo>
 
 
-LayerVector::LayerVector(Object* object) : Layer(object, Layer::VECTOR)
+LayerVector::LayerVector(Object *object) : Layer(object, Layer::VECTOR)
 {
     setName(tr("Vector Layer"));
 }
@@ -34,9 +34,9 @@ LayerVector::~LayerVector()
 bool LayerVector::usesColor(int colorIndex)
 {
     bool bUseColor = false;
-    foreachKeyFrame([&](KeyFrame* pKeyFrame)
+    foreachKeyFrame([&](KeyFrame * pKeyFrame)
     {
-        auto pVecImage = static_cast<VectorImage*>(pKeyFrame);
+        auto pVecImage = static_cast<VectorImage *>(pKeyFrame);
 
         bUseColor = bUseColor || pVecImage->usesColor(colorIndex);
     });
@@ -46,18 +46,18 @@ bool LayerVector::usesColor(int colorIndex)
 
 void LayerVector::removeColor(int colorIndex)
 {
-    foreachKeyFrame([=](KeyFrame* pKeyFrame)
+    foreachKeyFrame([ = ](KeyFrame * pKeyFrame)
     {
-        auto pVecImage = static_cast<VectorImage*>(pKeyFrame);
+        auto pVecImage = static_cast<VectorImage *>(pKeyFrame);
         pVecImage->removeColor(colorIndex);
     });
 }
 
 void LayerVector::moveColor(int start, int end)
 {
-    foreachKeyFrame( [=] (KeyFrame* pKeyFrame)
+    foreachKeyFrame([ = ](KeyFrame * pKeyFrame)
     {
-        auto pVecImage = static_cast<VectorImage*>(pKeyFrame);
+        auto pVecImage = static_cast<VectorImage *>(pKeyFrame);
         pVecImage->moveColor(start, end);
     });
 }
@@ -68,19 +68,19 @@ void LayerVector::loadImageAtFrame(QString path, int frameNumber)
     {
         removeKeyFrame(frameNumber);
     }
-    VectorImage* vecImg = new VectorImage;
+    VectorImage *vecImg = new VectorImage;
     vecImg->setPos(frameNumber);
     vecImg->setObject(object());
     vecImg->read(path);
     addKeyFrame(frameNumber, vecImg);
 }
 
-Status LayerVector::saveKeyFrameFile(KeyFrame* keyFrame, QString path)
-{    
+Status LayerVector::saveKeyFrameFile(KeyFrame *keyFrame, QString path)
+{
     QString theFileName = fileName(keyFrame);
     QString strFilePath = QDir(path).filePath(theFileName);
 
-    VectorImage* vecImage = static_cast<VectorImage*>(keyFrame);
+    VectorImage *vecImage = static_cast<VectorImage *>(keyFrame);
 
     if (needSaveFrame(keyFrame, strFilePath) == false)
     {
@@ -106,35 +106,41 @@ Status LayerVector::saveKeyFrameFile(KeyFrame* keyFrame, QString path)
     return Status::OK;
 }
 
-KeyFrame* LayerVector::createKeyFrame(int position, Object* obj)
+KeyFrame *LayerVector::createKeyFrame(int position, Object *obj)
 {
-    VectorImage* v = new VectorImage;
+    VectorImage *v = new VectorImage;
     v->setPos(position);
     v->setObject(obj);
     return v;
 }
 
-QString LayerVector::fileName(KeyFrame* key)
+QString LayerVector::fileName(KeyFrame *key)
 {
     return QString::asprintf("%03d.%03d.vec", id(), key->pos());
 }
 
-bool LayerVector::needSaveFrame(KeyFrame* key, const QString& strSavePath)
+bool LayerVector::needSaveFrame(KeyFrame *key, const QString &strSavePath)
 {
     if (key->isModified()) // keyframe was modified
+    {
         return true;
+    }
     if (QFile::exists(strSavePath) == false) // hasn't been saved before
+    {
         return true;
+    }
     if (strSavePath != key->fileName()) // key frame moved
+    {
         return true;
+    }
     return false;
 }
 
-QDomElement LayerVector::createDomElement(QDomDocument& doc)
+QDomElement LayerVector::createDomElement(QDomDocument &doc)
 {
     QDomElement layerElem = this->createBaseDomElement(doc);
 
-    foreachKeyFrame([&](KeyFrame* keyframe)
+    foreachKeyFrame([&](KeyFrame * keyframe)
     {
         QDomElement imageTag = doc.createElement("image");
         imageTag.setAttribute("frame", keyframe->pos());
@@ -147,7 +153,7 @@ QDomElement LayerVector::createDomElement(QDomDocument& doc)
     return layerElem;
 }
 
-void LayerVector::loadDomElement(const QDomElement& element, QString dataDirPath, ProgressCallback progressStep)
+void LayerVector::loadDomElement(const QDomElement &element, QString dataDirPath, ProgressCallback progressStep)
 {
     this->loadBaseDomElement(element);
 
@@ -163,7 +169,7 @@ void LayerVector::loadDomElement(const QDomElement& element, QString dataDirPath
                 {
                     QString path = dataDirPath + "/" + imageElement.attribute("src"); // the file is supposed to be in the data directory
                     QFileInfo fi(path);
-                    if (!fi.exists()) path = imageElement.attribute("src");
+                    if (!fi.exists()) { path = imageElement.attribute("src"); }
                     int position = imageElement.attribute("frame").toInt();
                     loadImageAtFrame(path, position);
                 }
@@ -180,12 +186,12 @@ void LayerVector::loadDomElement(const QDomElement& element, QString dataDirPath
     }
 }
 
-VectorImage* LayerVector::getVectorImageAtFrame(int frameNumber) const
+VectorImage *LayerVector::getVectorImageAtFrame(int frameNumber) const
 {
-    return static_cast<VectorImage*>(getKeyFrameAt(frameNumber));
+    return static_cast<VectorImage *>(getKeyFrameAt(frameNumber));
 }
 
-VectorImage* LayerVector::getLastVectorImageAtFrame(int frameNumber, int increment) const
+VectorImage *LayerVector::getLastVectorImageAtFrame(int frameNumber, int increment) const
 {
-    return static_cast<VectorImage*>(getLastKeyFrameAtPosition(frameNumber + increment));
+    return static_cast<VectorImage *>(getLastKeyFrameAtPosition(frameNumber + increment));
 }

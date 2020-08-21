@@ -33,7 +33,7 @@ GNU General Public License for more details.
 #include "vectorimage.h"
 
 
-MoveTool::MoveTool(QObject* parent) : BaseTool(parent)
+MoveTool::MoveTool(QObject *parent) : BaseTool(parent)
 {
 }
 
@@ -75,10 +75,10 @@ void MoveTool::updateSettings(const SETTING setting)
     }
 }
 
-void MoveTool::pointerPressEvent(PointerEvent* event)
+void MoveTool::pointerPressEvent(PointerEvent *event)
 {
     mCurrentLayer = currentPaintableLayer();
-    if (mCurrentLayer == nullptr) return;
+    if (mCurrentLayer == nullptr) { return; }
 
     mEditor->select()->updatePolygons();
 
@@ -86,10 +86,10 @@ void MoveTool::pointerPressEvent(PointerEvent* event)
     beginInteraction(event->modifiers(), mCurrentLayer);
 }
 
-void MoveTool::pointerMoveEvent(PointerEvent* event)
+void MoveTool::pointerMoveEvent(PointerEvent *event)
 {
     mCurrentLayer = currentPaintableLayer();
-    if (mCurrentLayer == nullptr) return;
+    if (mCurrentLayer == nullptr) { return; }
 
     mEditor->select()->updatePolygons();
 
@@ -111,17 +111,20 @@ void MoveTool::pointerMoveEvent(PointerEvent* event)
     mScribbleArea->updateCurrentFrame();
 }
 
-void MoveTool::pointerReleaseEvent(PointerEvent*)
+void MoveTool::pointerReleaseEvent(PointerEvent *)
 {
     auto selectMan = mEditor->select();
     if (!selectMan->somethingSelected())
+    {
         return;
+    }
 
     mRotatedAngle = selectMan->myRotation();
     updateTransformation();
 
-    Layer* layer = mEditor->layers()->currentLayer();
-    if (layer->type() == Layer::VECTOR) {
+    Layer *layer = mEditor->layers()->currentLayer();
+    if (layer->type() == Layer::VECTOR)
+    {
         applyTransformation();
     }
 
@@ -143,7 +146,7 @@ void MoveTool::updateTransformation()
     paintTransformedSelection();
 }
 
-void MoveTool::transformSelection(Qt::KeyboardModifiers keyMod, Layer* layer)
+void MoveTool::transformSelection(Qt::KeyboardModifiers keyMod, Layer *layer)
 {
     auto selectMan = mEditor->select();
     if (selectMan->somethingSelected())
@@ -163,7 +166,7 @@ void MoveTool::transformSelection(Qt::KeyboardModifiers keyMod, Layer* layer)
             rotationIncrement = mRotationIncrement;
         }
 
-        if(layer->type() == Layer::BITMAP)
+        if (layer->type() == Layer::BITMAP)
         {
             offset = offset.toPoint();
         }
@@ -180,7 +183,7 @@ void MoveTool::transformSelection(Qt::KeyboardModifiers keyMod, Layer* layer)
     }
 }
 
-void MoveTool::beginInteraction(Qt::KeyboardModifiers keyMod, Layer* layer)
+void MoveTool::beginInteraction(Qt::KeyboardModifiers keyMod, Layer *layer)
 {
     auto selectMan = mEditor->select();
     QRectF selectionRect = selectMan->myTransformedSelectionRect();
@@ -211,7 +214,8 @@ void MoveTool::beginInteraction(Qt::KeyboardModifiers keyMod, Layer* layer)
         createVectorSelection(keyMod, layer);
     }
 
-    if(selectMan->getMoveMode() == MoveMode::ROTATION) {
+    if (selectMan->getMoveMode() == MoveMode::ROTATION)
+    {
         QPointF curPoint = getCurrentPoint();
         QPointF anchorPoint = selectionRect.center();
         mRotatedAngle = qRadiansToDegrees(MathUtils::getDifferenceAngle(anchorPoint, curPoint)) - selectMan->myRotation();
@@ -223,11 +227,11 @@ void MoveTool::beginInteraction(Qt::KeyboardModifiers keyMod, Layer* layer)
  * In vector the selection rectangle is based on the bounding box of the curves
  * We can therefore create a selection just by clicking near/on a curve
  */
-void MoveTool::createVectorSelection(Qt::KeyboardModifiers keyMod, Layer* layer)
+void MoveTool::createVectorSelection(Qt::KeyboardModifiers keyMod, Layer *layer)
 {
     assert(layer->type() == Layer::VECTOR);
-    LayerVector* vecLayer = static_cast<LayerVector*>(layer);
-    VectorImage* vectorImage = vecLayer->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+    LayerVector *vecLayer = static_cast<LayerVector *>(layer);
+    VectorImage *vectorImage = vecLayer->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
     if (vectorImage == nullptr) { return; }
 
     if (!mEditor->select()->closestCurves().empty()) // the user clicks near a curve
@@ -241,7 +245,7 @@ void MoveTool::createVectorSelection(Qt::KeyboardModifiers keyMod, Layer* layer)
     mScribbleArea->update();
 }
 
-void MoveTool::setCurveSelected(VectorImage* vectorImage, Qt::KeyboardModifiers keyMod)
+void MoveTool::setCurveSelected(VectorImage *vectorImage, Qt::KeyboardModifiers keyMod)
 {
     auto selectMan = mEditor->select();
     if (!vectorImage->isSelected(selectMan->closestCurves()))
@@ -255,7 +259,7 @@ void MoveTool::setCurveSelected(VectorImage* vectorImage, Qt::KeyboardModifiers 
     }
 }
 
-void MoveTool::setAreaSelected(VectorImage* vectorImage, Qt::KeyboardModifiers keyMod)
+void MoveTool::setAreaSelected(VectorImage *vectorImage, Qt::KeyboardModifiers keyMod)
 {
     int areaNumber = vectorImage->getLastAreaNumber(getLastPoint());
     if (!vectorImage->isAreaSelected(areaNumber))
@@ -273,11 +277,11 @@ void MoveTool::setAreaSelected(VectorImage* vectorImage, Qt::KeyboardModifiers k
  * @brief MoveTool::storeClosestVectorCurve
  * stores the curves closest to the mouse position in mClosestCurves
  */
-void MoveTool::storeClosestVectorCurve(Layer* layer)
+void MoveTool::storeClosestVectorCurve(Layer *layer)
 {
     auto selectMan = mEditor->select();
-    auto layerVector = static_cast<LayerVector*>(layer);
-    VectorImage* pVecImg = layerVector->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+    auto layerVector = static_cast<LayerVector *>(layer);
+    VectorImage *pVecImg = layerVector->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
     if (pVecImg == nullptr) { return; }
     selectMan->setCurves(pVecImg->getCurvesCloseTo(getCurrentPoint(), selectMan->selectionTolerance()));
 }
@@ -319,9 +323,14 @@ bool MoveTool::leavingThisTool()
     {
         switch (mCurrentLayer->type())
         {
-        case Layer::BITMAP: applySelectionChanges(); break;
-        case Layer::VECTOR: applyTransformation(); break;
-        default: break;
+        case Layer::BITMAP:
+            applySelectionChanges();
+            break;
+        case Layer::VECTOR:
+            applyTransformation();
+            break;
+        default:
+            break;
         }
     }
     return true;
@@ -374,13 +383,17 @@ int MoveTool::showTransformWarning()
     return returnValue;
 }
 
-Layer* MoveTool::currentPaintableLayer()
+Layer *MoveTool::currentPaintableLayer()
 {
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
     if (layer == nullptr)
+    {
         return nullptr;
+    }
     if (!layer->isPaintable())
+    {
         return nullptr;
+    }
     return layer;
 }
 

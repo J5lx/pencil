@@ -31,7 +31,7 @@ GNU General Public License for more details.
 #include "vectorimage.h"
 
 
-PolylineTool::PolylineTool(QObject* parent) : BaseTool(parent)
+PolylineTool::PolylineTool(QObject *parent) : BaseTool(parent)
 {
 }
 
@@ -106,9 +106,9 @@ void PolylineTool::clearToolData()
     mPoints.clear();
 }
 
-void PolylineTool::pointerPressEvent(PointerEvent* event)
+void PolylineTool::pointerPressEvent(PointerEvent *event)
 {
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
 
     if (event->button() == Qt::LeftButton)
     {
@@ -118,7 +118,7 @@ void PolylineTool::pointerPressEvent(PointerEvent* event)
 
             if (layer->type() == Layer::VECTOR)
             {
-                VectorImage* vectorImage = static_cast<LayerVector*>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+                VectorImage *vectorImage = static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
                 Q_CHECK_PTR(vectorImage);
                 vectorImage->deselectAll();
                 if (mScribbleArea->makeInvisible() && !mEditor->preference()->isOn(SETTING::INVISIBLE_LINES))
@@ -132,9 +132,9 @@ void PolylineTool::pointerPressEvent(PointerEvent* event)
     }
 }
 
-void PolylineTool::pointerMoveEvent(PointerEvent*)
+void PolylineTool::pointerMoveEvent(PointerEvent *)
 {
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
     if (layer->type() == Layer::BITMAP || layer->type() == Layer::VECTOR)
     {
         drawPolyline(mPoints, getCurrentPoint());
@@ -144,7 +144,7 @@ void PolylineTool::pointerMoveEvent(PointerEvent*)
 void PolylineTool::pointerReleaseEvent(PointerEvent *)
 {}
 
-void PolylineTool::pointerDoubleClickEvent(PointerEvent*)
+void PolylineTool::pointerDoubleClickEvent(PointerEvent *)
 {
     // include the current point before ending the line.
     mPoints << getCurrentPoint();
@@ -156,7 +156,7 @@ void PolylineTool::pointerDoubleClickEvent(PointerEvent*)
 }
 
 
-bool PolylineTool::keyPressEvent(QKeyEvent* event)
+bool PolylineTool::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key())
     {
@@ -194,7 +194,7 @@ void PolylineTool::drawPolyline(QList<QPointF> points, QPointF endPoint)
                  Qt::SolidLine,
                  Qt::RoundCap,
                  Qt::RoundJoin);
-        Layer* layer = mEditor->layers()->currentLayer();
+        Layer *layer = mEditor->layers()->currentLayer();
 
         // Bitmap by default
         QPainterPath tempPath;
@@ -240,7 +240,7 @@ void PolylineTool::cancelPolyline()
 
 void PolylineTool::endPolyline(QList<QPointF> points)
 {
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
     mScribbleArea->clearBitmapBuffer();
 
     if (layer->type() == Layer::VECTOR)
@@ -258,14 +258,14 @@ void PolylineTool::endPolyline(QList<QPointF> points)
         curve.setVariableWidth(false);
         curve.setInvisibility(mScribbleArea->makeInvisible());
 
-        VectorImage* vectorImage = static_cast<LayerVector*>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+        VectorImage *vectorImage = static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
         if (vectorImage == nullptr) { return; } // Can happen if the first frame is deleted while drawing
         vectorImage->addCurve(curve, mEditor->view()->scaling());
     }
     if (layer->type() == Layer::BITMAP)
     {
         drawPolyline(points, points.last());
-        BitmapImage *bitmapImage = static_cast<LayerBitmap*>(layer)->getLastBitmapImageAtFrame(mEditor->currentFrame(), 0);
+        BitmapImage *bitmapImage = static_cast<LayerBitmap *>(layer)->getLastBitmapImageAtFrame(mEditor->currentFrame(), 0);
         if (bitmapImage == nullptr) { return; } // Can happen if the first frame is deleted while drawing
         bitmapImage->paste(mScribbleArea->mBufferImg);
     }

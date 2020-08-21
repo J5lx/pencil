@@ -19,7 +19,7 @@ class SelectionPainter
 public:
     SelectionPainter();
 
-    void paint(QPainter& painter, const Object* object, int layerIndex, BaseTool* tool, TransformParameters& transformParameters);
+    void paint(QPainter &painter, const Object *object, int layerIndex, BaseTool *tool, TransformParameters &transformParameters);
 };
 
 #endif // SelectionPainter_H

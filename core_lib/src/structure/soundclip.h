@@ -27,21 +27,21 @@ class SoundClip : public KeyFrame
 {
 public:
     explicit SoundClip();
-    explicit SoundClip(const SoundClip&);
+    explicit SoundClip(const SoundClip &);
     ~SoundClip() override;
-    SoundClip& operator=(const SoundClip& a);
+    SoundClip &operator=(const SoundClip &a);
 
-    SoundClip* clone() override;
+    SoundClip *clone() override;
 
-    Status init(const QString& strSoundFile);
+    Status init(const QString &strSoundFile);
     bool isValid() const;
 
-    void setSoundClipName(const QString& sName) { mOriginalSoundClipName = sName; }
+    void setSoundClipName(const QString &sName) { mOriginalSoundClipName = sName; }
     QString soundClipName() const { return mOriginalSoundClipName; }
 
-    void attachPlayer(SoundPlayer* player);
+    void attachPlayer(SoundPlayer *player);
     void detachPlayer();
-    SoundPlayer* player() const { return mPlayer.get(); }
+    SoundPlayer *player() const { return mPlayer.get(); }
 
     void play();
     void playFromPosition(int frameNumber, int fps);
@@ -49,7 +49,7 @@ public:
     void stop();
 
     int64_t duration() const;
-    void setDuration(const int64_t& duration);
+    void setDuration(const int64_t &duration);
 
     void updateLength(int fps);
 

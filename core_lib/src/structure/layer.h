@@ -51,13 +51,13 @@ public:
         CAMERA = 5,
     };
 
-    explicit Layer(Object*, LAYER_TYPE);
+    explicit Layer(Object *, LAYER_TYPE);
     virtual ~Layer();
 
     int id() const { return mId; }
 
     LAYER_TYPE type() const { return meType; }
-    Object* object() const { return mObject; }
+    Object *object() const { return mObject; }
 
     void setName(QString name) { mName = name; }
     QString name() const { return mName; }
@@ -67,11 +67,11 @@ public:
     bool visible() const { return mVisible; }
     void setVisible(bool b) { mVisible = b; }
 
-    virtual Status saveKeyFrameFile(KeyFrame*, QString dataPath) = 0;
-    virtual void loadDomElement(const QDomElement& element, QString dataDirPath, ProgressCallback progressForward) = 0;
-    virtual QDomElement createDomElement(QDomDocument& doc) = 0;
-    QDomElement createBaseDomElement(QDomDocument& doc);
-    void loadBaseDomElement(const QDomElement& elem);
+    virtual Status saveKeyFrameFile(KeyFrame *, QString dataPath) = 0;
+    virtual void loadDomElement(const QDomElement &element, QString dataDirPath, ProgressCallback progressForward) = 0;
+    virtual QDomElement createDomElement(QDomDocument &doc) = 0;
+    QDomElement createBaseDomElement(QDomDocument &doc);
+    void loadBaseDomElement(const QDomElement &elem);
 
     // KeyFrame interface
     int getMaxKeyFramePosition() const;
@@ -86,19 +86,19 @@ public:
     int keyFrameCount() const { return static_cast<int>(mKeyFrames.size()); }
 
     bool addNewKeyFrameAt(int position);
-    bool addKeyFrame(int position, KeyFrame*);
+    bool addKeyFrame(int position, KeyFrame *);
     bool removeKeyFrame(int position);
     bool swapKeyFrames(int position1, int position2);
     bool moveKeyFrameForward(int position);
     bool moveKeyFrameBackward(int position);
-    bool loadKey(KeyFrame*);
-    KeyFrame* getKeyFrameAt(int position) const;
-    KeyFrame* getLastKeyFrameAtPosition(int position) const;
+    bool loadKey(KeyFrame *);
+    KeyFrame *getKeyFrameAt(int position) const;
+    KeyFrame *getLastKeyFrameAtPosition(int position) const;
     bool keyExistsWhichCovers(int frameNumber);
     KeyFrame *getKeyFrameWhichCovers(int frameNumber) const;
     bool getVisibility() { return mVisible; }
 
-    void foreachKeyFrame(std::function<void(KeyFrame*)>);
+    void foreachKeyFrame(std::function<void(KeyFrame *)>);
 
     void setModified(int position, bool isModified);
 
@@ -112,15 +112,15 @@ public:
 
     bool moveSelectedFrames(int offset);
 
-    Status save(const QString& sDataFolder, QStringList& attachedFiles, ProgressCallback progressStep);
-    virtual Status presave(const QString& sDataFolder) { Q_UNUSED(sDataFolder); return Status::SAFE; }
+    Status save(const QString &sDataFolder, QStringList &attachedFiles, ProgressCallback progressStep);
+    virtual Status presave(const QString &sDataFolder) { Q_UNUSED(sDataFolder); return Status::SAFE; }
 
     // graphic representation -- could be put in another class
-    void paintTrack(QPainter& painter, TimeLineCells* cells, int x, int y, int width, int height, bool selected, int frameSize);
-    void paintFrames(QPainter& painter, QColor trackCol, TimeLineCells* cells, int y, int height, bool selected, int frameSize);
-    void paintLabel(QPainter& painter, TimeLineCells* cells, int x, int y, int height, int width, bool selected, LayerVisibility layerVisibility);
-    void paintSelection(QPainter& painter, int x, int y, int height, int width);
-    void mouseDoubleClick(QMouseEvent*, int frameNumber);
+    void paintTrack(QPainter &painter, TimeLineCells *cells, int x, int y, int width, int height, bool selected, int frameSize);
+    void paintFrames(QPainter &painter, QColor trackCol, TimeLineCells *cells, int y, int height, bool selected, int frameSize);
+    void paintLabel(QPainter &painter, TimeLineCells *cells, int x, int y, int height, int width, bool selected, LayerVisibility layerVisibility);
+    void paintSelection(QPainter &painter, int x, int y, int height, int width);
+    void mouseDoubleClick(QMouseEvent *, int frameNumber);
 
     virtual void editProperties(); // TODO: it's used by camera layers only, should move somewhere else
 
@@ -128,16 +128,16 @@ public:
 
 protected:
     void setId(int LayerId) { mId = LayerId; }
-    virtual KeyFrame* createKeyFrame(int position, Object*) = 0;
+    virtual KeyFrame *createKeyFrame(int position, Object *) = 0;
 
 private:
     LAYER_TYPE meType = UNDEFINED;
-    Object*    mObject = nullptr;
+    Object    *mObject = nullptr;
     int        mId = 0;
     bool       mVisible = true;
     QString    mName;
 
-    std::map<int, KeyFrame*, std::greater<int>> mKeyFrames;
+    std::map<int, KeyFrame *, std::greater<int>> mKeyFrames;
 
     // We need to keep track of selected frames ordered by last selected
     // and by position.

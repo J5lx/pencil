@@ -31,7 +31,7 @@ GNU General Public License for more details.
 #include "pointerevent.h"
 
 
-EraserTool::EraserTool(QObject* parent) : StrokeTool(parent)
+EraserTool::EraserTool(QObject *parent) : StrokeTool(parent)
 {
 }
 
@@ -147,7 +147,7 @@ QCursor EraserTool::cursor()
     return Qt::CrossCursor;
 }
 
-void EraserTool::pointerPressEvent(PointerEvent*)
+void EraserTool::pointerPressEvent(PointerEvent *)
 {
     mScribbleArea->setAllDirty();
 
@@ -156,18 +156,20 @@ void EraserTool::pointerPressEvent(PointerEvent*)
     mMouseDownPoint = getCurrentPoint();
 }
 
-void EraserTool::pointerMoveEvent(PointerEvent* event)
+void EraserTool::pointerMoveEvent(PointerEvent *event)
 {
     if (event->buttons() & Qt::LeftButton)
     {
         mCurrentPressure = strokeManager()->getPressure();
         updateStrokes();
         if (properties.stabilizerLevel != strokeManager()->getStabilizerLevel())
+        {
             strokeManager()->setStabilizerLevel(properties.stabilizerLevel);
+        }
     }
 }
 
-void EraserTool::pointerReleaseEvent(PointerEvent*)
+void EraserTool::pointerReleaseEvent(PointerEvent *)
 {
     mEditor->backup(typeName());
 
@@ -187,7 +189,7 @@ void EraserTool::pointerReleaseEvent(PointerEvent*)
 // draw a single paint dab at the given location
 void EraserTool::paintAt(QPointF point)
 {
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
     if (layer->type() == Layer::BITMAP)
     {
         qreal pressure = (properties.pressure) ? mCurrentPressure : 1.0;
@@ -218,7 +220,7 @@ void EraserTool::drawStroke()
     StrokeTool::drawStroke();
     QList<QPointF> p = strokeManager()->interpolateStroke();
 
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
 
     if (layer->type() == Layer::BITMAP)
     {
@@ -293,7 +295,7 @@ void EraserTool::drawStroke()
 
 void EraserTool::removeVectorPaint()
 {
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
     if (layer->type() == Layer::BITMAP)
     {
         mScribbleArea->paintBitmapBuffer();
@@ -303,7 +305,7 @@ void EraserTool::removeVectorPaint()
     else if (layer->type() == Layer::VECTOR)
     {
         mScribbleArea->clearBitmapBuffer();
-        VectorImage* vectorImage = static_cast<LayerVector*>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+        VectorImage *vectorImage = static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
         if (vectorImage == nullptr) { return; } // Can happen if the first frame is deleted while drawing
         // Clear the area containing the last point
         //vectorImage->removeArea(lastPoint);
@@ -317,7 +319,7 @@ void EraserTool::removeVectorPaint()
 
 void EraserTool::updateStrokes()
 {
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
     if (layer->type() == Layer::BITMAP || layer->type() == Layer::VECTOR)
     {
         drawStroke();
@@ -327,7 +329,7 @@ void EraserTool::updateStrokes()
     {
         qreal radius = properties.width / 2;
 
-        VectorImage* currKey = static_cast<VectorImage*>(layer->getLastKeyFrameAtPosition(mEditor->currentFrame()));
+        VectorImage *currKey = static_cast<VectorImage *>(layer->getLastKeyFrameAtPosition(mEditor->currentFrame()));
         QList<VertexRef> nearbyVertices = currKey->getVerticesCloseTo(getCurrentPoint(), radius);
         for (auto nearbyVertice : nearbyVertices)
         {

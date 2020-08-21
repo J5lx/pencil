@@ -22,11 +22,11 @@ GNU General Public License for more details.
 
 // ==== Singleton ====
 
-QSettings& pencilSettings()
+QSettings &pencilSettings()
 {
     static QSettings settings(PENCIL2D, PENCIL2D);
 
-    if ( !settings.contains("InitPencilSetting") )
+    if (!settings.contains("InitPencilSetting"))
     {
         restoreToDefaultSetting();
         settings.setValue("InitPencilSetting", true);
@@ -57,10 +57,10 @@ void checkExistingShortcuts()
 {
     QSettings defaultKey(":resources/kb.ini", QSettings::IniFormat);
 
-    QSettings curSetting( PENCIL2D, PENCIL2D );
+    QSettings curSetting(PENCIL2D, PENCIL2D);
     foreach (QString pShortcutsKey, defaultKey.allKeys())
     {
-        if ( ! curSetting.contains( pShortcutsKey ) )
+        if (! curSetting.contains(pShortcutsKey))
         {
             curSetting.setValue(pShortcutsKey, defaultKey.value(pShortcutsKey));
         }
@@ -70,7 +70,7 @@ void checkExistingShortcuts()
     defaultKey.beginGroup(SHORTCUTS_GROUP);
     foreach (QString pKey, curSetting.allKeys())
     {
-        if ( !defaultKey.contains(pKey) )
+        if (!defaultKey.contains(pKey))
         {
             curSetting.remove(pKey);
         }
@@ -84,7 +84,7 @@ void restoreShortcutsToDefault()
 {
     QSettings defaultKey(":resources/kb.ini", QSettings::IniFormat);
 
-    QSettings curSetting( PENCIL2D, PENCIL2D );
+    QSettings curSetting(PENCIL2D, PENCIL2D);
     curSetting.remove("shortcuts");
 
     foreach (QString pShortcutsKey, defaultKey.allKeys())

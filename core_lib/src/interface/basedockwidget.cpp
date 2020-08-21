@@ -21,8 +21,8 @@ GNU General Public License for more details.
 #include "basedockwidget.h"
 #include "platformhandler.h"
 
-BaseDockWidget::BaseDockWidget(QWidget* pParent) 
-: QDockWidget(pParent, Qt::Tool)
+BaseDockWidget::BaseDockWidget(QWidget *pParent)
+    : QDockWidget(pParent, Qt::Tool)
 {
 
 #ifdef __APPLE__
@@ -48,12 +48,12 @@ void BaseDockWidget::resizeEvent(QResizeEvent *event)
     // Not sure where the -2 comes from, but the event width is always 2 more than what is passed to FlowLayout::setGeometry
     int minHeight = getMinHeightForWidth(event->size().width() - 2);
 
-    if (minHeight < 0) return;
+    if (minHeight < 0) { return; }
 
 #ifdef __APPLE__
     // For some reason the behavior of minimumSize and the margin changes on mac when floating, so we need to do this
 #else
-    minHeight += layout()->margin()*2;
+    minHeight += layout()->margin() * 2;
 #endif
     setMinimumSize(QSize(layout()->minimumSize().width(), minHeight));
 }

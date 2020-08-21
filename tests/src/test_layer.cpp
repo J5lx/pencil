@@ -26,29 +26,29 @@ GNU General Public License for more details.
 
 TEST_CASE("LayerType")
 {
-    Object* object = new Object;
+    Object *object = new Object;
 
     SECTION("Bitmap Layer")
     {
-        Layer* bitmapLayer = new LayerBitmap(object);
+        Layer *bitmapLayer = new LayerBitmap(object);
         REQUIRE(bitmapLayer->type() == Layer::BITMAP);
         delete bitmapLayer;
     }
     SECTION("Vector Layer")
     {
-        Layer* vecLayer = new LayerVector(object);
+        Layer *vecLayer = new LayerVector(object);
         REQUIRE(vecLayer->type() == Layer::VECTOR);
         delete vecLayer;
     }
     SECTION("Camera Layer")
     {
-        Layer* cameraLayer = new LayerCamera(object);
+        Layer *cameraLayer = new LayerCamera(object);
         REQUIRE(cameraLayer->type() == Layer::CAMERA);
         delete cameraLayer;
     }
     SECTION("Sound Layer")
     {
-        Layer* soundLayer = new LayerSound(object);
+        Layer *soundLayer = new LayerSound(object);
         REQUIRE(soundLayer->type() == Layer::SOUND);
         delete soundLayer;
     }
@@ -58,11 +58,11 @@ TEST_CASE("LayerType")
 
 SCENARIO("Add key frames into a Layer", "[Layer]")
 {
-    Object* object = new Object;
+    Object *object = new Object;
 
     GIVEN("A Bitmap Layer")
     {
-        Layer* layer = new LayerBitmap(object);
+        Layer *layer = new LayerBitmap(object);
 
         REQUIRE(layer->addNewKeyFrameAt(0) == false); // first key position is 1.
         REQUIRE(layer->keyFrameCount() == 0);
@@ -96,7 +96,7 @@ SCENARIO("Add key frames into a Layer", "[Layer]")
 
     GIVEN("A Vector Layer")
     {
-        Layer* layer = new LayerVector(object);
+        Layer *layer = new LayerVector(object);
 
         REQUIRE(layer->addNewKeyFrameAt(0) == false); // first key position is 1.
         REQUIRE(layer->keyFrameCount() == 0);
@@ -117,7 +117,7 @@ SCENARIO("Add key frames into a Layer", "[Layer]")
 
     GIVEN("A Camera Layer")
     {
-        Layer* layer = new LayerCamera(object);
+        Layer *layer = new LayerCamera(object);
 
         REQUIRE(layer->addNewKeyFrameAt(0) == false); // first key position is 1.
         REQUIRE(layer->keyFrameCount() == 0);
@@ -140,17 +140,17 @@ SCENARIO("Add key frames into a Layer", "[Layer]")
 
 TEST_CASE("Test Layer::keyExists()", "[Layer]")
 {
-    Object* obj = new Object;
+    Object *obj = new Object;
 
     SECTION("Fresh new Layer")
     {
-        Layer* layer = obj->addNewBitmapLayer();
+        Layer *layer = obj->addNewBitmapLayer();
         REQUIRE(layer->keyExists(1) == true); // there is a frame at 1 in default.
 
     }
     SECTION("Key exists at 15")
     {
-        Layer* layer = obj->addNewBitmapLayer();
+        Layer *layer = obj->addNewBitmapLayer();
         REQUIRE(layer->addNewKeyFrameAt(15));
         REQUIRE(layer->keyExists(16) == false);
         REQUIRE(layer->keyExists(15) == true);
@@ -160,7 +160,7 @@ TEST_CASE("Test Layer::keyExists()", "[Layer]")
     }
     SECTION("Key exists 10 20 30")
     {
-        Layer* layer = obj->addNewBitmapLayer();
+        Layer *layer = obj->addNewBitmapLayer();
 
         REQUIRE(layer->addNewKeyFrameAt(10));
         REQUIRE(layer->keyExists(10) == true);
@@ -184,13 +184,13 @@ TEST_CASE("Test Layer::keyExists()", "[Layer]")
 
 TEST_CASE("Layer::firstKeyFramePosition()")
 {
-    Object* obj = new Object;
-    
+    Object *obj = new Object;
+
     SECTION("Key at 1")
-    {        
-        Layer* layer = obj->addNewBitmapLayer();
+    {
+        Layer *layer = obj->addNewBitmapLayer();
         REQUIRE(layer->firstKeyFramePosition() == 1);
-        
+
         layer->addNewKeyFrameAt(99);
         REQUIRE(layer->firstKeyFramePosition() == 1);
 
@@ -203,11 +203,11 @@ TEST_CASE("Layer::firstKeyFramePosition()")
 
 TEST_CASE("Layer::getMaxKeyFramePosition()")
 {
-    Object* obj = new Object;
+    Object *obj = new Object;
 
     SECTION("Bitmap")
     {
-        Layer* layer = obj->addNewBitmapLayer();
+        Layer *layer = obj->addNewBitmapLayer();
 
         // 1 at beginning.
         REQUIRE(layer->getMaxKeyFramePosition() == 1);
@@ -231,10 +231,10 @@ TEST_CASE("Layer::getMaxKeyFramePosition()")
 
 TEST_CASE("Layer::removeKeyFrame()")
 {
-    Object* obj = new Object;
+    Object *obj = new Object;
     SECTION("Bitmap")
     {
-        Layer* layer = obj->addNewBitmapLayer();
+        Layer *layer = obj->addNewBitmapLayer();
 
         // there is always a key at position 1 at beginning
         CHECK(layer->removeKeyFrame(1));
@@ -266,10 +266,10 @@ TEST_CASE("Layer::removeKeyFrame()")
 
 TEST_CASE("Layer::getPreviousKeyFramePosition()")
 {
-    Object* obj = new Object;
+    Object *obj = new Object;
     SECTION("KeyFrame 1")
     {
-        Layer* layer = obj->addNewBitmapLayer();
+        Layer *layer = obj->addNewBitmapLayer();
         CHECK(layer->keyFrameCount() == 1);
 
         REQUIRE(layer->getPreviousKeyFramePosition(1) == 1);
@@ -280,7 +280,7 @@ TEST_CASE("Layer::getPreviousKeyFramePosition()")
 
     SECTION("KeyFrame 1, 2, 8")
     {
-        Layer* layer = obj->addNewBitmapLayer();
+        Layer *layer = obj->addNewBitmapLayer();
         layer->addNewKeyFrameAt(2);
         layer->addNewKeyFrameAt(8);
         REQUIRE(layer->getPreviousKeyFramePosition(2) == 1);
@@ -289,7 +289,7 @@ TEST_CASE("Layer::getPreviousKeyFramePosition()")
 
     SECTION("KeyFrame 1, 15")
     {
-        Layer* layer = obj->addNewBitmapLayer();
+        Layer *layer = obj->addNewBitmapLayer();
         REQUIRE(layer->getPreviousKeyFramePosition(-5) == 1);
 
         layer->addNewKeyFrameAt(15);
@@ -299,7 +299,7 @@ TEST_CASE("Layer::getPreviousKeyFramePosition()")
 
     SECTION("KeyFrame 1, 10, Add 20 Remove 20")
     {
-        Layer* layer = obj->addNewBitmapLayer();
+        Layer *layer = obj->addNewBitmapLayer();
         layer->addNewKeyFrameAt(10);
         layer->addNewKeyFrameAt(20);
 
@@ -312,10 +312,10 @@ TEST_CASE("Layer::getPreviousKeyFramePosition()")
 
 TEST_CASE("Layer::getNextKeyFramePosition()")
 {
-    Object* obj = new Object;
+    Object *obj = new Object;
     SECTION("KeyFrame 1, 5")
     {
-        Layer* layer = obj->addNewBitmapLayer();
+        Layer *layer = obj->addNewBitmapLayer();
 
         REQUIRE(layer->getNextKeyFramePosition(1) == 1);
         REQUIRE(layer->getNextKeyFramePosition(10) == 1);
@@ -330,10 +330,10 @@ TEST_CASE("Layer::getNextKeyFramePosition()")
 
 TEST_CASE("Layer::getPreviousFrameNumber()")
 {
-    Object* obj = new Object;
+    Object *obj = new Object;
     SECTION("KeyFrame 1")
     {
-        Layer* layer = obj->addNewVectorLayer();
+        Layer *layer = obj->addNewVectorLayer();
         REQUIRE(layer->getPreviousFrameNumber(1, true) == -1); // couldn't find previous frame
 
         REQUIRE(layer->getPreviousFrameNumber(3, true) == 1);

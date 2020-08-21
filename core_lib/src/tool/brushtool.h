@@ -27,15 +27,15 @@ class BrushTool : public StrokeTool
     Q_OBJECT
 
 public:
-    explicit BrushTool(QObject* parent = 0);
+    explicit BrushTool(QObject *parent = 0);
     ToolType type() override;
     void loadSettings() override;
     void resetToDefault() override;
     QCursor cursor() override;
 
-    void pointerMoveEvent(PointerEvent*) override;
-    void pointerPressEvent(PointerEvent*) override;
-    void pointerReleaseEvent(PointerEvent*) override;
+    void pointerMoveEvent(PointerEvent *) override;
+    void pointerPressEvent(PointerEvent *) override;
+    void pointerReleaseEvent(PointerEvent *) override;
 
     void drawStroke();
     void paintVectorStroke();

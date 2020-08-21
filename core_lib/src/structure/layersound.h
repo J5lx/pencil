@@ -27,19 +27,19 @@ class LayerSound : public Layer
     Q_OBJECT
 
 public:
-    LayerSound( Object* object );
+    LayerSound(Object *object);
     ~LayerSound();
-    QDomElement createDomElement(QDomDocument& doc) override;
-    void loadDomElement(const QDomElement& element, QString dataDirPath, ProgressCallback progressStep) override;
+    QDomElement createDomElement(QDomDocument &doc) override;
+    void loadDomElement(const QDomElement &element, QString dataDirPath, ProgressCallback progressStep) override;
 
-    Status loadSoundClipAtFrame( const QString& sSoundClipName, const QString& filePathString, int frame );
+    Status loadSoundClipAtFrame(const QString &sSoundClipName, const QString &filePathString, int frame);
     void updateFrameLengths(int fps);
 
-    SoundClip* getSoundClipWhichCovers(int frameNumber);
+    SoundClip *getSoundClipWhichCovers(int frameNumber);
 
 protected:
-    Status saveKeyFrameFile(KeyFrame*, QString path) override;
-    KeyFrame* createKeyFrame(int position, Object*) override;
+    Status saveKeyFrameFile(KeyFrame *, QString path) override;
+    KeyFrame *createKeyFrame(int position, Object *) override;
 };
 
 #endif

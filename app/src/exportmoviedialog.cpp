@@ -25,10 +25,13 @@ ExportMovieDialog::ExportMovieDialog(QWidget *parent, Mode mode, FileType fileTy
 {
     ui->setupUi(getOptionsGroupBox());
 
-    if (fileType == FileType::GIF) {
+    if (fileType == FileType::GIF)
+    {
         setWindowTitle(tr("Export Animated GIF"));
         ui->exporterGroupBox->hide();
-    } else {
+    }
+    else
+    {
         setWindowTitle(tr("Export Movie"));
     }
     connect(this, &ExportMovieDialog::filePathsChanged, this, &ExportMovieDialog::onFilePathsChanged);
@@ -41,31 +44,31 @@ ExportMovieDialog::~ExportMovieDialog()
 
 void ExportMovieDialog::setCamerasInfo(const std::vector<std::pair<QString, QSize>> camerasInfo)
 {
-    if ( ui->cameraCombo->count() > 0 )
+    if (ui->cameraCombo->count() > 0)
     {
         ui->cameraCombo->clear();
     }
 
-	for (const std::pair<QString, QSize>& camera : camerasInfo)
+    for (const std::pair<QString, QSize> &camera : camerasInfo)
     {
-        ui->cameraCombo->addItem( camera.first, camera.second );
+        ui->cameraCombo->addItem(camera.first, camera.second);
     }
 
-    auto indexChanged = static_cast< void(QComboBox::*)( int i ) >( &QComboBox::currentIndexChanged );
-    connect( ui->cameraCombo, indexChanged, this, &ExportMovieDialog::updateResolutionCombo );
+    auto indexChanged = static_cast< void(QComboBox::*)(int i) >(&QComboBox::currentIndexChanged);
+    connect(ui->cameraCombo, indexChanged, this, &ExportMovieDialog::updateResolutionCombo);
 
-    updateResolutionCombo( 0 );
+    updateResolutionCombo(0);
 }
 
-void ExportMovieDialog::updateResolutionCombo( int index )
+void ExportMovieDialog::updateResolutionCombo(int index)
 {
-    QSize camSize = ui->cameraCombo->itemData( index ).toSize();
+    QSize camSize = ui->cameraCombo->itemData(index).toSize();
 
-    QSignalBlocker b1( ui->widthSpinBox );
-    QSignalBlocker b2( ui->heightSpinBox );
+    QSignalBlocker b1(ui->widthSpinBox);
+    QSignalBlocker b2(ui->heightSpinBox);
 
-    ui->widthSpinBox->setValue( camSize.width() );
-    ui->heightSpinBox->setValue( camSize.height() );
+    ui->widthSpinBox->setValue(camSize.width());
+    ui->heightSpinBox->setValue(camSize.height());
 }
 
 void ExportMovieDialog::setDefaultRange(int startFrame, int endFrame, int endFrameWithSounds)
@@ -73,11 +76,11 @@ void ExportMovieDialog::setDefaultRange(int startFrame, int endFrame, int endFra
     mEndFrame = endFrame;
     mEndFrameWithSounds = endFrameWithSounds;
 
-    QSignalBlocker b1( ui->startSpinBox );
-    QSignalBlocker b2( ui->endSpinBox );
+    QSignalBlocker b1(ui->startSpinBox);
+    QSignalBlocker b2(ui->endSpinBox);
 
-    ui->startSpinBox->setValue( startFrame );
-    ui->endSpinBox->setValue( endFrame );
+    ui->startSpinBox->setValue(startFrame);
+    ui->endSpinBox->setValue(endFrame);
 
     connect(ui->frameCheckBox, &QCheckBox::clicked, this, &ExportMovieDialog::frameCheckboxClicked);
 }
@@ -89,7 +92,7 @@ QString ExportMovieDialog::getSelectedCameraName()
 
 QSize ExportMovieDialog::getExportSize()
 {
-    return QSize( ui->widthSpinBox->value(), ui->heightSpinBox->value() );
+    return QSize(ui->widthSpinBox->value(), ui->heightSpinBox->value());
 }
 
 bool ExportMovieDialog::getTransparency() const

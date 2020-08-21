@@ -25,15 +25,15 @@ class EraserTool : public StrokeTool
     Q_OBJECT
 
 public:
-    explicit EraserTool(QObject* parent = nullptr);
+    explicit EraserTool(QObject *parent = nullptr);
     ToolType type() override;
     void loadSettings() override;
     void resetToDefault() override;
     QCursor cursor() override;
 
-    void pointerMoveEvent(PointerEvent*) override;
-    void pointerPressEvent(PointerEvent*) override;
-    void pointerReleaseEvent(PointerEvent*) override;
+    void pointerMoveEvent(PointerEvent *) override;
+    void pointerPressEvent(PointerEvent *) override;
+    void pointerReleaseEvent(PointerEvent *) override;
 
     void drawStroke();
     void paintAt(QPointF point);

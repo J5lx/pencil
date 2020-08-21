@@ -14,7 +14,7 @@ class PresetDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit PresetDialog(PreferenceManager* preferences, QWidget* parent = nullptr);
+    explicit PresetDialog(PreferenceManager *preferences, QWidget *parent = nullptr);
     ~PresetDialog() override;
 
     static QString getPresetPath(int index);
@@ -26,8 +26,8 @@ public:
 private:
     void initPresets();
 
-    Ui::PresetDialog* ui;
-    PreferenceManager* mPrefs = nullptr;
+    Ui::PresetDialog *ui;
+    PreferenceManager *mPrefs = nullptr;
 };
 
 #endif // PRESETDIALOG_H

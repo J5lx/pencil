@@ -49,33 +49,39 @@ void ImportLayersDialog::getFileName()
     if (mFileName.isEmpty()) { return; }
     getLayers();
     for (int i = 0; i < mImportObject->getLayerCount(); i++)
+    {
         ui->lwLayers->addItem(mImportObject->getLayer(i)->name());
+    }
 }
 
 void ImportLayersDialog::listWidgetChanged()
 {
     if (ui->lwLayers->count() > 0)
+    {
         ui->btnImportLayers->setEnabled(true);
+    }
     else
+    {
         ui->btnImportLayers->setEnabled(false);
+    }
 }
 
 void ImportLayersDialog::importLayers()
 {
     int currentFrame = mEditor->currentFrame();
-    for (int i = 0; i < mImportObject->getLayerCount(); i++ )
+    for (int i = 0; i < mImportObject->getLayerCount(); i++)
     {
         if (ui->lwLayers->item(i)->isSelected())
         {
             Layer *tmpLayer = mImportObject->findLayerByName(ui->lwLayers->item(i)->text());
             if (tmpLayer->type() == Layer::SOUND)
             {
-                LayerSound* layerSound = static_cast<LayerSound*>(tmpLayer);
+                LayerSound *layerSound = static_cast<LayerSound *>(tmpLayer);
                 int count = 0;
                 while (count < layerSound->getNextKeyFramePosition(count))
                 {
                     int newKeyPos = layerSound->getNextKeyFramePosition(count);
-                    SoundClip* clip = new SoundClip;
+                    SoundClip *clip = new SoundClip;
                     clip = layerSound->getSoundClipWhichCovers(newKeyPos);
                     Status st = mEditor->sound()->loadSound(clip, clip->fileName());
                     count = newKeyPos;

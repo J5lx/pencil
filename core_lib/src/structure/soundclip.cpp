@@ -26,7 +26,7 @@ SoundClip::SoundClip()
 {
 }
 
-SoundClip::SoundClip(const SoundClip& s2) : KeyFrame(s2)
+SoundClip::SoundClip(const SoundClip &s2) : KeyFrame(s2)
 {
     mOriginalSoundClipName = s2.mOriginalSoundClipName;
 }
@@ -36,19 +36,21 @@ SoundClip::~SoundClip()
     //QFile::remove( fileName() );
 }
 
-SoundClip& SoundClip::operator=(const SoundClip& a) {
-    if (this != &a) {
+SoundClip &SoundClip::operator=(const SoundClip &a)
+{
+    if (this != &a)
+    {
         mOriginalSoundClipName = a.mOriginalSoundClipName;
     }
     return *this;
 }
 
-SoundClip* SoundClip::clone()
+SoundClip *SoundClip::clone()
 {
     return new SoundClip(*this);
 }
 
-Status SoundClip::init(const QString& strSoundFile)
+Status SoundClip::init(const QString &strSoundFile)
 {
     if (strSoundFile.isEmpty())
     {
@@ -73,9 +75,9 @@ bool SoundClip::isValid() const
     return true;
 }
 
-void SoundClip::attachPlayer(SoundPlayer* player)
+void SoundClip::attachPlayer(SoundPlayer *player)
 {
-    Q_ASSERT( player != nullptr );
+    Q_ASSERT(player != nullptr);
     mPlayer.reset(player);
 }
 
@@ -129,7 +131,7 @@ int64_t SoundClip::duration() const
     return mDuration;
 }
 
-void SoundClip::setDuration(const int64_t& duration)
+void SoundClip::setDuration(const int64_t &duration)
 {
     mDuration = duration;
 }

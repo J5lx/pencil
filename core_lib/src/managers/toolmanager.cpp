@@ -31,7 +31,7 @@ GNU General Public License for more details.
 #include "editor.h"
 
 
-ToolManager::ToolManager(Editor* editor) : BaseManager(editor)
+ToolManager::ToolManager(Editor *editor) : BaseManager(editor)
 {
 }
 
@@ -51,7 +51,7 @@ bool ToolManager::init()
     mToolSetHash.insert(SELECT, new SelectTool(this));
     mToolSetHash.insert(SMUDGE, new SmudgeTool(this));
 
-    foreach(BaseTool* pTool, mToolSetHash.values())
+    foreach (BaseTool *pTool, mToolSetHash.values())
     {
         pTool->initialize(editor());
     }
@@ -61,17 +61,17 @@ bool ToolManager::init()
     return true;
 }
 
-Status ToolManager::load(Object*)
+Status ToolManager::load(Object *)
 {
     return Status::OK;
 }
 
-Status ToolManager::save(Object*)
+Status ToolManager::save(Object *)
 {
     return Status::OK;
 }
 
-BaseTool* ToolManager::getTool(ToolType eToolType)
+BaseTool *ToolManager::getTool(ToolType eToolType)
 {
     return mToolSetHash[eToolType];
 }
@@ -90,7 +90,7 @@ void ToolManager::setCurrentTool(ToolType eToolType)
 {
     if (mCurrentTool != nullptr)
     {
-       leavingThisTool();
+        leavingThisTool();
     }
 
     mCurrentTool = getTool(eToolType);
@@ -104,7 +104,7 @@ bool ToolManager::leavingThisTool()
 
 void ToolManager::cleanupAllToolsData()
 {
-    foreach(BaseTool* tool, mToolSetHash)
+    foreach (BaseTool *tool, mToolSetHash)
     {
         tool->clearToolData();
     }
@@ -116,7 +116,7 @@ void ToolManager::resetAllTools()
     // Beta-testers should be recommended to reset before sending tool related issues.
     // This can prevent from users to stop working on their project.
 
-    foreach(BaseTool* tool, mToolSetHash)
+    foreach (BaseTool *tool, mToolSetHash)
     {
         tool->resetToDefault();
     }
@@ -223,17 +223,21 @@ int ToolManager::propertySwitch(bool condition, int tool)
     int value = 0;
     int newValue = 0;
 
-    if (condition == true) {
+    if (condition == true)
+    {
         value = -1;
         newValue = mOldValue;
         mOldValue = tool;
     }
 
-    if (condition == false) {
-        if (newValue == 1) {
+    if (condition == false)
+    {
+        if (newValue == 1)
+        {
             value = 1;
         }
-        else {
+        else
+        {
             value = mOldValue;
         }
     }

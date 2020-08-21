@@ -20,7 +20,8 @@ GNU General Public License for more details.
 
 #include <QDialog>
 
-namespace Ui {
+namespace Ui
+{
 class ErrorDialog;
 }
 

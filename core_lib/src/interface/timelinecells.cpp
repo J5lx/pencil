@@ -31,7 +31,7 @@ GNU General Public License for more details.
 #include "toolmanager.h"
 
 #include <QDebug>
-TimeLineCells::TimeLineCells(TimeLine* parent, Editor* editor, TIMELINE_CELL_TYPE type) : QWidget(parent)
+TimeLineCells::TimeLineCells(TimeLine *parent, Editor *editor, TIMELINE_CELL_TYPE type) : QWidget(parent)
 {
     mTimeLine = parent;
     mEditor = editor;
@@ -111,9 +111,13 @@ int TimeLineCells::getLayerNumber(int y)
     // Layers numbers are displayed in descending order
     // The last row is layer 0
     if (layerNumber <= totalLayerCount)
+    {
         layerNumber = (totalLayerCount - 1) - layerNumber;
+    }
     else
+    {
         layerNumber = 0;
+    }
 
     if (y < mOffsetY)
     {
@@ -134,14 +138,18 @@ int TimeLineCells::getLayerNumber(int y)
     return layerNumber;
 }
 
-int TimeLineCells::getInbetweenLayerNumber(int y) {
+int TimeLineCells::getInbetweenLayerNumber(int y)
+{
     int layerNumber = getLayerNumber(y);
     // Round the layer number towards the drag start
-    if(layerNumber != mFromLayer) {
-        if(getMouseMoveY() > 0 && y < getLayerY(layerNumber) + getLayerHeight() / 2) {
+    if (layerNumber != mFromLayer)
+    {
+        if (getMouseMoveY() > 0 && y < getLayerY(layerNumber) + getLayerHeight() / 2)
+        {
             layerNumber++;
         }
-        else if(getMouseMoveY() < 0 && y > getLayerY(layerNumber) + getLayerHeight() / 2) {
+        else if (getMouseMoveY() < 0 && y > getLayerY(layerNumber) + getLayerHeight() / 2)
+        {
             layerNumber--;
         }
     }
@@ -150,7 +158,7 @@ int TimeLineCells::getInbetweenLayerNumber(int y) {
 
 int TimeLineCells::getLayerY(int layerNumber)
 {
-    return mOffsetY + (mEditor->object()->getLayerCount() - 1 - layerNumber - mLayerOffset)*mLayerHeight;
+    return mOffsetY + (mEditor->object()->getLayerCount() - 1 - layerNumber - mLayerOffset) * mLayerHeight;
 }
 
 void TimeLineCells::updateFrame(int frameNumber)
@@ -166,7 +174,8 @@ void TimeLineCells::updateContent()
 }
 
 
-bool TimeLineCells::didDetatchLayer() {
+bool TimeLineCells::didDetatchLayer()
+{
     return abs(getMouseMoveY()) > mLayerDetatchThreshold;
 }
 
@@ -186,12 +195,12 @@ void TimeLineCells::drawContent()
 
     QPainter painter(mCache);
 
-    Object* object = mEditor->object();
+    Object *object = mEditor->object();
 
     Q_ASSERT(object != nullptr);
 
-    Layer* layer = mEditor->layers()->currentLayer();
-    if (layer == nullptr) return;
+    Layer *layer = mEditor->layers()->currentLayer();
+    if (layer == nullptr) { return; }
 
     // grey background of the view
     painter.setPen(Qt::NoPen);
@@ -205,7 +214,7 @@ void TimeLineCells::drawContent()
         {
             continue;
         }
-        Layer* layeri = object->getLayer(i);
+        Layer *layeri = object->getLayer(i);
 
         if (layeri != nullptr)
         {
@@ -229,7 +238,7 @@ void TimeLineCells::drawContent()
     {
         if (mType == TIMELINE_CELL_TYPE::Tracks)
         {
-            layer->paintTrack(painter, this, 
+            layer->paintTrack(painter, this,
                               mOffsetX, getLayerY(mEditor->layers()->currentLayerIndex()) + getMouseMoveY(),
                               width() - mOffsetX, getLayerHeight(),
                               true, mFrameSize);
@@ -313,11 +322,11 @@ void TimeLineCells::drawContent()
                 painter.setBrush(Qt::darkGray);
             }
 
-            if (i%fps == 0)
+            if (i % fps == 0)
             {
                 painter.drawLine(getFrameX(i), 1, getFrameX(i), 5);
             }
-            else if (i%fps == fps / 2)
+            else if (i % fps == fps / 2)
             {
                 painter.drawLine(getFrameX(i), 1, getFrameX(i), 5);
             }
@@ -337,12 +346,12 @@ void TimeLineCells::drawContent()
     }
 }
 
-void TimeLineCells::paintLayerGutter(QPainter& painter)
+void TimeLineCells::paintLayerGutter(QPainter &painter)
 {
     painter.setPen(Qt::black);
     if (getMouseMoveY() > mLayerDetatchThreshold)
     {
-        painter.drawRect(0, getLayerY(getInbetweenLayerNumber(mEndY))+mLayerHeight, width(), 2);
+        painter.drawRect(0, getLayerY(getInbetweenLayerNumber(mEndY)) + mLayerHeight, width(), 2);
     }
     else
     {
@@ -350,9 +359,9 @@ void TimeLineCells::paintLayerGutter(QPainter& painter)
     }
 }
 
-void TimeLineCells::paintOnionSkin(QPainter& painter)
+void TimeLineCells::paintOnionSkin(QPainter &painter)
 {
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
     if (layer == nullptr) { return; }
 
     int frameNumber = mEditor->currentFrame();
@@ -367,7 +376,7 @@ void TimeLineCells::paintOnionSkin(QPainter& painter)
         int onionFrameNumber = frameNumber;
         if (isAbsolute)
         {
-            onionFrameNumber = layer->getPreviousFrameNumber(onionFrameNumber+1, true);
+            onionFrameNumber = layer->getPreviousFrameNumber(onionFrameNumber + 1, true);
         }
         onionFrameNumber = layer->getPreviousFrameNumber(onionFrameNumber, isAbsolute);
         int onionPosition = 0;
@@ -387,7 +396,8 @@ void TimeLineCells::paintOnionSkin(QPainter& painter)
         }
     }
 
-    if (mEditor->preference()->isOn(SETTING::NEXT_ONION) && nextOnionSkinCount > 0) {
+    if (mEditor->preference()->isOn(SETTING::NEXT_ONION) && nextOnionSkinCount > 0)
+    {
 
         int onionFrameNumber = layer->getNextFrameNumber(frameNumber, isAbsolute);
         int onionPosition = 0;
@@ -408,10 +418,10 @@ void TimeLineCells::paintOnionSkin(QPainter& painter)
     }
 }
 
-void TimeLineCells::paintEvent(QPaintEvent*)
+void TimeLineCells::paintEvent(QPaintEvent *)
 {
-    Object* object = mEditor->object();
-    Layer* layer = mEditor->layers()->currentLayer();
+    Object *object = mEditor->object();
+    Layer *layer = mEditor->layers()->currentLayer();
 
     Q_ASSUME(object != nullptr && layer != nullptr);
 
@@ -462,7 +472,7 @@ void TimeLineCells::paintEvent(QPaintEvent*)
     }
 }
 
-void TimeLineCells::resizeEvent(QResizeEvent* event)
+void TimeLineCells::resizeEvent(QResizeEvent *event)
 {
     clearCache();
     updateContent();
@@ -470,7 +480,7 @@ void TimeLineCells::resizeEvent(QResizeEvent* event)
     emit lengthChanged(getFrameLength());
 }
 
-void TimeLineCells::mousePressEvent(QMouseEvent* event)
+void TimeLineCells::mousePressEvent(QMouseEvent *event)
 {
     int frameNumber = getFrameNumber(event->pos().x());
     int layerNumber = getLayerNumber(event->pos().y());
@@ -514,9 +524,12 @@ void TimeLineCells::mousePressEvent(QMouseEvent* event)
         {
             if (event->pos().x() < 15)
             {
-                if (event->button() == Qt::LeftButton) {
+                if (event->button() == Qt::LeftButton)
+                {
                     mEditor->increaseLayerVisibilityIndex();
-                } else if (event->button() == Qt::RightButton) {
+                }
+                else if (event->button() == Qt::RightButton)
+                {
                     mEditor->decreaseLayerVisibilityIndex();
                 }
             }
@@ -543,7 +556,8 @@ void TimeLineCells::mousePressEvent(QMouseEvent* event)
                 {
                     int previousLayerNumber = mEditor->layers()->currentLayerIndex();
 
-                    if (previousLayerNumber != layerNumber) {
+                    if (previousLayerNumber != layerNumber)
+                    {
                         Layer *previousLayer = mEditor->object()->getLayer(previousLayerNumber);
                         previousLayer->deselectAll();
 
@@ -617,7 +631,7 @@ void TimeLineCells::mousePressEvent(QMouseEvent* event)
     }
 }
 
-void TimeLineCells::mouseMoveEvent(QMouseEvent* event)
+void TimeLineCells::mouseMoveEvent(QMouseEvent *event)
 {
     if (mType == TIMELINE_CELL_TYPE::Layers)
     {
@@ -655,7 +669,8 @@ void TimeLineCells::mouseMoveEvent(QMouseEvent* event)
                     if (frameNumber != mLastFrameNumber)
                     {
                         // Check if the frame we clicked was selected
-                        if (mCanMoveFrame) {
+                        if (mCanMoveFrame)
+                        {
 
                             // If it is the case, we move the selected frames in the layer
                             mMovingFrames = true;
@@ -683,15 +698,15 @@ void TimeLineCells::mouseMoveEvent(QMouseEvent* event)
     mTimeLine->update();
 }
 
-void TimeLineCells::mouseReleaseEvent(QMouseEvent* event)
+void TimeLineCells::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() != primaryButton) return;
+    if (event->button() != primaryButton) { return; }
 
     primaryButton = Qt::NoButton;
     mEndY = mStartY;
     mTimeLine->scrubbing = false;
     int frameNumber = getFrameNumber(event->pos().x());
-    if (frameNumber < 1) frameNumber = -1;
+    if (frameNumber < 1) { frameNumber = -1; }
     int layerNumber = getLayerNumber(event->pos().y());
     if (mType == TIMELINE_CELL_TYPE::Tracks && primaryButton != Qt::MidButton && layerNumber != -1 && layerNumber < mEditor->object()->getLayerCount())
     {
@@ -715,12 +730,16 @@ void TimeLineCells::mouseReleaseEvent(QMouseEvent* event)
             if (mToLayer < mFromLayer) // bubble up
             {
                 for (int i = mFromLayer - 1; i >= mToLayer; i--)
+                {
                     mEditor->swapLayers(i, i + 1);
+                }
             }
             else // bubble down
             {
                 for (int i = mFromLayer + 1; i <= mToLayer; i++)
+                {
                     mEditor->swapLayers(i, i - 1);
+                }
             }
         }
     }
@@ -728,7 +747,7 @@ void TimeLineCells::mouseReleaseEvent(QMouseEvent* event)
     mTimeLine->updateContent();
 }
 
-void TimeLineCells::mouseDoubleClickEvent(QMouseEvent* event)
+void TimeLineCells::mouseDoubleClickEvent(QMouseEvent *event)
 {
     int frameNumber = getFrameNumber(event->pos().x());
     int layerNumber = getLayerNumber(event->pos().y());
@@ -740,7 +759,7 @@ void TimeLineCells::mouseDoubleClickEvent(QMouseEvent* event)
     }
 
     // -- layer --
-    Layer* layer = mEditor->object()->getLayer(layerNumber);
+    Layer *layer = mEditor->object()->getLayer(layerNumber);
     if (layer)
     {
         if (mType == TIMELINE_CELL_TYPE::Tracks && (layerNumber != -1) && (frameNumber > 0) && layerNumber < mEditor->object()->getLayerCount())
@@ -806,9 +825,13 @@ void TimeLineCells::trackScrubber()
     {
         // Move timeline forward if the scrubber is offscreen to the right
         if (mEditor->playback()->isPlaying())
+        {
             mFrameOffset = mFrameOffset + ((mEditor->currentFrame() - mFrameOffset) / 2);
+        }
         else
+        {
             mFrameOffset = mEditor->currentFrame() - width() / mFrameSize;
+        }
         emit offsetChanged(mFrameOffset);
         mTimeLine->updateContent();
     }

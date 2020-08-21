@@ -25,13 +25,13 @@ GNU General Public License for more details.
 
 TEST_CASE("ViewManager: Init")
 {
-    Object* object = new Object;
-    Editor* editor = new Editor;
+    Object *object = new Object;
+    Editor *editor = new Editor;
     editor->setObject(object);
 
     SECTION("init")
     {
-        ViewManager* viewMgr = new ViewManager(editor);
+        ViewManager *viewMgr = new ViewManager(editor);
         REQUIRE(viewMgr->getView() == QTransform());
         REQUIRE(viewMgr->getView().isIdentity());
     }
@@ -40,15 +40,15 @@ TEST_CASE("ViewManager: Init")
 
 TEST_CASE("ViewManager: Translations")
 {
-    Object* object = new Object;
-    Editor* editor = new Editor;
+    Object *object = new Object;
+    Editor *editor = new Editor;
     editor->setObject(object);
 
     SECTION("translate(x, y) = (10, 20)")
     {
         ViewManager v(editor);
         v.init();
-        
+
         v.translate(10, 20);
         REQUIRE(v.mapCanvasToScreen(QPointF(0, 0)) == QPointF(10, 20));
     }
@@ -70,8 +70,8 @@ TEST_CASE("ViewManager: Translations")
 
 TEST_CASE("ViewManager: Rotate")
 {
-    Object* object = new Object;
-    Editor* editor = new Editor;
+    Object *object = new Object;
+    Editor *editor = new Editor;
     editor->setObject(object);
 
     SECTION("Rotate 90 degrees")
@@ -115,8 +115,8 @@ TEST_CASE("ViewManager: Rotate")
 
 TEST_CASE("ViewManager: Scaling")
 {
-    Object* object = new Object;
-    Editor* editor = new Editor;
+    Object *object = new Object;
+    Editor *editor = new Editor;
     editor->setObject(object);
 
     SECTION("Scale 2.0")
@@ -174,8 +174,8 @@ TEST_CASE("ViewManager: Scaling")
 
 TEST_CASE("ViewManager: Mixed tranformations")
 {
-    Object* object = new Object;
-    Editor* editor = new Editor;
+    Object *object = new Object;
+    Editor *editor = new Editor;
     editor->setObject(object);
 
     SECTION("translate + rotate")
@@ -196,8 +196,8 @@ TEST_CASE("ViewManager: Mixed tranformations")
 
 TEST_CASE("ViewManager: Reset view")
 {
-    Object* object = new Object;
-    Editor* editor = new Editor;
+    Object *object = new Object;
+    Editor *editor = new Editor;
     editor->setObject(object);
 
     SECTION("Reset view matrix")
@@ -219,19 +219,19 @@ TEST_CASE("ViewManager: Reset view")
 
 TEST_CASE("ViewManager: working with camera layers")
 {
-    Object* object = new Object;
-    Editor* editor = new Editor;
+    Object *object = new Object;
+    Editor *editor = new Editor;
     editor->setObject(object);
-    
+
     SECTION("Empty Camera Layer")
     {
         ViewManager v(editor);
         v.init();
 
-        LayerCamera* layerCam = editor->object()->addNewCameraLayer();
+        LayerCamera *layerCam = editor->object()->addNewCameraLayer();
         REQUIRE(layerCam != nullptr);
 
-        Camera* k = static_cast<Camera*>(layerCam->getKeyFrameAt(1));
+        Camera *k = static_cast<Camera *>(layerCam->getKeyFrameAt(1));
         k->translate(100, 0);
         v.setCameraLayer(layerCam);
 
@@ -248,7 +248,7 @@ TEST_CASE("ViewManager: working with camera layers")
 
         // a default key at frame 0
         // 2nd key at frame 10
-        LayerCamera* layerCam = editor->object()->addNewCameraLayer();
+        LayerCamera *layerCam = editor->object()->addNewCameraLayer();
         layerCam->addKeyFrame(10, new Camera(QPointF(100, 0), 0, 1));
 
         v.setCameraLayer(layerCam);
@@ -271,7 +271,7 @@ TEST_CASE("ViewManager: working with camera layers")
         QPointF originalOffset(0, 100);
         v.translate(originalOffset.x(), originalOffset.y());
 
-        LayerCamera* layerCam = editor->object()->addNewCameraLayer();
+        LayerCamera *layerCam = editor->object()->addNewCameraLayer();
 
         auto cam = layerCam->getCameraAtFrame(1);
         cam->translate(100, 0);
@@ -290,8 +290,8 @@ TEST_CASE("ViewManager: working with camera layers")
 
 TEST_CASE("ViewManager: canvas size")
 {
-    Object* object = new Object;
-    Editor* editor = new Editor;
+    Object *object = new Object;
+    Editor *editor = new Editor;
     editor->setObject(object);
 
     SECTION("Canvas size(100, 200)")
@@ -333,11 +333,11 @@ void TestViewManager::testLoadViewFromObject1()
     ViewManager v(mEditor);
     v.setEditor(mEditor);
     v.init();
-	
+
     v.setCanvasSize( QSize( 100, 100 ) );
-	QTransform t = v.getView();
-	REQUIRE( t.dx(), 50.0 );
-	REQUIRE( t.dy(), 50.0 );
+    QTransform t = v.getView();
+    REQUIRE( t.dx(), 50.0 );
+    REQUIRE( t.dy(), 50.0 );
 }
 
 void TestViewManager::testLoadViewFromObject2()
@@ -346,14 +346,14 @@ void TestViewManager::testLoadViewFromObject2()
     v.setEditor(mEditor);
     v.init();
 
-	v.setCanvasSize( QSize( 100, 100 ) );
-	//QTransform t0;
+    v.setCanvasSize( QSize( 100, 100 ) );
+    //QTransform t0;
     //mEditor->object()->data()->setCurrentView( t0.translate( 50.0, 80.0 ) );
-	v.load(mEditor->object());
+    v.load(mEditor->object());
 
-	QTransform t1 = v.getView();
-	REQUIRE( t1.dx(), 50.0 );
-	REQUIRE( t1.dy(), 50.0 ); // center of canvas
+    QTransform t1 = v.getView();
+    REQUIRE( t1.dx(), 50.0 );
+    REQUIRE( t1.dy(), 50.0 ); // center of canvas
 }
 
 void TestViewManager::testSetCameraKey()
@@ -361,18 +361,18 @@ void TestViewManager::testSetCameraKey()
     ViewManager v(mEditor);
     v.setEditor(mEditor);
     v.init();
-	v.setCanvasSize( QSize( 100, 100 ) );
+    v.setCanvasSize( QSize( 100, 100 ) );
 
-	// add a keyframe into camera layer whenever view change.  
-	auto camLayer = mEditor->object()->getLayersByType<LayerCamera>()[ 0 ];
-	v.setCameraLayer( camLayer );
-	v.translate( 20, 20 );
+    // add a keyframe into camera layer whenever view change.
+    auto camLayer = mEditor->object()->getLayersByType<LayerCamera>()[ 0 ];
+    v.setCameraLayer( camLayer );
+    v.translate( 20, 20 );
 
-	QTransform t0 = v.getView();
+    QTransform t0 = v.getView();
 
-	Camera* c = dynamic_cast<Camera*>( camLayer->getKeyFrameAt( 1 ) );
+    Camera* c = dynamic_cast<Camera*>( camLayer->getKeyFrameAt( 1 ) );
 
     QTransform canvasShift = QTransform::fromTranslate(50, 50);
-	REQUIRE( t0, c->view * canvasShift);
+    REQUIRE( t0, c->view * canvasShift);
 }
 */

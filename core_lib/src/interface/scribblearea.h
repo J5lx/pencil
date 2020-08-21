@@ -50,19 +50,19 @@ class ScribbleArea : public QWidget
 {
     Q_OBJECT
 
-        friend class MoveTool;
+    friend class MoveTool;
     friend class EditTool;
     friend class SmudgeTool;
     friend class BucketTool;
 
 public:
-    ScribbleArea(QWidget* parent);
+    ScribbleArea(QWidget *parent);
     ~ScribbleArea() override;
 
     bool init();
-    void setEditor(Editor* e) { mEditor = e; }
-    StrokeManager* getStrokeManager() const { return mStrokeManager.get(); }
-    Editor* editor() const { return mEditor; }
+    void setEditor(Editor *e) { mEditor = e; }
+    StrokeManager *getStrokeManager() const { return mStrokeManager.get(); }
+    Editor *editor() const { return mEditor; }
 
     void deleteSelection();
     void applySelectionChanges();
@@ -98,8 +98,8 @@ public:
 
     void flipSelection(bool flipVertical);
 
-    BaseTool* currentTool() const;
-    BaseTool* getTool(ToolType eToolMode);
+    BaseTool *currentTool() const;
+    BaseTool *getTool(ToolType eToolMode);
     void setCurrentTool(ToolType eToolMode);
     void setTemporaryTool(ToolType eToolMode);
     void setPrevTool();
@@ -111,8 +111,8 @@ public:
     bool isPointerInUse() const { return mMouseInUse || mTabletInUse; }
     bool isTemporaryTool() const { return mInstantTool; }
 
-    void keyEvent(QKeyEvent* event);
-    void keyEventForSelection(QKeyEvent* event);
+    void keyEvent(QKeyEvent *event);
+    void keyEventForSelection(QKeyEvent *event);
 
 signals:
     void modification(int);
@@ -135,16 +135,16 @@ public slots:
 
 
 protected:
-    void tabletEvent(QTabletEvent*) override;
-    void wheelEvent(QWheelEvent*) override;
-    void mousePressEvent(QMouseEvent*) override;
-    void mouseMoveEvent(QMouseEvent*) override;
-    void mouseReleaseEvent(QMouseEvent*) override;
-    void mouseDoubleClickEvent(QMouseEvent*) override;
-    void keyPressEvent(QKeyEvent*) override;
-    void keyReleaseEvent(QKeyEvent*) override;
-    void paintEvent(QPaintEvent*) override;
-    void resizeEvent(QResizeEvent*) override;
+    void tabletEvent(QTabletEvent *) override;
+    void wheelEvent(QWheelEvent *) override;
+    void mousePressEvent(QMouseEvent *) override;
+    void mouseMoveEvent(QMouseEvent *) override;
+    void mouseReleaseEvent(QMouseEvent *) override;
+    void mouseDoubleClickEvent(QMouseEvent *) override;
+    void keyPressEvent(QKeyEvent *) override;
+    void keyReleaseEvent(QKeyEvent *) override;
+    void paintEvent(QPaintEvent *) override;
+    void resizeEvent(QResizeEvent *) override;
 
 public:
     void drawPolyline(QPainterPath path, QPen pen, bool useAA);
@@ -157,16 +157,16 @@ public:
     void liquifyBrush(BitmapImage *bmiSource_, QPointF srcPoint_, QPointF thePoint_, qreal brushWidth_, qreal offset_, qreal opacity_);
 
     void paintBitmapBuffer();
-    void paintBitmapBufferRect(const QRect& rect);
-    void paintCanvasCursor(QPainter& painter);
+    void paintBitmapBufferRect(const QRect &rect);
+    void paintCanvasCursor(QPainter &painter);
     void clearBitmapBuffer();
-    void refreshBitmap(const QRectF& rect, int rad);
-    void refreshVector(const QRectF& rect, int rad);
+    void refreshBitmap(const QRectF &rect, int rad);
+    void refreshVector(const QRectF &rect, int rad);
     void setGaussianGradient(QGradient &gradient, QColor color, qreal opacity, qreal offset);
 
-    void pointerPressEvent(PointerEvent*);
-    void pointerMoveEvent(PointerEvent*);
-    void pointerReleaseEvent(PointerEvent*);
+    void pointerPressEvent(PointerEvent *);
+    void pointerMoveEvent(PointerEvent *);
+    void pointerReleaseEvent(PointerEvent *);
 
     void updateCanvasCursor();
 
@@ -174,7 +174,7 @@ public:
     /// on an empty frame, and if so, takes action according to use preference.
     void handleDrawingOnEmptyFrame();
 
-    BitmapImage* mBufferImg = nullptr; // used to pre-draw vector modifications
+    BitmapImage *mBufferImg = nullptr; // used to pre-draw vector modifications
 
     QPixmap mCursorImg;
     QPixmap mTransCursImg;
@@ -185,8 +185,8 @@ private:
     void settingUpdated(SETTING setting);
     void paintSelectionVisuals();
 
-    BitmapImage* currentBitmapImage(Layer* layer) const;
-    VectorImage* currentVectorImage(Layer* layer) const;
+    BitmapImage *currentBitmapImage(Layer *layer) const;
+    VectorImage *currentVectorImage(Layer *layer) const;
 
     MoveMode mMoveMode = MoveMode::NONE;
     ToolType mPrevTemporalToolType = ERASER;
@@ -196,7 +196,7 @@ private:
 
     std::unique_ptr<StrokeManager> mStrokeManager;
 
-    Editor* mEditor = nullptr;
+    Editor *mEditor = nullptr;
 
     bool mIsSimplified = false;
     bool mShowThinLines = false;
@@ -221,7 +221,7 @@ private:
     int mDoubleClickMillis = 0;
     // Microsoft suggests that a double click action should be no more than 500 ms
     const int DOUBLE_CLICK_THRESHOLD = 500;
-    QTimer* mDoubleClickTimer = nullptr;
+    QTimer *mDoubleClickTimer = nullptr;
 
     QPoint mCursorCenterPos;
     QPointF mTransformedCursorPos;
@@ -229,7 +229,7 @@ private:
     //instant tool (temporal eg. eraser)
     bool mInstantTool = false; //whether or not using temporal tool
 
-    PreferenceManager* mPrefs = nullptr;
+    PreferenceManager *mPrefs = nullptr;
 
     QPixmap mCanvas;
     CanvasPainter mCanvasPainter;

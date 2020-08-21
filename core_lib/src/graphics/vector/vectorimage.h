@@ -33,24 +33,24 @@ class VectorImage : public KeyFrame
 {
 public:
     VectorImage();
-    VectorImage(const VectorImage&);
+    VectorImage(const VectorImage &);
     virtual ~VectorImage();
-    VectorImage& operator=(const VectorImage& a);
+    VectorImage &operator=(const VectorImage &a);
 
-    VectorImage* clone() override;
+    VectorImage *clone() override;
 
-    void setObject(Object* pObj) { mObject = pObj; }
+    void setObject(Object *pObj) { mObject = pObj; }
 
     bool read(QString filePath);
     Status write(QString filePath, QString format);
 
-    Status createDomElement(QXmlStreamWriter& doc);
+    Status createDomElement(QXmlStreamWriter &doc);
     void loadDomElement(QDomElement element);
 
-    BezierCurve& curve(int i);
+    BezierCurve &curve(int i);
 
-    void insertCurve(int position, BezierCurve& newCurve, qreal factor, bool interacts);
-    void addCurve(BezierCurve& newCurve, qreal factor, bool interacts = true);
+    void insertCurve(int position, BezierCurve &newCurve, qreal factor, bool interacts);
+    void addCurve(BezierCurve &newCurve, qreal factor, bool interacts = true);
     void removeCurveAt(int i);
     void select(QRectF rectangle);
     void setSelected(int curveNumber, bool YesOrNo);
@@ -80,7 +80,7 @@ public:
     void deleteSelectedPoints();
     void removeVertex(int curve, int vertex);
 
-    void paste(VectorImage&);
+    void paste(VectorImage &);
 
     QColor getColor(int i);
     int  getColorNumber(QPointF point);
@@ -90,8 +90,8 @@ public:
     bool isCurveVisible(int curve);
     void moveColor(int start, int end);
 
-    void paintImage(QPainter& painter, bool simplified, bool showThinCurves, bool antialiasing);
-    void outputImage(QImage* image, QTransform myView, bool simplified, bool showThinCurves, bool antialiasing); // uses paintImage
+    void paintImage(QPainter &painter, bool simplified, bool showThinCurves, bool antialiasing);
+    void outputImage(QImage *image, QTransform myView, bool simplified, bool showThinCurves, bool antialiasing); // uses paintImage
 
     void clear();
     void clean();
@@ -116,20 +116,20 @@ public:
     BezierCurve getLastCurve();
     void removeArea(QPointF point);
     void removeAreaInCurve(int curve, int areaNumber);
-    void updateArea(BezierArea& bezierArea);
+    void updateArea(BezierArea &bezierArea);
 
     QList<int> getCurvesCloseTo(QPointF thisPoint, qreal maxDistance);
     QList<BezierCurve> getSelectedCurves();
     QList<int> getSelectedCurveNumbers();
     BezierArea getSelectedArea(QPointF currentPoint);
-    VertexRef getClosestVertexTo(const BezierCurve& curve, int curveNum, QPointF thisPoint);
+    VertexRef getClosestVertexTo(const BezierCurve &curve, int curveNum, QPointF thisPoint);
     QList<VertexRef> getCurveVertices(int curveNumber);
     QList<VertexRef> getVerticesCloseTo(QPointF thisPoint, qreal maxDistance);
-    QList<VertexRef> getVerticesCloseTo(QPointF thisPoint, qreal maxDistance, QList<VertexRef>* listOfPoints);
+    QList<VertexRef> getVerticesCloseTo(QPointF thisPoint, qreal maxDistance, QList<VertexRef> *listOfPoints);
     QList<VertexRef> getVerticesCloseTo(VertexRef thisPointRef, qreal maxDistance);
-    QList<VertexRef> getVerticesCloseTo(VertexRef thisPointRef, qreal maxDistance, QList<VertexRef>* listOfPoints);
-    QList<VertexRef> getAndRemoveVerticesCloseTo(QPointF thisPoint, qreal maxDistance, QList<VertexRef>* listOfPoints);
-    QList<VertexRef> getAndRemoveVerticesCloseTo(VertexRef thisPointRef, qreal maxDistance, QList<VertexRef>* listOfPoints);
+    QList<VertexRef> getVerticesCloseTo(VertexRef thisPointRef, qreal maxDistance, QList<VertexRef> *listOfPoints);
+    QList<VertexRef> getAndRemoveVerticesCloseTo(QPointF thisPoint, qreal maxDistance, QList<VertexRef> *listOfPoints);
+    QList<VertexRef> getAndRemoveVerticesCloseTo(VertexRef thisPointRef, qreal maxDistance, QList<VertexRef> *listOfPoints);
     QPointF getVertex(int curveNumber, int vertexNumber);
     QPointF getVertex(VertexRef vertexRef);
     QPointF getC1(int curveNumber, int vertexNumber);
@@ -151,16 +151,16 @@ public:
 private:
     void addPoint(int curveNumber, int vertexNumber, qreal fraction);
 
-    void checkCurveExtremity(BezierCurve& newCurve, qreal tolerance);
-    void checkCurveIntersections(BezierCurve& newCurve, qreal tolerance);
+    void checkCurveExtremity(BezierCurve &newCurve, qreal tolerance);
+    void checkCurveIntersections(BezierCurve &newCurve, qreal tolerance);
 
-    void updateImageSize(BezierCurve& updatedCurve);
+    void updateImageSize(BezierCurve &updatedCurve);
     QPainterPath mGetStrokedPath;
 
 private:
     QList<BezierCurve> mCurves;
 
-    Object* mObject = nullptr;
+    Object *mObject = nullptr;
     QRectF mSelectionRect;
     QTransform mSelectionTransformation;
     QSize mSize;

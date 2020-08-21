@@ -32,7 +32,7 @@ GNU General Public License for more details.
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-ImportImageSeqDialog::ImportImageSeqDialog(QWidget* parent, Mode mode, FileType fileType, ImportCriteria importCriteria) :
+ImportImageSeqDialog::ImportImageSeqDialog(QWidget *parent, Mode mode, FileType fileType, ImportCriteria importCriteria) :
     ImportExportDialog(parent, mode, fileType), mParent(parent), mImportCriteria(importCriteria), mFileType(fileType)
 {
 
@@ -42,9 +42,12 @@ ImportImageSeqDialog::ImportImageSeqDialog(QWidget* parent, Mode mode, FileType 
     uiGroupBoxPreview = new Ui::ImportImageSeqPreviewGroupBox;
     uiGroupBoxPreview->setupUi(getPreviewGroupBox());
 
-    if (importCriteria == ImportCriteria::PredefinedSet) {
+    if (importCriteria == ImportCriteria::PredefinedSet)
+    {
         setupPredefinedLayout();
-    } else {
+    }
+    else
+    {
         setupLayout();
     }
 
@@ -56,9 +59,12 @@ void ImportImageSeqDialog::setupLayout()
 
     hideInstructionsLabel(true);
 
-    if (mFileType == FileType::GIF) {
+    if (mFileType == FileType::GIF)
+    {
         setWindowTitle(tr("Import Animated GIF"));
-    } else {
+    }
+    else
+    {
         setWindowTitle(tr("Import image sequence"));
     }
 
@@ -70,7 +76,7 @@ void ImportImageSeqDialog::setupPredefinedLayout()
 {
     setWindowTitle(tr("Import predefined keyframe set"));
     setInstructionsLabel(tr("Select an image that matches the criteria: MyFile000.png, eg. Joe001.png \n"
-                         "The importer will search and find images matching the same criteria. You can see the result in the preview box below."));
+                            "The importer will search and find images matching the same criteria. You can see the result in the preview box below."));
     hideOptionsGroupBox(true);
     hidePreviewGroupBox(false);
 
@@ -79,10 +85,12 @@ void ImportImageSeqDialog::setupPredefinedLayout()
 
 ImportImageSeqDialog::~ImportImageSeqDialog()
 {
-    if (uiOptionsBox) {
+    if (uiOptionsBox)
+    {
         delete uiOptionsBox;
     }
-    if (uiGroupBoxPreview) {
+    if (uiGroupBoxPreview)
+    {
         delete uiGroupBoxPreview;
     }
 }
@@ -92,17 +100,17 @@ int ImportImageSeqDialog::getSpace()
     return uiOptionsBox->spaceSpinBox->value();
 }
 
-void ImportImageSeqDialog::updatePreviewList(const QStringList& list)
+void ImportImageSeqDialog::updatePreviewList(const QStringList &list)
 {
     Q_UNUSED(list)
     if (mImportCriteria == ImportCriteria::PredefinedSet)
     {
-        const PredefinedKeySet& keySet = generatePredefinedKeySet();
+        const PredefinedKeySet &keySet = generatePredefinedKeySet();
 
         Status status = Status::OK;
         status = validateKeySet(keySet, list);
 
-        QPushButton* okButton = getDialogButtonBox()->button(QDialogButtonBox::StandardButton::Ok);
+        QPushButton *okButton = getDialogButtonBox()->button(QDialogButtonBox::StandardButton::Ok);
         if (status == Status::FAIL)
         {
             QMessageBox::warning(mParent,
@@ -111,7 +119,9 @@ void ImportImageSeqDialog::updatePreviewList(const QStringList& list)
                                  QMessageBox::Ok,
                                  QMessageBox::Ok);
             okButton->setEnabled(false);
-        } else {
+        }
+        else
+        {
             okButton->setEnabled(true);
         }
         setPreviewModel(keySet);
@@ -121,16 +131,16 @@ void ImportImageSeqDialog::updatePreviewList(const QStringList& list)
 const PredefinedKeySet ImportImageSeqDialog::generatePredefinedKeySet() const
 {
     PredefinedKeySet keySet;
-    const PredefinedKeySetParams& setParams = predefinedKeySetParams();
+    const PredefinedKeySetParams &setParams = predefinedKeySetParams();
 
-    const QStringList& filenames = setParams.filenames;
-    const int& digits = setParams.digits;
-    const QString& folderPath = setParams.folderPath;
+    const QStringList &filenames = setParams.filenames;
+    const int &digits = setParams.digits;
+    const QString &folderPath = setParams.folderPath;
 
     for (int i = 0; i < filenames.size(); i++)
     {
-        const int& frameIndex = filenames[i].mid(setParams.dot - digits, digits).toInt();
-        const QString& absolutePath = folderPath + filenames[i];
+        const int &frameIndex = filenames[i].mid(setParams.dot - digits, digits).toInt();
+        const QString &absolutePath = folderPath + filenames[i];
 
         keySet.insert(frameIndex, absolutePath);
     }
@@ -138,9 +148,9 @@ const PredefinedKeySet ImportImageSeqDialog::generatePredefinedKeySet() const
     return keySet;
 }
 
-void ImportImageSeqDialog::setPreviewModel(const PredefinedKeySet& keySet)
+void ImportImageSeqDialog::setPreviewModel(const PredefinedKeySet &keySet)
 {
-    PredefinedSetModel* previewModel = new PredefinedSetModel(nullptr, keySet);
+    PredefinedSetModel *previewModel = new PredefinedSetModel(nullptr, keySet);
     uiGroupBoxPreview->tableView->setModel(previewModel);
     uiGroupBoxPreview->tableView->setColumnWidth(0, 500);
     uiGroupBoxPreview->tableView->setColumnWidth(1, 100);
@@ -179,7 +189,7 @@ void ImportImageSeqDialog::importArbitrarySequence()
 
     QString failedFiles;
     bool failedImport = false;
-    for (const QString& strImgFile : files)
+    for (const QString &strImgFile : files)
     {
         QString strImgFileLower = strImgFile.toLower();
 
@@ -275,9 +285,9 @@ const PredefinedKeySetParams ImportImageSeqDialog::predefinedKeySetParams() cons
     for (int i = 0; i < sList.size(); i++)
     {
         if (sList[i].startsWith(prefix) &&
-                sList[i].length() == validLength &&
-                sList[i].mid(sList[i].lastIndexOf(".") - digits, digits).toInt() > 0 &&
-                sList[i].endsWith(suffix))
+            sList[i].length() == validLength &&
+            sList[i].mid(sList[i].lastIndexOf(".") - digits, digits).toInt() > 0 &&
+            sList[i].endsWith(suffix))
         {
             finalList.append(sList[i]);
         }
@@ -288,7 +298,8 @@ const PredefinedKeySetParams ImportImageSeqDialog::predefinedKeySetParams() cons
     dot = finalList[0].lastIndexOf(".");
 
     QStringList absolutePaths;
-    for (QString fileName : finalList) {
+    for (QString fileName : finalList)
+    {
         absolutePaths << path + fileName;
     }
 
@@ -319,8 +330,8 @@ void ImportImageSeqDialog::importPredefinedSet()
 
     for (int i = 0; i < keySet.size(); i++)
     {
-        const int& frameIndex = keySet.keyFrameIndexAt(i);
-        const QString& filePath = keySet.filePathAt(i);
+        const int &frameIndex = keySet.keyFrameIndexAt(i);
+        const QString &filePath = keySet.filePathAt(i);
 
         mEditor->scrubTo(frameIndex);
         bool ok = mEditor->importImage(filePath);
@@ -345,7 +356,7 @@ QStringList ImportImageSeqDialog::getFilePaths()
     return ImportExportDialog::getFilePaths();
 }
 
-Status ImportImageSeqDialog::validateKeySet(const PredefinedKeySet& keySet, const QStringList& filepaths)
+Status ImportImageSeqDialog::validateKeySet(const PredefinedKeySet &keySet, const QStringList &filepaths)
 {
     QString msg = "";
     QString failedPathsString;
@@ -381,7 +392,9 @@ Status ImportImageSeqDialog::validateFiles(const QStringList &filepaths)
     {
         QFileInfo file = filepaths.at(i);
         if (!file.exists())
+        {
             failedPathsString += filepaths.at(i) + "\n";
+        }
     }
 
     if (!failedPathsString.isEmpty())

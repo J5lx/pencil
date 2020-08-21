@@ -21,10 +21,10 @@ GNU General Public License for more details.
 
 //Pencil File Format
 //PFF - acronym for "Pencil File Format"
-#define PFF_OLD_EXTENSION				".pcl"
-#define PFF_OLD_BIG_LETTER_EXTENSION	"PCL"
-#define PFF_EXTENSION				    ".pclx"
-#define PFF_BIG_LETTER_EXTENSION	    "PCLX"
+#define PFF_OLD_EXTENSION               ".pcl"
+#define PFF_OLD_BIG_LETTER_EXTENSION    "PCL"
+#define PFF_EXTENSION                   ".pclx"
+#define PFF_BIG_LETTER_EXTENSION        "PCLX"
 
 #define PFF_PROJECT_EXT_FILTER \
     QObject::tr("Pencil formats") + " (*.pclx *.pcl);;" + QObject::tr("Pencil Project") + " (*.pclx);;" + QObject::tr("Legacy Pencil Project") + " (*.pcl)"
@@ -65,13 +65,13 @@ GNU General Public License for more details.
 #define PFF_DEFAULT_PALETTE_EXT \
     QString(".xml")
 
-#define PFF_OLD_DATA_DIR 		"data"
+#define PFF_OLD_DATA_DIR        "data"
 #define PFF_DATA_DIR            "data"
-#define PFF_XML_FILE_NAME 		"main.xml"
-#define PFF_TMP_DECOMPRESS_EXT 	"Y2xD"
+#define PFF_XML_FILE_NAME       "main.xml"
+#define PFF_TMP_DECOMPRESS_EXT  "Y2xD"
 #define PFF_PALETTE_FILE        "palette.xml"
 
-bool removePFFTmpDirectory (const QString& dirName);
+bool removePFFTmpDirectory(const QString &dirName);
 QString uniqueString(int len);
 
 

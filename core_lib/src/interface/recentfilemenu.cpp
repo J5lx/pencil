@@ -42,7 +42,7 @@ RecentFileMenu::~RecentFileMenu()
 
 void RecentFileMenu::clear()
 {
-    for (const QString& filename : mRecentFiles)
+    for (const QString &filename : mRecentFiles)
     {
         removeRecentFile(filename);
     }
@@ -53,7 +53,7 @@ void RecentFileMenu::clear()
     addAction(mEmptyAction);
 }
 
-void RecentFileMenu::setRecentFiles(const QStringList& filenames)
+void RecentFileMenu::setRecentFiles(const QStringList &filenames)
 {
     clear();
 
@@ -102,7 +102,7 @@ void RecentFileMenu::addRecentFile(QString filename)
 
     mRecentFiles.prepend(filename);
 
-    QAction* action = new QAction(filename, this);
+    QAction *action = new QAction(filename, this);
     action->setData(QVariant(filename));
 
     QObject::connect(action, &QAction::triggered, this, &RecentFileMenu::onRecentFileTriggered);
@@ -131,7 +131,7 @@ void RecentFileMenu::removeRecentFile(QString filename)
 {
     if (mRecentFiles.contains(filename))
     {
-        QAction* action = mRecentActions.at(filename);
+        QAction *action = mRecentActions.at(filename);
         removeAction(action);
 
         mRecentActions.erase(filename);
@@ -142,7 +142,7 @@ void RecentFileMenu::removeRecentFile(QString filename)
 
 void RecentFileMenu::onRecentFileTriggered()
 {
-    QAction* action = static_cast<QAction*>(QObject::sender());
+    QAction *action = static_cast<QAction *>(QObject::sender());
     QString filePath = action->data().toString();
 
     if (!filePath.isEmpty())

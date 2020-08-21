@@ -9,7 +9,7 @@
 #include <QSlider>
 
 
-ColorSlider::ColorSlider(QWidget* parent) : QWidget(parent)
+ColorSlider::ColorSlider(QWidget *parent) : QWidget(parent)
 {
 
 }
@@ -56,7 +56,7 @@ QLinearGradient ColorSlider::setColorSpec(QColor color)
 {
     if (mSpecType == ColorSpecType::HSV)
     {
-       return hsvGradient(color);
+        return hsvGradient(color);
     }
     else if (mSpecType == ColorSpecType::RGB)
     {
@@ -75,9 +75,9 @@ QLinearGradient ColorSlider::rgbGradient(QColor color)
         for (; val < mMax; val += 1)
         {
             mGradient.setColorAt(val / mMax, QColor::fromRgb(val,
-                                                    255,
-                                                    255,
-                                                    color.alpha()));
+                                                             255,
+                                                             255,
+                                                             color.alpha()));
         }
     }
     else if (mColorType == ColorType::GREEN)
@@ -86,9 +86,9 @@ QLinearGradient ColorSlider::rgbGradient(QColor color)
         for (; val < mMax; val += 1)
         {
             mGradient.setColorAt(val / mMax, QColor::fromRgb(color.red(),
-                                                    val,
-                                                    color.blue(),
-                                                    color.alpha()));
+                                                             val,
+                                                             color.blue(),
+                                                             color.alpha()));
         }
     }
     else if (mColorType == ColorType::BLUE)
@@ -96,9 +96,9 @@ QLinearGradient ColorSlider::rgbGradient(QColor color)
         for (; val < mMax; val += 1)
         {
             mGradient.setColorAt(val / mMax, QColor::fromRgb(color.red(),
-                                                    color.green(),
-                                                    val,
-                                                    color.alpha()));
+                                                             color.green(),
+                                                             val,
+                                                             color.alpha()));
         }
     }
     else if (mColorType == ColorType::ALPHA)
@@ -106,9 +106,9 @@ QLinearGradient ColorSlider::rgbGradient(QColor color)
         for (; val < mMax; val += 1)
         {
             mGradient.setColorAt(val / mMax, QColor::fromRgb(0,
-                                                    0,
-                                                    0,
-                                                    val));
+                                                             0,
+                                                             0,
+                                                             val));
         }
     }
     return mGradient;
@@ -117,7 +117,8 @@ QLinearGradient ColorSlider::rgbGradient(QColor color)
 QLinearGradient ColorSlider::hsvGradient(QColor color)
 {
     int val = 0;
-    if (mColorType == ColorType::HUE) {
+    if (mColorType == ColorType::HUE)
+    {
 
         for (; val < mMax; val += 1)
         {
@@ -175,7 +176,7 @@ void ColorSlider::drawColorBox(QColor color, QSize size)
 
     painter.fillRect(mBoxPixmapSource.rect(), backgroundBrush);
 
-    mGradient = QLinearGradient(0,0,mBoxPixmapSource.width(),0);
+    mGradient = QLinearGradient(0, 0, mBoxPixmapSource.width(), 0);
     mGradient = setColorSpec(color);
 
     painter.end();
@@ -223,7 +224,7 @@ void ColorSlider::drawColorBox(QColor color, QSize size)
     painter.end();
 }
 
-void ColorSlider::mouseMoveEvent(QMouseEvent* event)
+void ColorSlider::mouseMoveEvent(QMouseEvent *event)
 {
     colorPicked(event->pos());
 }
@@ -238,45 +239,48 @@ void ColorSlider::drawPicker(QColor color)
 {
     QPainter painter(this);
     qreal val = 0;
-    QSize mPickerSize = QSize(10, this->height()-1);
+    QSize mPickerSize = QSize(10, this->height() - 1);
 
     QPen pen;
     pen.setWidth(0);
-    pen.setColor(QColor(0,0,0,255));
+    pen.setColor(QColor(0, 0, 0, 255));
 
-    if (mSpecType == ColorSpecType::HSV) {
+    if (mSpecType == ColorSpecType::HSV)
+    {
         if (mColorType == ColorType::HUE)
         {
-            val = color.hsvHueF() * (mBoxPixmapSource.width()-mPickerSize.width());
+            val = color.hsvHueF() * (mBoxPixmapSource.width() - mPickerSize.width());
         }
         else if (mColorType == ColorType::SAT)
         {
-            if ( (color.hsvSaturation() > 127 || color.value() < 127) && color.alpha() > 127)
+            if ((color.hsvSaturation() > 127 || color.value() < 127) && color.alpha() > 127)
             {
                 pen.setColor(Qt::white);
             }
-            val = color.hsvSaturationF() * (mBoxPixmapSource.width()-mPickerSize.width());
+            val = color.hsvSaturationF() * (mBoxPixmapSource.width() - mPickerSize.width());
         }
         else if (mColorType == ColorType::VAL)
         {
-            if ( color.value() < 127 && color.alpha() > 127)
+            if (color.value() < 127 && color.alpha() > 127)
             {
                 pen.setColor(Qt::white);
             }
-            val = color.valueF() * (mBoxPixmapSource.width()-mPickerSize.width());
+            val = color.valueF() * (mBoxPixmapSource.width() - mPickerSize.width());
         }
-    } else if (mSpecType == ColorSpecType::RGB) {
+    }
+    else if (mSpecType == ColorSpecType::RGB)
+    {
         if (mColorType == ColorType::RED)
         {
-            val = color.redF() * (mBoxPixmapSource.width()-mPickerSize.width());
+            val = color.redF() * (mBoxPixmapSource.width() - mPickerSize.width());
         }
         else if (mColorType == ColorType::GREEN)
         {
-            if ( color.alpha() > 127)
+            if (color.alpha() > 127)
             {
                 pen.setColor(Qt::white);
             }
-            val = color.greenF() * (mBoxPixmapSource.width()-mPickerSize.width());
+            val = color.greenF() * (mBoxPixmapSource.width() - mPickerSize.width());
         }
         else if (mColorType == ColorType::BLUE)
         {
@@ -284,16 +288,16 @@ void ColorSlider::drawPicker(QColor color)
             {
                 pen.setColor(Qt::white);
             }
-            val = color.blueF() * (mBoxPixmapSource.width()-mPickerSize.width());
+            val = color.blueF() * (mBoxPixmapSource.width() - mPickerSize.width());
         }
     }
     if (mColorType == ColorType::ALPHA)
     {
-        if ( color.alpha() > 127)
+        if (color.alpha() > 127)
         {
             pen.setColor(Qt::white);
         }
-        val = color.alphaF() * (mBoxPixmapSource.width()-mPickerSize.width());
+        val = color.alphaF() * (mBoxPixmapSource.width() - mPickerSize.width());
     }
 
 
@@ -308,91 +312,93 @@ void ColorSlider::colorPicked(QPoint point)
     int colorMax = static_cast<int>(mMax);
     int colorVal = 0;
 
-    colorVal = point.x()*colorMax/mBoxPixmapSource.width();
+    colorVal = point.x() * colorMax / mBoxPixmapSource.width();
 
     colorVal = (colorVal > colorMax) ? colorMax : colorVal;
     colorVal = (colorVal < 0) ? 0 : colorVal;
 
-    if (mSpecType == ColorSpecType::HSV) {
-        switch(mColorType)
-        {
-            case ColorType::HUE:
-            {
-                colorPicked = QColor::fromHsv(colorVal,
-                                              mColor.hsvSaturation(),
-                                              mColor.value(),
-                                              mColor.alpha());
-
-                break;
-            }
-            case ColorType::SAT:
-            {
-                colorPicked = QColor::fromHsv(mColor.hsvHue(),
-                                                  colorVal,
-                                                  mColor.value(),
-                                                  mColor.alpha());
-                break;
-            }
-            case ColorType::VAL:
-            {
-                colorPicked = QColor::fromHsv(mColor.hsvHue(),
-                                                  mColor.hsvSaturation(),
-                                                  colorVal,
-                                                  mColor.alpha());
-                break;
-            }
-            case ColorType::ALPHA:
-            {
-
-                colorPicked = QColor::fromHsv(mColor.hsvHue(),
-                                        mColor.hsvSaturation(),
-                                        mColor.value(),
-                                        colorVal);
-                break;
-            }
-            default:
-                break;
-        }
-    } else if (mSpecType == ColorSpecType::RGB)
+    if (mSpecType == ColorSpecType::HSV)
     {
-        switch(mColorType)
+        switch (mColorType)
         {
-            case ColorType::RED:
-            {
-                colorPicked = QColor::fromRgb(colorVal,
-                                              mColor.green(),
-                                              mColor.blue(),
-                                              mColor.alpha());
+        case ColorType::HUE:
+        {
+            colorPicked = QColor::fromHsv(colorVal,
+                                          mColor.hsvSaturation(),
+                                          mColor.value(),
+                                          mColor.alpha());
 
-                break;
-            }
-            case ColorType::GREEN:
-            {
-                colorPicked = QColor::fromRgb(mColor.red(),
-                                                  colorVal,
-                                                  mColor.blue(),
-                                                  mColor.alpha());
-                break;
-            }
-            case ColorType::BLUE:
-            {
-                colorPicked = QColor::fromRgb(mColor.red(),
-                                                  mColor.green(),
-                                                  colorVal,
-                                                  mColor.alpha());
-                break;
-            }
-            case ColorType::ALPHA:
-            {
+            break;
+        }
+        case ColorType::SAT:
+        {
+            colorPicked = QColor::fromHsv(mColor.hsvHue(),
+                                          colorVal,
+                                          mColor.value(),
+                                          mColor.alpha());
+            break;
+        }
+        case ColorType::VAL:
+        {
+            colorPicked = QColor::fromHsv(mColor.hsvHue(),
+                                          mColor.hsvSaturation(),
+                                          colorVal,
+                                          mColor.alpha());
+            break;
+        }
+        case ColorType::ALPHA:
+        {
 
-                colorPicked = QColor::fromRgb(mColor.red(),
-                                        mColor.green(),
-                                        mColor.blue(),
-                                        colorVal);
-                break;
-            }
-            default:
-                break;
+            colorPicked = QColor::fromHsv(mColor.hsvHue(),
+                                          mColor.hsvSaturation(),
+                                          mColor.value(),
+                                          colorVal);
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    else if (mSpecType == ColorSpecType::RGB)
+    {
+        switch (mColorType)
+        {
+        case ColorType::RED:
+        {
+            colorPicked = QColor::fromRgb(colorVal,
+                                          mColor.green(),
+                                          mColor.blue(),
+                                          mColor.alpha());
+
+            break;
+        }
+        case ColorType::GREEN:
+        {
+            colorPicked = QColor::fromRgb(mColor.red(),
+                                          colorVal,
+                                          mColor.blue(),
+                                          mColor.alpha());
+            break;
+        }
+        case ColorType::BLUE:
+        {
+            colorPicked = QColor::fromRgb(mColor.red(),
+                                          mColor.green(),
+                                          colorVal,
+                                          mColor.alpha());
+            break;
+        }
+        case ColorType::ALPHA:
+        {
+
+            colorPicked = QColor::fromRgb(mColor.red(),
+                                          mColor.green(),
+                                          mColor.blue(),
+                                          colorVal);
+            break;
+        }
+        default:
+            break;
         }
     }
     mColor = colorPicked;

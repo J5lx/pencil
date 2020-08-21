@@ -21,7 +21,7 @@ GNU General Public License for more details.
 
 namespace Ui
 {
-    class DisplayOption;
+class DisplayOption;
 }
 class Editor;
 class QToolButton;
@@ -31,7 +31,7 @@ class DisplayOptionWidget : public BaseDockWidget
 {
     Q_OBJECT
 public:
-    explicit DisplayOptionWidget(QWidget* parent);
+    explicit DisplayOptionWidget(QWidget *parent);
     virtual ~DisplayOptionWidget() override;
 
     void initUI() override;
@@ -50,7 +50,7 @@ private slots:
 
 private:
     void makeConnections();
-    Ui::DisplayOption* ui = nullptr;
+    Ui::DisplayOption *ui = nullptr;
 };
 
 #endif // DISPLAYOPTIONDOCKWIDGET_H

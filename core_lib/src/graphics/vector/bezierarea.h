@@ -33,8 +33,8 @@ public:
     BezierArea();
     BezierArea(QList<VertexRef> vertexList, int color);
 
-    Status createDomElement(QXmlStreamWriter& xmlStream);
-    void loadDomElement(const QDomElement& element);
+    Status createDomElement(QXmlStreamWriter &xmlStream);
+    void loadDomElement(const QDomElement &element);
 
     VertexRef getVertexRef(int i);
     int getColorNumber() { return mColorNumber; }

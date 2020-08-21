@@ -25,10 +25,10 @@ class ShortcutFilter : public QObject
     Q_OBJECT
 
 public:
-    ShortcutFilter(ScribbleArea* scribbleArea, QObject* parent);
+    ShortcutFilter(ScribbleArea *scribbleArea, QObject *parent);
 protected:
-    bool eventFilter(QObject* obj, QEvent* event) override;
-    ScribbleArea* mScribbleArea = nullptr;
+    bool eventFilter(QObject *obj, QEvent *event) override;
+    ScribbleArea *mScribbleArea = nullptr;
 };
 
 #endif

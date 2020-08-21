@@ -37,7 +37,8 @@ DoubleProgressDialog::~DoubleProgressDialog()
     delete ui;
 }
 
-QString DoubleProgressDialog::getStatus() {
+QString DoubleProgressDialog::getStatus()
+{
     return ui->progressStatus->text();
 }
 
@@ -54,14 +55,14 @@ DoubleProgressDialog::ProgressBarControl::ProgressBarControl(QProgressBar *b)
 void DoubleProgressDialog::ProgressBarControl::setMin(float minimum)
 {
     min = minimum;
-    if(max < min) setMax(min);
+    if (max < min) { setMax(min); }
     bar->setMinimum(convertUnits(min));
 }
 
 void DoubleProgressDialog::ProgressBarControl::setMax(float maximum)
 {
     max = maximum;
-    if(min > max) setMin(max);
+    if (min > max) { setMin(max); }
     bar->setMaximum(convertUnits(max));
 }
 

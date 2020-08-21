@@ -20,7 +20,8 @@ GNU General Public License for more details.
 
 #include "importexportdialog.h"
 
-namespace Ui {
+namespace Ui
+{
 class ExportImageOptions;
 }
 
@@ -29,32 +30,32 @@ class ExportImageDialog : public ImportExportDialog
     Q_OBJECT
 
 public:
-    explicit ExportImageDialog(QWidget* parent, FileType eType);
+    explicit ExportImageDialog(QWidget *parent, FileType eType);
     ~ExportImageDialog();
 
-	void setCamerasInfo(const std::vector<std::pair<QString, QSize>>& camInfo);
-    void setDefaultRange( int startFrame, int endFrame, int endFrameWithSounds );
+    void setCamerasInfo(const std::vector<std::pair<QString, QSize>> &camInfo);
+    void setDefaultRange(int startFrame, int endFrame, int endFrameWithSounds);
 
-    void  setExportSize( QSize size );
+    void  setExportSize(QSize size);
     QSize getExportSize() const;
     bool getTransparency() const;
     bool getExportKeyframesOnly() const;
     QString getExportFormat() const;
-	QString getCameraLayerName() const;
+    QString getCameraLayerName() const;
 
     int getStartFrame() const;
     int getEndFrame() const;
 
 private slots:
     void frameCheckboxClicked(bool checked);
-    void formatChanged(const QString& format);
-	void cameraComboChanged(int index);
+    void formatChanged(const QString &format);
+    void cameraComboChanged(int index);
 
 
 private:
-    Ui::ExportImageOptions* ui = nullptr;
+    Ui::ExportImageOptions *ui = nullptr;
 
-    void setTransparencyOptionVisibility(const QString& format);
+    void setTransparencyOptionVisibility(const QString &format);
     int mEndFrameWithSounds = 0;
     int mEndFrame = 0;
 };

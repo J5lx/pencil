@@ -43,7 +43,7 @@ TEST_CASE("FileManager invalid operations")
         FileManager fm;
 
         QString strDummyPath = "hahaha_blala.pcl";
-        Object* obj = fm.load(strDummyPath);
+        Object *obj = fm.load(strDummyPath);
 
         REQUIRE(obj == nullptr);
         REQUIRE(fm.error().code() == Status::FILE_NOT_FOUND);
@@ -62,7 +62,7 @@ TEST_CASE("FileManager invalid operations")
         badXMLFile.close();
 
         FileManager fm;
-        Object* pObj = fm.load(strBadXMLPath);
+        Object *pObj = fm.load(strBadXMLPath);
 
         REQUIRE(pObj == NULL);
         REQUIRE(fm.error().code() == Status::ERROR_INVALID_XML_FILE);
@@ -80,7 +80,7 @@ TEST_CASE("FileManager invalid operations")
         badXMLFile.close();
 
         FileManager fm;
-        Object* pObj = fm.load(strBadXMLPath);
+        Object *pObj = fm.load(strBadXMLPath);
 
         REQUIRE(pObj == NULL);
         REQUIRE(fm.error().code() == Status::ERROR_INVALID_PENCIL_FILE);
@@ -104,7 +104,7 @@ TEST_CASE("FileManager Loading XML Tests")
             minXML.close();
 
             FileManager fm;
-            Object* o = fm.load(minimalDoc.fileName());
+            Object *o = fm.load(minimalDoc.fileName());
 
             REQUIRE(o != nullptr);
             REQUIRE(fm.error().ok());
@@ -133,7 +133,7 @@ TEST_CASE("FileManager Loading XML Tests")
         theXML.close();
 
         FileManager fm;
-        Object* obj = fm.load(theXML.fileName());
+        Object *obj = fm.load(theXML.fileName());
         REQUIRE(obj->getLayerCount() == 2); // one bitmap layer and one default cam layer
         REQUIRE(obj->getLayer(0)->name() == "MyLayer");
         REQUIRE(obj->getLayer(0)->id() == 5);
@@ -164,9 +164,9 @@ TEST_CASE("FileManager Loading XML Tests")
         theXML.close();
 
         FileManager fm;
-        Object* obj = fm.load(theXML.fileName());
+        Object *obj = fm.load(theXML.fileName());
 
-        Layer* layer = obj->getLayer(0);
+        Layer *layer = obj->getLayer(0);
         REQUIRE(layer->name() == "GoodLayer");
         REQUIRE(layer->id() == 5);
         REQUIRE(layer->visible() == false);
@@ -200,9 +200,9 @@ TEST_CASE("FileManager Loading XML Tests")
         theXML.close();
 
         FileManager fm;
-        Object* obj = fm.load(theXML.fileName());
+        Object *obj = fm.load(theXML.fileName());
 
-        Layer* layer = obj->getLayer(0);
+        Layer *layer = obj->getLayer(0);
         REQUIRE(layer->name() == "MyLayer");
         REQUIRE(layer->id() == 5);
         REQUIRE(layer->visible() == true);
@@ -214,7 +214,7 @@ TEST_CASE("FileManager Loading XML Tests")
 }
 
 // Turn a Qt resource file into an actual file on disk
-QString getQtResourceFile(QString rscPath, QTemporaryDir& tempDir)
+QString getQtResourceFile(QString rscPath, QTemporaryDir &tempDir)
 {
     QFile fin(rscPath);
     if (!fin.open(QFile::ReadOnly))
@@ -245,7 +245,7 @@ TEST_CASE("FileManager Load PCLX")
         QTemporaryDir tempDir;
 
         FileManager fm;
-        Object* o = fm.load(getQtResourceFile(":/empty.pclx", tempDir));
+        Object *o = fm.load(getQtResourceFile(":/empty.pclx", tempDir));
         REQUIRE(o != nullptr);
         if (o)
         {
@@ -260,7 +260,7 @@ TEST_CASE("FileManager Load PCLX")
         QTemporaryDir tempDir;
 
         FileManager fm;
-        Object* o = fm.load(getQtResourceFile(":/許功蓋.pclx", tempDir));
+        Object *o = fm.load(getQtResourceFile(":/許功蓋.pclx", tempDir));
         REQUIRE(o != nullptr);
         if (o)
         {
@@ -275,7 +275,7 @@ TEST_CASE("FileManager Load PCLX")
         QTemporaryDir tempDir;
 
         FileManager fm;
-        Object* o = fm.load(getQtResourceFile(":/構わない.pclx", tempDir));
+        Object *o = fm.load(getQtResourceFile(":/構わない.pclx", tempDir));
         REQUIRE(o != nullptr);
         if (o)
         {
@@ -290,7 +290,7 @@ TEST_CASE("FileManager Load PCLX")
         QTemporaryDir tempDir;
 
         FileManager fm;
-        Object* o = fm.load(getQtResourceFile(":/대박이야.pclx", tempDir));
+        Object *o = fm.load(getQtResourceFile(":/대박이야.pclx", tempDir));
         REQUIRE(o != nullptr);
         if (o)
         {
@@ -309,14 +309,14 @@ TEST_CASE("FileManager File-saving")
         FileManager fm;
 
         // 1. create a animation with one red frame & save it
-        Object* o1 = new Object;
+        Object *o1 = new Object;
         o1->init();
         o1->createDefaultLayers();
 
-        LayerBitmap* layer = dynamic_cast<LayerBitmap*>(o1->getLayer(2));
+        LayerBitmap *layer = dynamic_cast<LayerBitmap *>(o1->getLayer(2));
         REQUIRE(layer->addNewKeyFrameAt(2));
 
-        BitmapImage* b1 = layer->getBitmapImageAtFrame(2);
+        BitmapImage *b1 = layer->getBitmapImageAtFrame(2);
         b1->drawRect(QRectF(0, 0, 10, 10), QPen(QColor(255, 0, 0)), QBrush(Qt::red), QPainter::CompositionMode_SourceOver, false);
 
         QTemporaryDir testDir("PENCIL_TEST_XXXXXXXX");
@@ -325,20 +325,20 @@ TEST_CASE("FileManager File-saving")
         delete o1;
 
         // 2. load the animation, and then clear the red frame, save it.
-        Object* o2 = fm.load(animationPath);
-        layer = dynamic_cast<LayerBitmap*>(o2->getLayer(2));
+        Object *o2 = fm.load(animationPath);
+        layer = dynamic_cast<LayerBitmap *>(o2->getLayer(2));
 
-        BitmapImage* b2 = layer->getBitmapImageAtFrame(2);
+        BitmapImage *b2 = layer->getBitmapImageAtFrame(2);
         b2->clear();
 
         fm.save(o2, animationPath);
         delete o2;
 
         // 3. load the animation again, check whether it's an empty frame
-        Object* o3 = fm.load(animationPath);
-        layer = dynamic_cast<LayerBitmap*>(o3->getLayer(2));
+        Object *o3 = fm.load(animationPath);
+        layer = dynamic_cast<LayerBitmap *>(o3->getLayer(2));
 
-        BitmapImage* b3 = layer->getBitmapImageAtFrame(2);
+        BitmapImage *b3 = layer->getBitmapImageAtFrame(2);
         REQUIRE(b3->bounds().isEmpty());
 
         delete o3;
@@ -350,11 +350,11 @@ TEST_CASE("FileManager File-saving")
         FileManager fm;
 
         // 1. Create a animation with 150 frames & save it
-        Object* o1 = new Object;
+        Object *o1 = new Object;
         o1->init();
         o1->createDefaultLayers();
 
-        LayerBitmap* layer = dynamic_cast<LayerBitmap*>(o1->getLayer(2));
+        LayerBitmap *layer = dynamic_cast<LayerBitmap *>(o1->getLayer(2));
         for (int i = 100; i < 150; ++i)
         {
             layer->addNewKeyFrameAt(i);
@@ -368,24 +368,28 @@ TEST_CASE("FileManager File-saving")
         delete o1;
 
         // 2. Load the animation back and then make some frames unloaded by active frame pool
-        Object* o2 = fm.load(animationPath);
+        Object *o2 = fm.load(animationPath);
         o2->setActiveFramePoolSize(20);
 
-        layer = dynamic_cast<LayerBitmap*>(o2->getLayer(2));
+        layer = dynamic_cast<LayerBitmap *>(o2->getLayer(2));
         for (int i = 1; i < 150; ++i)
+        {
             o2->updateActiveFrames(i);
+        }
 
         // 3. Move those unloaded frames around
         for (int i = 100; i < 150; ++i)
+        {
             layer->setFrameSelected(i, true);
+        }
 
         layer->moveSelectedFrames(-55);
         fm.save(o2, animationPath);
         delete o2;
 
         // 4. Check no lost frames
-        Object* o3 = fm.load(animationPath);
-        layer = dynamic_cast<LayerBitmap*>(o3->getLayer(2));
+        Object *o3 = fm.load(animationPath);
+        layer = dynamic_cast<LayerBitmap *>(o3->getLayer(2));
         for (int i = 2; i < 150; ++i)
         {
             auto bitmap = layer->getBitmapImageAtFrame(i);
@@ -422,7 +426,7 @@ TEST_CASE("Empty Sound Frames")
 
 
             FileManager fm;
-            Object* newObj = fm.load(soundFrameDoc.fileName());
+            Object *newObj = fm.load(soundFrameDoc.fileName());
 
             REQUIRE(newObj != nullptr);
             REQUIRE(fm.error().ok());

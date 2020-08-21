@@ -61,26 +61,26 @@ class BaseTool : public QObject
 {
     Q_OBJECT
 protected:
-    explicit BaseTool(QObject* parent);
+    explicit BaseTool(QObject *parent);
 
 public:
     static QString TypeName(ToolType);
     QString typeName() { return TypeName(type()); }
 
-    void initialize(Editor* editor);
-    
+    void initialize(Editor *editor);
+
     virtual ToolType type() = 0;
     virtual void loadSettings() = 0;
     virtual QCursor cursor();
 
-    virtual void pointerPressEvent(PointerEvent*) = 0;
-    virtual void pointerMoveEvent(PointerEvent*) = 0;
-    virtual void pointerReleaseEvent(PointerEvent*) = 0;
-    virtual void pointerDoubleClickEvent(PointerEvent*);
+    virtual void pointerPressEvent(PointerEvent *) = 0;
+    virtual void pointerMoveEvent(PointerEvent *) = 0;
+    virtual void pointerReleaseEvent(PointerEvent *) = 0;
+    virtual void pointerDoubleClickEvent(PointerEvent *);
 
     // return true if handled
-    virtual bool keyPressEvent(QKeyEvent*) { return false; }
-    virtual bool keyReleaseEvent(QKeyEvent*) { return false; }
+    virtual bool keyPressEvent(QKeyEvent *) { return false; }
+    virtual bool keyReleaseEvent(QKeyEvent *) { return false; }
 
     // dynamic cursor adjustment
     virtual bool startAdjusting(Qt::KeyboardModifiers modifiers, qreal argStep);
@@ -135,18 +135,18 @@ public:
     bool isDrawingTool();
 
 protected:
-    StrokeManager* strokeManager() { return mStrokeManager; }
-    Editor* editor() { return mEditor; }
+    StrokeManager *strokeManager() { return mStrokeManager; }
+    Editor *editor() { return mEditor; }
 
     QHash<ToolPropertyType, bool> mPropertyEnabled;
 
-    Editor* mEditor = nullptr;
-    ScribbleArea* mScribbleArea = nullptr;
+    Editor *mEditor = nullptr;
+    ScribbleArea *mScribbleArea = nullptr;
 
     QHash<Qt::KeyboardModifiers, ToolPropertyType> mQuickSizingProperties;
 
 private:
-    StrokeManager* mStrokeManager = nullptr;
+    StrokeManager *mStrokeManager = nullptr;
     qreal mAdjustmentStep = 0.0f;
 
     static bool msIsAdjusting;

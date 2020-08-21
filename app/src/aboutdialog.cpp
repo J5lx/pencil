@@ -24,7 +24,7 @@ GNU General Public License for more details.
 #include "pencildef.h"
 
 
-AboutDialog::AboutDialog(QWidget* parent) :
+AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AboutDialog)
 {
@@ -60,7 +60,7 @@ void AboutDialog::init()
 
     devText << QString("Operating System: %1").arg(QSysInfo::prettyProductName())
             << QString("CPU Architecture: %1").arg(QSysInfo::buildCpuArchitecture());
-    if(QString(qVersion()) == QT_VERSION_STR)
+    if (QString(qVersion()) == QT_VERSION_STR)
     {
         devText << QString("Qt Version: %1").arg(QT_VERSION_STR);
     }
@@ -71,7 +71,7 @@ void AboutDialog::init()
     }
     ui->devInfoText->setText(devText.join("<br>"));
 
-    QPushButton* copyToClipboardButton = new QPushButton(tr("Copy to clipboard", "Copy system info from About Dialog"));
+    QPushButton *copyToClipboardButton = new QPushButton(tr("Copy to clipboard", "Copy system info from About Dialog"));
     connect(copyToClipboardButton, &QPushButton::clicked, this, [devText]
     {
         QApplication::clipboard()->setText(devText.join("\n"));

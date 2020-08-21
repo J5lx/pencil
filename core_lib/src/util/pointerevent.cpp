@@ -1,11 +1,11 @@
 #include "pointerevent.h"
 
-PointerEvent::PointerEvent(QMouseEvent* event)
+PointerEvent::PointerEvent(QMouseEvent *event)
 {
     mMouseEvent = event;
 }
 
-PointerEvent::PointerEvent(QTabletEvent* event)
+PointerEvent::PointerEvent(QTabletEvent *event)
 {
     mTabletEvent = event;
 }

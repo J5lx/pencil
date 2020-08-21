@@ -36,7 +36,7 @@ ColorRef::ColorRef(QColor theColor, QString theName)
 
 bool ColorRef::operator==(ColorRef colorRef1)
 {
-    if ( (color == colorRef1.color) && (name == colorRef1.name) )
+    if ((color == colorRef1.color) && (name == colorRef1.name))
     {
         return true;
     }
@@ -48,7 +48,7 @@ bool ColorRef::operator==(ColorRef colorRef1)
 
 bool ColorRef::operator!=(ColorRef colorRef1)
 {
-    if ( (color != colorRef1.color) || (name != colorRef1.name) )
+    if ((color != colorRef1.color) || (name != colorRef1.name))
     {
         return true;
     }
@@ -58,9 +58,9 @@ bool ColorRef::operator!=(ColorRef colorRef1)
     }
 }
 
-QDebug& operator<<(QDebug debug, const ColorRef& colorRef)
+QDebug &operator<<(QDebug debug, const ColorRef &colorRef)
 {
-    debug.nospace() << "ColorRef(" << colorRef.color << " " << colorRef.name <<")";
+    debug.nospace() << "ColorRef(" << colorRef.color << " " << colorRef.name << ")";
     return debug.maybeSpace();
 }
 
@@ -73,9 +73,9 @@ QString ColorRef::getDefaultColorName(const QColor c)
 
     // Convert RGB to XYZ with D65 white point
     // (algorithm source: https://www.cs.rit.edu/%7Encs/color/t_convert.html#RGB%20to%20XYZ%20&%20XYZ%20to%20RGB)
-    const qreal x = 0.412453*r + 0.357580*g + 0.180423*b;
-    const qreal y = 0.212671*r + 0.715160*g + 0.072169*b;
-    const qreal z = 0.019334*r + 0.119193*g + 0.950227*b;
+    const qreal x = 0.412453 * r + 0.357580 * g + 0.180423 * b;
+    const qreal y = 0.212671 * r + 0.715160 * g + 0.072169 * b;
+    const qreal z = 0.019334 * r + 0.119193 * g + 0.950227 * b;
 
     // Convert XYZ to CEI L*u*v
     // (algorithm source: https://www.cs.rit.edu/~ncs/color/t_convert.html#XYZ%20to%20CIE%20L*a*b*%20(CIELAB)%20&%20CIELAB%20to%20XYZ)
@@ -83,11 +83,11 @@ QString ColorRef::getDefaultColorName(const QColor c)
     auto f = [](const double a) { return a > 0.008856 ? std::cbrt(a) : 7.787 * a + 16 / 116; };
     // XYZ tristimulus values for D65 (taken from: https://en.wikipedia.org/wiki/Illuminant_D65#Definition)
     const qreal xn = 95.047,
-        yn = 100,
-        zn = 108.883;
-    const qreal l = y / yn > 0.008856 ? 116 * cbrt(y / yn) - 16 : 903.3*y / yn,
-        u = 500 * (f(x / xn) - f(y / yn)),
-        v = 200 * (f(y / yn) - f(z / zn));
+                yn = 100,
+                zn = 108.883;
+    const qreal l = y / yn > 0.008856 ? 116 * cbrt(y / yn) - 16 : 903.3 * y / yn,
+                u = 500 * (f(x / xn) - f(y / yn)),
+                v = 200 * (f(y / yn) - f(z / zn));
 
     // Find closest color match in colorDict to the luv values
     int minLoc = 0;

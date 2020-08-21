@@ -30,12 +30,12 @@ class ActionCommands : public QObject
     Q_OBJECT
 
 public:
-    explicit ActionCommands(QWidget* parent = nullptr);
+    explicit ActionCommands(QWidget *parent = nullptr);
     virtual ~ActionCommands();
 
-    void setCore(Editor* e) { mEditor = e; }
+    void setCore(Editor *e) { mEditor = e; }
 
-    // file 
+    // file
     Status importMovieVideo();
     Status importMovieAudio();
     Status importSound();
@@ -95,10 +95,10 @@ public:
 
 private:
 
-    Status convertSoundToWav(const QString& filePath);
+    Status convertSoundToWav(const QString &filePath);
 
-    Editor* mEditor = nullptr;
-    QWidget* mParent = nullptr;
+    Editor *mEditor = nullptr;
+    QWidget *mParent = nullptr;
 };
 
 #endif // COMMANDCENTER_H

@@ -22,7 +22,7 @@ GNU General Public License for more details.
 
 namespace Ui
 {
-    class ToolOptions;
+class ToolOptions;
 }
 class QToolButton;
 class SpinSlider;
@@ -39,18 +39,18 @@ class ToolOptionWidget : public BaseDockWidget
 {
     Q_OBJECT
 public:
-    explicit ToolOptionWidget(QWidget* parent);
+    explicit ToolOptionWidget(QWidget *parent);
     virtual ~ToolOptionWidget() override;
 
     void initUI() override;
     void updateUI() override;
 
-    void makeConnectionToEditor(Editor* editor);
+    void makeConnectionToEditor(Editor *editor);
 
 public slots:
     void onToolPropertyChanged(ToolType, ToolPropertyType);
     void onToolChanged(ToolType);
-    void setVisibility(BaseTool*);
+    void setVisibility(BaseTool *);
 
 private:
     void setPenWidth(qreal);
@@ -70,7 +70,7 @@ private:
     void createUI();
 
 private:
-    Ui::ToolOptions* ui = nullptr;
+    Ui::ToolOptions *ui = nullptr;
 };
 
 #endif // TOOLOPTIONDOCKWIDGET_H

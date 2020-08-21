@@ -21,7 +21,7 @@ GNU General Public License for more details.
 
 namespace Ui
 {
-    class OnionSkin;
+class OnionSkin;
 }
 
 class Editor;
@@ -33,7 +33,7 @@ class OnionSkinWidget : public BaseDockWidget
     Q_OBJECT
 
 public:
-    explicit OnionSkinWidget(QWidget* parent);
+    explicit OnionSkinWidget(QWidget *parent);
     virtual ~OnionSkinWidget() override;
 
     void initUI() override;
@@ -53,7 +53,7 @@ private slots:
 
 private:
     void makeConnections();
-    Ui::OnionSkin* ui = nullptr;
+    Ui::OnionSkin *ui = nullptr;
 };
 
 #endif // ONIONSKINWIDGET_H

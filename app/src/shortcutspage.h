@@ -31,20 +31,20 @@ class PreferenceManager;
 
 namespace Ui
 {
-    class ShortcutsPage;
+class ShortcutsPage;
 }
 
 class ShortcutsPage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ShortcutsPage(QWidget* parent = nullptr);
+    explicit ShortcutsPage(QWidget *parent = nullptr);
 
-    void setManager( PreferenceManager* p ) { mManager = p; }
+    void setManager(PreferenceManager *p) { mManager = p; }
     ~ShortcutsPage() override;
 
 private slots:
-    void tableItemClicked(const QModelIndex&);
+    void tableItemClicked(const QModelIndex &);
     void keyCapLineEditTextChanged();
     void saveShortcutsButtonClicked();
     void loadShortcutsButtonClicked();
@@ -52,16 +52,16 @@ private slots:
     void clearButtonClicked();
 
 private:
-    bool isKeySequenceExist(const QSettings&, QString, QKeySequence);
-    void removeDuplicateKeySequence(QSettings*, QKeySequence);
+    bool isKeySequenceExist(const QSettings &, QString, QKeySequence);
+    void removeDuplicateKeySequence(QSettings *, QKeySequence);
     void treeModelLoadShortcutsSetting();
 
-    QStandardItemModel* m_treeModel = nullptr;
+    QStandardItemModel *m_treeModel = nullptr;
     QModelIndex m_currentItemIndex;
 
-    Ui::ShortcutsPage* ui = nullptr;
+    Ui::ShortcutsPage *ui = nullptr;
 
-    PreferenceManager* mManager = nullptr;
+    PreferenceManager *mManager = nullptr;
 };
 
 #endif // SHORTCUTSPAGE_H

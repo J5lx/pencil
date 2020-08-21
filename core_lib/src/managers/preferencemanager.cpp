@@ -20,7 +20,7 @@ GNU General Public License for more details.
 #include <QSettings>
 
 
-PreferenceManager::PreferenceManager(Editor* editor) : BaseManager(editor)
+PreferenceManager::PreferenceManager(Editor *editor) : BaseManager(editor)
 {
 }
 
@@ -34,19 +34,19 @@ bool PreferenceManager::init()
     return true;
 }
 
-Status PreferenceManager::load(Object*)
+Status PreferenceManager::load(Object *)
 {
     return Status::OK;
 }
 
-Status PreferenceManager::save(Object*)
+Status PreferenceManager::save(Object *)
 {
     return Status::OK;
 }
 
 void PreferenceManager::loadPrefs()
 {
-    QSettings settings( PENCIL2D, PENCIL2D );
+    QSettings settings(PENCIL2D, PENCIL2D);
 
     // Display
     set(SETTING::GRID,                     settings.value(SETTING_SHOW_GRID,              false).toBool());
@@ -95,14 +95,14 @@ void PreferenceManager::loadPrefs()
     set(SETTING::DEFAULT_PRESET,           settings.value(SETTING_DEFAULT_PRESET,         0).toInt());
 
     // Timeline
-    set(SETTING::SHORT_SCRUB,              settings.value(SETTING_SHORT_SCRUB,            false ).toBool());
+    set(SETTING::SHORT_SCRUB,              settings.value(SETTING_SHORT_SCRUB,            false).toBool());
     set(SETTING::FRAME_SIZE,               settings.value(SETTING_FRAME_SIZE,             12).toInt());
     set(SETTING::TIMELINE_SIZE,            settings.value(SETTING_TIMELINE_SIZE,          240).toInt());
-    set(SETTING::DRAW_LABEL,               settings.value(SETTING_DRAW_LABEL,             false ).toBool());
+    set(SETTING::DRAW_LABEL,               settings.value(SETTING_DRAW_LABEL,             false).toBool());
     set(SETTING::LABEL_FONT_SIZE,          settings.value(SETTING_LABEL_FONT_SIZE,        12).toInt());
 
-    set( SETTING::DRAW_ON_EMPTY_FRAME_ACTION, settings.value( SETTING_DRAW_ON_EMPTY_FRAME_ACTION,
-                                                              KEEP_DRAWING_ON_PREVIOUS_KEY).toInt() );
+    set(SETTING::DRAW_ON_EMPTY_FRAME_ACTION, settings.value(SETTING_DRAW_ON_EMPTY_FRAME_ACTION,
+                                                            KEEP_DRAWING_ON_PREVIOUS_KEY).toInt());
 
     // Onion Skin
     set(SETTING::PREV_ONION,               settings.value(SETTING_PREV_ONION,             false).toBool());
@@ -207,7 +207,7 @@ void PreferenceManager::set(SETTING option, QString value)
 void PreferenceManager::set(SETTING option, float value)
 {
     QSettings settings(PENCIL2D, PENCIL2D);
-    switch(option)
+    switch (option)
     {
     case SETTING::LAYER_VISIBILITY_THRESHOLD:
         settings.setValue(SETTING_LAYER_VISIBILITY_THRESHOLD, value);
@@ -294,7 +294,7 @@ void PreferenceManager::set(SETTING option, int value)
         settings.setValue(SETTING_FRAME_POOL_SIZE, value);
         break;
     case SETTING::DRAW_ON_EMPTY_FRAME_ACTION:
-        settings.setValue( SETTING_DRAW_ON_EMPTY_FRAME_ACTION, value);
+        settings.setValue(SETTING_DRAW_ON_EMPTY_FRAME_ACTION, value);
         break;
     case SETTING::ONION_WHILE_PLAYBACK:
         settings.setValue(SETTING_ONION_WHILE_PLAYBACK, value);

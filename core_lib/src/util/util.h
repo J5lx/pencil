@@ -22,7 +22,7 @@ GNU General Public License for more details.
 
 class QAbstractSpinBox;
 
-QTransform RectMapTransform( QRectF source, QRectF target );
+QTransform RectMapTransform(QRectF source, QRectF target);
 
 void clearFocusOnFinished(QAbstractSpinBox *spinBox);
 
@@ -42,7 +42,8 @@ private:
 #define OnScopeExit( callback ) ScopeGuard SCOPEGUARD_LINENAME( myScopeGuard, __LINE__ ) ( [&] { callback; } );
 
 template <typename Container, typename Pred>
-Container filter(const Container& container, Pred predicate) {
+Container filter(const Container &container, Pred predicate)
+{
     Container result;
     std::copy_if(container.begin(), container.end(), std::back_inserter(result), predicate);
     return result;

@@ -77,14 +77,14 @@ void OnionSkinWidget::makeConnections()
     connect(ui->onionSkinMode, &QCheckBox::stateChanged, this, &OnionSkinWidget::onionSkinModeChange);
     connect(ui->onionWhilePlayback, &QCheckBox::stateChanged, this, &OnionSkinWidget::playbackStateChanged);
 
-    PreferenceManager* prefs = editor()->preference();
+    PreferenceManager *prefs = editor()->preference();
     connect(prefs, &PreferenceManager::optionChanged, this, &OnionSkinWidget::updateUI);
 
 }
 
 void OnionSkinWidget::updateUI()
 {
-    PreferenceManager* prefs = editor()->preference();
+    PreferenceManager *prefs = editor()->preference();
 
     QSignalBlocker b1(ui->onionPrevButton);
     ui->onionPrevButton->setChecked(prefs->isOn(SETTING::PREV_ONION));
@@ -113,55 +113,55 @@ void OnionSkinWidget::updateUI()
 
 void OnionSkinWidget::onionPrevButtonClicked(bool isOn)
 {
-    PreferenceManager* prefs = editor()->preference();
+    PreferenceManager *prefs = editor()->preference();
     prefs->set(SETTING::PREV_ONION, isOn);
 }
 
 void OnionSkinWidget::onionNextButtonClicked(bool isOn)
 {
-    PreferenceManager* prefs = editor()->preference();
+    PreferenceManager *prefs = editor()->preference();
     prefs->set(SETTING::NEXT_ONION, isOn);
 }
 
 void OnionSkinWidget::onionRedButtonClicked(bool isOn)
 {
-    PreferenceManager* prefs = editor()->preference();
+    PreferenceManager *prefs = editor()->preference();
     prefs->set(SETTING::ONION_RED, isOn);
 }
 
 void OnionSkinWidget::onionBlueButtonClicked(bool isOn)
 {
-    PreferenceManager* prefs = editor()->preference();
+    PreferenceManager *prefs = editor()->preference();
     prefs->set(SETTING::ONION_BLUE, isOn);
 }
 
 void OnionSkinWidget::onionMaxOpacityChange(int value)
 {
-    PreferenceManager* prefs = editor()->preference();
+    PreferenceManager *prefs = editor()->preference();
     prefs->set(SETTING::ONION_MAX_OPACITY, value);
 }
 
 void OnionSkinWidget::onionMinOpacityChange(int value)
 {
-    PreferenceManager* prefs = editor()->preference();
+    PreferenceManager *prefs = editor()->preference();
     prefs->set(SETTING::ONION_MIN_OPACITY, value);
 }
 
 void OnionSkinWidget::onionPrevFramesNumChange(int value)
 {
-    PreferenceManager* prefs = editor()->preference();
+    PreferenceManager *prefs = editor()->preference();
     prefs->set(SETTING::ONION_PREV_FRAMES_NUM, value);
 }
 
 void OnionSkinWidget::onionNextFramesNumChange(int value)
 {
-    PreferenceManager* prefs = editor()->preference();
+    PreferenceManager *prefs = editor()->preference();
     prefs->set(SETTING::ONION_NEXT_FRAMES_NUM, value);
 }
 
 void OnionSkinWidget::onionSkinModeChange(int value)
 {
-    PreferenceManager* prefs = editor()->preference();
+    PreferenceManager *prefs = editor()->preference();
     if (value == Qt::Checked)
     {
         prefs->set(SETTING::ONION_TYPE, QString("absolute"));
@@ -174,6 +174,6 @@ void OnionSkinWidget::onionSkinModeChange(int value)
 
 void OnionSkinWidget::playbackStateChanged(int value)
 {
-    PreferenceManager* prefs = editor()->preference();
+    PreferenceManager *prefs = editor()->preference();
     prefs->set(SETTING::ONION_WHILE_PLAYBACK, value);
 }

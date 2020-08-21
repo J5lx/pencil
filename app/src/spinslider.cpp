@@ -26,7 +26,7 @@ GNU General Public License for more details.
 #include <QStyle>
 
 
-SpinSlider::SpinSlider(QWidget* parent) : QWidget(parent)
+SpinSlider::SpinSlider(QWidget *parent) : QWidget(parent)
 {}
 
 void SpinSlider::init(QString text, GROWTH_TYPE type, VALUE_TYPE dataType, qreal min, qreal max)
@@ -50,7 +50,7 @@ void SpinSlider::init(QString text, GROWTH_TYPE type, VALUE_TYPE dataType, qreal
     mSlider->setMaximum(100);
     mSlider->setMaximumWidth(500);
 
-    QGridLayout* layout = new QGridLayout();
+    QGridLayout *layout = new QGridLayout();
     layout->setMargin(2);
     layout->setSpacing(2);
 
@@ -80,7 +80,8 @@ void SpinSlider::onSliderValueChanged(int v)
     {
         value2 = mMin * std::exp(v * std::log(mMax / mMin) / mSlider->maximum());
     }
-    else if (mGrowthType == EXPONENT) {
+    else if (mGrowthType == EXPONENT)
+    {
         value2 = mMin + std::pow(v, mExp) * (mMax - mMin) / std::pow(mSlider->maximum(), mExp);
     }
     changeValue(value2);
@@ -96,7 +97,7 @@ void SpinSlider::setValue(qreal v)
     int value2 = 0;
     if (mGrowthType == LINEAR)
     {
-        value2 =qRound((mSlider->maximum() * (v - mMin) / (mMax - mMin)));
+        value2 = qRound((mSlider->maximum() * (v - mMin) / (mMax - mMin)));
     }
     else if (mGrowthType == LOG)
     {

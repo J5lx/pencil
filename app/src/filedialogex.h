@@ -26,31 +26,31 @@ class FileDialog : public QObject
 {
     Q_OBJECT
 public:
-    FileDialog( QWidget* parent );
+    FileDialog(QWidget *parent);
     ~FileDialog();
 
-    QString openFile( FileType fileType );
-    QStringList openFiles( FileType fileType );
-    QString saveFile( FileType fileType );
+    QString openFile(FileType fileType);
+    QStringList openFiles(FileType fileType);
+    QString saveFile(FileType fileType);
 
-    QString getLastOpenPath( FileType fileType );
-    void setLastOpenPath( FileType fileType, QString openPath );
-    QString getLastSavePath( FileType fileType );
-    void setLastSavePath( FileType fileType, QString savePath );
+    QString getLastOpenPath(FileType fileType);
+    void setLastOpenPath(FileType fileType, QString openPath);
+    QString getLastSavePath(FileType fileType);
+    void setLastSavePath(FileType fileType, QString savePath);
 
 private:
-    QString openDialogTitle( FileType fileType );
-    QString saveDialogTitle( FileType fileType );
-    QString openFileFilters( FileType fileType );
-    QString saveFileFilters( FileType fileType );
-    QString getFilterForFile( QString fileType, QString filePath );
-    QString defaultFileName( FileType fileType );
+    QString openDialogTitle(FileType fileType);
+    QString saveDialogTitle(FileType fileType);
+    QString openFileFilters(FileType fileType);
+    QString saveFileFilters(FileType fileType);
+    QString getFilterForFile(QString fileType, QString filePath);
+    QString defaultFileName(FileType fileType);
 
     QString addDefaultExtensionSuffix(const FileType fileType);
 
-    QString toSettingKey( FileType fileType);
+    QString toSettingKey(FileType fileType);
 
-    QWidget* mRoot = nullptr;
+    QWidget *mRoot = nullptr;
 };
 
 #endif // FILEDIALOGEX_H
