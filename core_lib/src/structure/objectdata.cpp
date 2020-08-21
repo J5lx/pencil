@@ -25,4 +25,3 @@ ObjectData::ObjectData()
     if (mFps < 1)
         mFps = 12;
 }
-

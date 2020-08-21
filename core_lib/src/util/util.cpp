@@ -19,7 +19,7 @@ GNU General Public License for more details.
 #include <QApplication>
 #include <QStandardPaths>
 
-QTransform RectMapTransform( QRectF source, QRectF target )
+QTransform RectMapTransform(QRectF source, QRectF target)
 {
     qreal x1 = source.left();
     qreal y1 = source.top();
@@ -31,14 +31,14 @@ QTransform RectMapTransform( QRectF source, QRectF target )
     qreal y2P = target.bottom();
 
     QTransform matrix;
-    if ( ( x1 != x2 ) && ( y1 != y2 ) )
+    if ((x1 != x2) && (y1 != y2))
     {
-        matrix = QTransform( ( x2P - x1P ) / ( x2 - x1 ), // scale x
-                             0,
-                             0,
-                             ( y2P - y1P ) / ( y2 - y1 ), // scale y
-                             ( x1P * x2 - x2P * x1 ) / ( x2 - x1 ),    // dx
-                             ( y1P * y2 - y2P * y1 ) / ( y2 - y1 ) );  // dy
+        matrix = QTransform((x2P - x1P) / (x2 - x1), // scale x
+                            0,
+                            0,
+                            (y2P - y1P) / (y2 - y1),            // scale y
+                            (x1P * x2 - x2P * x1) / (x2 - x1),  // dx
+                            (y1P * y2 - y2P * y1) / (y2 - y1)); // dy
     }
     else
     {
@@ -61,9 +61,8 @@ QString ffprobeLocation()
 #else
     QString ffprobePath = QStandardPaths::findExecutable(
         "ffprobe",
-        QStringList()
-        << QApplication::applicationDirPath() + "/plugins"
-        << QApplication::applicationDirPath() + "/../plugins" // linuxdeployqt in FHS-like mode
+        QStringList() << QApplication::applicationDirPath() + "/plugins"
+                      << QApplication::applicationDirPath() + "/../plugins" // linuxdeployqt in FHS-like mode
     );
     if (!ffprobePath.isEmpty())
     {
@@ -82,9 +81,8 @@ QString ffmpegLocation()
 #else
     QString ffmpegPath = QStandardPaths::findExecutable(
         "ffmpeg",
-        QStringList()
-        << QApplication::applicationDirPath() + "/plugins"
-        << QApplication::applicationDirPath() + "/../plugins" // linuxdeployqt in FHS-like mode
+        QStringList() << QApplication::applicationDirPath() + "/plugins"
+                      << QApplication::applicationDirPath() + "/../plugins" // linuxdeployqt in FHS-like mode
     );
     if (!ffmpegPath.isEmpty())
     {

@@ -15,24 +15,23 @@ GNU General Public License for more details.
 */
 #include "catch.hpp"
 
-#include "object.h"
 #include "editor.h"
 #include "layermanager.h"
+#include "object.h"
 #include "pencilerror.h"
-
 
 TEST_CASE("LayerManager::init()")
 {
-    Object* object = new Object;
-    Editor* editor = new Editor;
+    Object *object = new Object;
+    Editor *editor = new Editor;
     editor->setObject(object);
 
     SECTION("Test initial state")
     {
-        LayerManager* layerMgr = new LayerManager(editor);
+        LayerManager *layerMgr = new LayerManager(editor);
         layerMgr->init();
 
-        object->init(); 
+        object->init();
         object->createDefaultLayers(); // create default 3 layers
         REQUIRE(layerMgr->count() == 3);
         REQUIRE(layerMgr->currentLayerIndex() == 2);
@@ -45,13 +44,13 @@ TEST_CASE("LayerManager::init()")
 
 TEST_CASE("LayerManager::deleteLayer()")
 {
-    Object* object = new Object;
-    Editor* editor = new Editor;
+    Object *object = new Object;
+    Editor *editor = new Editor;
     editor->setObject(object);
 
     SECTION("delete layers")
     {
-        LayerManager* layerMgr = new LayerManager(editor);
+        LayerManager *layerMgr = new LayerManager(editor);
         layerMgr->init();
 
         object->init();
@@ -71,7 +70,7 @@ TEST_CASE("LayerManager::deleteLayer()")
 
     SECTION("delete camera layers")
     {
-        LayerManager* layerMgr = new LayerManager(editor);
+        LayerManager *layerMgr = new LayerManager(editor);
         layerMgr->init();
 
         // create 2 camera layers

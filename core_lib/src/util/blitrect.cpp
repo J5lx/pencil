@@ -17,9 +17,7 @@ GNU General Public License for more details.
 
 #include "blitrect.h"
 
-BlitRect::BlitRect()
-{
-}
+BlitRect::BlitRect() {}
 
 BlitRect::BlitRect(const QPoint p)
 {
@@ -36,9 +34,21 @@ void BlitRect::extend(const QPoint p)
     }
     else
     {
-        if (left() > p.x()) { setLeft(p.x()); }
-        if (right() < p.x()) { setRight(p.x()); }
-        if (top() > p.y()) { setTop(p.y()); }
-        if (bottom() < p.y()) { setBottom(p.y()); }
+        if (left() > p.x())
+        {
+            setLeft(p.x());
+        }
+        if (right() < p.x())
+        {
+            setRight(p.x());
+        }
+        if (top() > p.y())
+        {
+            setTop(p.y());
+        }
+        if (bottom() < p.y())
+        {
+            setBottom(p.y());
+        }
     }
 }

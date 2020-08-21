@@ -16,14 +16,13 @@ GNU General Public License for more details.
 */
 #include "layer.h"
 
-#include <QDebug>
-#include <QSettings>
-#include <QPainter>
-#include <QDomElement>
 #include "keyframe.h"
 #include "object.h"
 #include "timelinecells.h"
-
+#include <QDebug>
+#include <QDomElement>
+#include <QPainter>
+#include <QSettings>
 
 // Used to sort the selected frames list
 bool sortAsc(int left, int right)
@@ -31,7 +30,7 @@ bool sortAsc(int left, int right)
     return left < right;
 }
 
-Layer::Layer(Object* pObject, LAYER_TYPE eType) : QObject(pObject)
+Layer::Layer(Object *pObject, LAYER_TYPE eType) : QObject(pObject)
 {
     Q_ASSERT(eType != UNDEFINED);
 
@@ -46,13 +45,13 @@ Layer::~Layer()
 {
     for (auto it : mKeyFrames)
     {
-        KeyFrame* pKeyFrame = it.second;
+        KeyFrame *pKeyFrame = it.second;
         delete pKeyFrame;
     }
     mKeyFrames.clear();
 }
 
-void Layer::foreachKeyFrame(std::function<void(KeyFrame*)> action)
+void Layer::foreachKeyFrame(std::function<void(KeyFrame *)> action)
 {
     for (auto pair : mKeyFrames)
     {
@@ -65,7 +64,7 @@ bool Layer::keyExists(int position) const
     return (mKeyFrames.find(position) != mKeyFrames.end());
 }
 
-KeyFrame* Layer::getKeyFrameAt(int position) const
+KeyFrame *Layer::getKeyFrameAt(int position) const
 {
     auto it = mKeyFrames.find(position);
     if (it == mKeyFrames.end())
@@ -75,7 +74,7 @@ KeyFrame* Layer::getKeyFrameAt(int position) const
     return it->second;
 }
 
-KeyFrame* Layer::getLastKeyFrameAtPosition(int position) const
+KeyFrame *Layer::getLastKeyFrameAtPosition(int position) const
 {
     if (position < 1)
     {
@@ -105,7 +104,7 @@ int Layer::getNextKeyFramePosition(int position) const
     // when position is before the first frame it == mKeyFrames.end() for some reason
     if (position < firstKeyFramePosition())
     {
-       return firstKeyFramePosition();
+        return firstKeyFramePosition();
     }
 
     auto it = mKeyFrames.lower_bound(position);
@@ -172,13 +171,14 @@ int Layer::getMaxKeyFramePosition() const
 
 bool Layer::addNewKeyFrameAt(int position)
 {
-    if (position <= 0) return false;
+    if (position <= 0)
+        return false;
 
-    KeyFrame* key = createKeyFrame(position, mObject);
+    KeyFrame *key = createKeyFrame(position, mObject);
     return addKeyFrame(position, key);
 }
 
-bool Layer::addKeyFrame(int position, KeyFrame* pKeyFrame)
+bool Layer::addKeyFrame(int position, KeyFrame *pKeyFrame)
 {
     Q_ASSERT(position > 0);
     auto it = mKeyFrames.find(position);
@@ -218,12 +218,12 @@ bool Layer::moveKeyFrameBackward(int position)
     return true;
 }
 
-bool Layer::swapKeyFrames(int position1, int position2) //Current behaviour, need to refresh the swapped cels
+bool Layer::swapKeyFrames(int position1, int position2) // Current behaviour, need to refresh the swapped cels
 {
     bool keyPosition1 = false;
     bool keyPosition2 = false;
-    KeyFrame* pFirstFrame = nullptr;
-    KeyFrame* pSecondFrame = nullptr;
+    KeyFrame *pFirstFrame = nullptr;
+    KeyFrame *pSecondFrame = nullptr;
 
     if (keyExists(position1))
     {
@@ -274,7 +274,7 @@ bool Layer::swapKeyFrames(int position1, int position2) //Current behaviour, nee
     return true;
 }
 
-bool Layer::loadKey(KeyFrame* pKey)
+bool Layer::loadKey(KeyFrame *pKey)
 {
     auto it = mKeyFrames.find(pKey->pos());
     if (it != mKeyFrames.end())
@@ -286,7 +286,7 @@ bool Layer::loadKey(KeyFrame* pKey)
     return true;
 }
 
-Status Layer::save(const QString& sDataFolder, QStringList& attachedFiles, ProgressCallback progressStep)
+Status Layer::save(const QString &sDataFolder, QStringList &attachedFiles, ProgressCallback progressStep)
 {
     DebugDetails dd;
     dd << __FUNCTION__;
@@ -295,11 +295,11 @@ Status Layer::save(const QString& sDataFolder, QStringList& attachedFiles, Progr
 
     for (auto pair : mKeyFrames)
     {
-        KeyFrame* keyFrame = pair.second;
+        KeyFrame *keyFrame = pair.second;
         Status st = saveKeyFrameFile(keyFrame, sDataFolder);
         if (st.ok())
         {
-            //qDebug() << "Layer [" << name() << "] FN=" << keyFrame->fileName();
+            // qDebug() << "Layer [" << name() << "] FN=" << keyFrame->fileName();
             if (!keyFrame->fileName().isEmpty())
                 attachedFiles.append(keyFrame->fileName());
         }
@@ -318,17 +318,26 @@ Status Layer::save(const QString& sDataFolder, QStringList& attachedFiles, Progr
     return Status::OK;
 }
 
-void Layer::paintTrack(QPainter& painter, TimeLineCells* cells,
-                       int x, int y, int width, int height,
-                       bool selected, int frameSize)
+void Layer::paintTrack(QPainter &painter,
+                       TimeLineCells *cells,
+                       int x,
+                       int y,
+                       int width,
+                       int height,
+                       bool selected,
+                       int frameSize)
 {
     if (mVisible)
     {
         QColor col;
-        if (type() == BITMAP) col = QColor(51, 155, 252);
-        if (type() == VECTOR) col = QColor(70, 205, 123);
-        if (type() == SOUND) col = QColor(255, 141, 112);
-        if (type() == CAMERA) col = QColor(253, 202, 92);
+        if (type() == BITMAP)
+            col = QColor(51, 155, 252);
+        if (type() == VECTOR)
+            col = QColor(70, 205, 123);
+        if (type() == SOUND)
+            col = QColor(255, 141, 112);
+        if (type() == CAMERA)
+            col = QColor(253, 202, 92);
 
         painter.save();
         painter.setBrush(col);
@@ -344,8 +353,8 @@ void Layer::paintTrack(QPainter& painter, TimeLineCells* cells,
         {
             painter.save();
             QLinearGradient linearGrad(QPointF(0, y), QPointF(0, y + height));
-            linearGrad.setColorAt(0, QColor(255,255,255,150));
-            linearGrad.setColorAt(1, QColor(0,0,0,0));
+            linearGrad.setColorAt(0, QColor(255, 255, 255, 150));
+            linearGrad.setColorAt(1, QColor(0, 0, 0, 0));
             painter.setCompositionMode(QPainter::CompositionMode_Overlay);
             painter.setBrush(linearGrad);
             painter.drawRect(x, y - 1, width, height);
@@ -364,7 +373,13 @@ void Layer::paintTrack(QPainter& painter, TimeLineCells* cells,
     }
 }
 
-void Layer::paintFrames(QPainter& painter, QColor trackCol, TimeLineCells* cells, int y, int height, bool selected, int frameSize)
+void Layer::paintFrames(QPainter &painter,
+                        QColor trackCol,
+                        TimeLineCells *cells,
+                        int y,
+                        int height,
+                        bool selected,
+                        int frameSize)
 {
     painter.setPen(QPen(QBrush(QColor(40, 40, 40)), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 
@@ -377,7 +392,7 @@ void Layer::paintFrames(QPainter& painter, QColor trackCol, TimeLineCells* cells
         int recWidth = frameSize - 2;
         int recHeight = height - 4;
 
-        KeyFrame* key = pair.second;
+        KeyFrame *key = pair.second;
         if (key->length() > 1)
         {
             // This is especially for sound clip.
@@ -385,9 +400,12 @@ void Layer::paintFrames(QPainter& painter, QColor trackCol, TimeLineCells* cells
             recWidth = frameSize * key->length() - 2;
         }
 
-        if (selected && key->pos() == cells->getCurrentFrame()) {
+        if (selected && key->pos() == cells->getCurrentFrame())
+        {
             painter.setPen(Qt::white);
-        } else {
+        }
+        else
+        {
             painter.setPen(QPen(QBrush(QColor(40, 40, 40)), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         }
 
@@ -404,24 +422,30 @@ void Layer::paintFrames(QPainter& painter, QColor trackCol, TimeLineCells* cells
     }
 }
 
-void Layer::paintLabel(QPainter& painter, TimeLineCells* cells,
-                       int x, int y, int width, int height,
-                       bool selected, LayerVisibility layerVisibility)
+void Layer::paintLabel(QPainter &painter,
+                       TimeLineCells *cells,
+                       int x,
+                       int y,
+                       int width,
+                       int height,
+                       bool selected,
+                       LayerVisibility layerVisibility)
 {
     Q_UNUSED(cells)
     painter.setBrush(Qt::lightGray);
     painter.setPen(QPen(QBrush(QColor(100, 100, 100)), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.drawRect(x, y - 1, width, height); // empty rectangle  by default
 
-
     if (selected)
     {
         paintSelection(painter, x, y, width, height);
-    } else {
+    }
+    else
+    {
         painter.save();
         QLinearGradient linearGrad(QPointF(0, y), QPointF(0, y + height));
-        linearGrad.setColorAt(0, QColor(255,255,255,150));
-        linearGrad.setColorAt(1, QColor(0,0,0,0));
+        linearGrad.setColorAt(0, QColor(255, 255, 255, 150));
+        linearGrad.setColorAt(1, QColor(0, 0, 0, 0));
         painter.setCompositionMode(QPainter::CompositionMode_Overlay);
         painter.setBrush(linearGrad);
         painter.drawRect(x, y - 1, width, height);
@@ -430,9 +454,12 @@ void Layer::paintLabel(QPainter& painter, TimeLineCells* cells,
 
     if (mVisible)
     {
-        if ((layerVisibility == LayerVisibility::ALL) || selected) painter.setBrush(Qt::black);
-        else if (layerVisibility == LayerVisibility::CURRENTONLY) painter.setBrush(Qt::NoBrush);
-        else if (layerVisibility == LayerVisibility::RELATED) painter.setBrush(Qt::darkGray);
+        if ((layerVisibility == LayerVisibility::ALL) || selected)
+            painter.setBrush(Qt::black);
+        else if (layerVisibility == LayerVisibility::CURRENTONLY)
+            painter.setBrush(Qt::NoBrush);
+        else if (layerVisibility == LayerVisibility::RELATED)
+            painter.setBrush(Qt::darkGray);
     }
     else
     {
@@ -443,16 +470,20 @@ void Layer::paintLabel(QPainter& painter, TimeLineCells* cells,
     painter.drawEllipse(x + 6, y + 4, 9, 9);
     painter.setRenderHint(QPainter::Antialiasing, false);
 
-    if (type() == BITMAP) painter.drawPixmap(QPoint(20, y + 2), QPixmap(":/icons/layer-bitmap.png"));
-    if (type() == VECTOR) painter.drawPixmap(QPoint(20, y + 2), QPixmap(":/icons/layer-vector.png"));
-    if (type() == SOUND) painter.drawPixmap(QPoint(21, y + 2), QPixmap(":/icons/layer-sound.png"));
-    if (type() == CAMERA) painter.drawPixmap(QPoint(21, y + 2), QPixmap(":/icons/layer-camera.png"));
+    if (type() == BITMAP)
+        painter.drawPixmap(QPoint(20, y + 2), QPixmap(":/icons/layer-bitmap.png"));
+    if (type() == VECTOR)
+        painter.drawPixmap(QPoint(20, y + 2), QPixmap(":/icons/layer-vector.png"));
+    if (type() == SOUND)
+        painter.drawPixmap(QPoint(21, y + 2), QPixmap(":/icons/layer-sound.png"));
+    if (type() == CAMERA)
+        painter.drawPixmap(QPoint(21, y + 2), QPixmap(":/icons/layer-camera.png"));
 
     painter.setPen(Qt::black);
     painter.drawText(QPoint(45, y + (2 * height) / 3), mName);
 }
 
-void Layer::paintSelection(QPainter& painter, int x, int y, int width, int height)
+void Layer::paintSelection(QPainter &painter, int x, int y, int width, int height)
 {
     QLinearGradient linearGrad(QPointF(0, y), QPointF(0, y + height));
     QSettings settings(PENCIL2D, PENCIL2D);
@@ -467,19 +498,17 @@ void Layer::paintSelection(QPainter& painter, int x, int y, int width, int heigh
     painter.restore();
 }
 
-void Layer::mouseDoubleClick(QMouseEvent* event, int frameNumber)
+void Layer::mouseDoubleClick(QMouseEvent *event, int frameNumber)
 {
     Q_UNUSED(event)
     Q_UNUSED(frameNumber)
 }
 
-void Layer::editProperties()
-{
-}
+void Layer::editProperties() {}
 
 void Layer::setModified(int position, bool modified)
 {
-    KeyFrame* key = getKeyFrameAt(position);
+    KeyFrame *key = getKeyFrameAt(position);
     if (key)
     {
         key->setModified(modified);
@@ -488,7 +517,7 @@ void Layer::setModified(int position, bool modified)
 
 bool Layer::isFrameSelected(int position) const
 {
-    KeyFrame* keyFrame = getKeyFrameWhichCovers(position);
+    KeyFrame *keyFrame = getKeyFrameWhichCovers(position);
     if (keyFrame)
     {
         return mSelectedFrames_byLast.contains(keyFrame->pos());
@@ -498,7 +527,7 @@ bool Layer::isFrameSelected(int position) const
 
 void Layer::setFrameSelected(int position, bool isSelected)
 {
-    KeyFrame* keyFrame = getKeyFrameWhichCovers(position);
+    KeyFrame *keyFrame = getKeyFrameWhichCovers(position);
     if (keyFrame != nullptr)
     {
         int startPosition = keyFrame->pos();
@@ -605,12 +634,14 @@ bool Layer::moveSelectedFrames(int offset)
 
         if (offset < 0)
         {
-            // If we are moving to the left we start moving selected frames from the lowest (left) to the highest (right)
+            // If we are moving to the left we start moving selected frames from the lowest (left) to the highest
+            // (right)
             indexInSelection = 0;
             step = 1;
 
             // Check if we are not moving out of the timeline
-            if (mSelectedFrames_byPosition[0] + offset < 1) return false;
+            if (mSelectedFrames_byPosition[0] + offset < 1)
+                return false;
         }
 
         while (indexInSelection > -1 && indexInSelection < mSelectedFrames_byPosition.count())
@@ -619,7 +650,7 @@ bool Layer::moveSelectedFrames(int offset)
             int toPos = fromPos + offset;
 
             // Get the frame to move
-            KeyFrame* selectedFrame = getKeyFrameAt(fromPos);
+            KeyFrame *selectedFrame = getKeyFrameAt(fromPos);
 
             if (selectedFrame != nullptr)
             {
@@ -634,7 +665,7 @@ bool Layer::moveSelectedFrames(int offset)
                 {
                     int framePosition = targetPosition - step;
 
-                    KeyFrame* frame = getKeyFrameAt(framePosition);
+                    KeyFrame *frame = getKeyFrameAt(framePosition);
 
                     if (frame != nullptr)
                     {
@@ -654,7 +685,7 @@ bool Layer::moveSelectedFrames(int offset)
                 if (fromPos == 1)
                 {
                     // If the first frame is moving, we need to create a new first frame
-                    //addNewKeyFrameAt(1);
+                    // addNewKeyFrameAt(1);
                 }
 
                 // Update the position of the selected frame
@@ -688,7 +719,7 @@ bool Layer::keyExistsWhichCovers(int frameNumber)
     return getKeyFrameWhichCovers(frameNumber) != nullptr;
 }
 
-KeyFrame* Layer::getKeyFrameWhichCovers(int frameNumber) const
+KeyFrame *Layer::getKeyFrameWhichCovers(int frameNumber) const
 {
     auto keyFrame = getLastKeyFrameAtPosition(frameNumber);
     if (keyFrame != nullptr)
@@ -701,7 +732,7 @@ KeyFrame* Layer::getKeyFrameWhichCovers(int frameNumber) const
     return nullptr;
 }
 
-QDomElement Layer::createBaseDomElement(QDomDocument& doc)
+QDomElement Layer::createBaseDomElement(QDomDocument &doc)
 {
     QDomElement layerTag = doc.createElement("layer");
     layerTag.setAttribute("id", id());
@@ -711,7 +742,7 @@ QDomElement Layer::createBaseDomElement(QDomDocument& doc)
     return layerTag;
 }
 
-void Layer::loadBaseDomElement(const QDomElement& elem)
+void Layer::loadBaseDomElement(const QDomElement &elem)
 {
     if (!elem.attribute("id").isNull())
     {

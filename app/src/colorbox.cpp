@@ -14,32 +14,29 @@ GNU General Public License for more details.
 
 */
 
-#include <QVBoxLayout>
-#include "colorwheel.h"
 #include "colorbox.h"
-#include "editor.h"
 #include "colormanager.h"
+#include "colorwheel.h"
+#include "editor.h"
+#include <QVBoxLayout>
 
-
-ColorBox::ColorBox( QWidget* parent ) : BaseDockWidget( parent )
+ColorBox::ColorBox(QWidget *parent) : BaseDockWidget(parent)
 {
     setWindowTitle(tr("Color Box", "Color Box window title"));
 }
 
-ColorBox::~ColorBox()
-{
-}
+ColorBox::~ColorBox() {}
 
 void ColorBox::initUI()
 {
     mColorWheel = new ColorWheel(this);
 
-    QVBoxLayout* layout = new QVBoxLayout;
+    QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(5, 5, 5, 5);
     layout->addWidget(mColorWheel);
     layout->setStretch(0, 1);
     layout->setStretch(1, 0);
-    QWidget* mainWidget = new QWidget;
+    QWidget *mainWidget = new QWidget;
     mainWidget->setLayout(layout);
     setWidget(mainWidget);
 
@@ -64,18 +61,18 @@ void ColorBox::setColor(QColor newColor)
 {
     newColor = newColor.toHsv();
 
-    if ( newColor != mColorWheel->color() )
+    if (newColor != mColorWheel->color())
     {
         mColorWheel->setColor(newColor);
     }
 }
 
-void ColorBox::onWheelMove(const QColor& color)
+void ColorBox::onWheelMove(const QColor &color)
 {
     emit colorChanged(color);
 }
 
-void ColorBox::onWheelRelease(const QColor& color)
+void ColorBox::onWheelRelease(const QColor &color)
 {
-     emit colorChanged(color);
+    emit colorChanged(color);
 }

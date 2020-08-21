@@ -17,12 +17,12 @@ GNU General Public License for more details.
 #ifndef CANVASPAINTER_H
 #define CANVASPAINTER_H
 
-#include <memory>
-#include <QObject>
-#include <QTransform>
-#include <QPainter>
 #include "log.h"
 #include "pencildef.h"
+#include <QObject>
+#include <QPainter>
+#include <QTransform>
+#include <memory>
 
 #include "layer.h"
 
@@ -32,31 +32,31 @@ class ViewManager;
 
 struct CanvasPainterOptions
 {
-    bool  bPrevOnionSkin = false;
-    bool  bNextOnionSkin = false;
-    int   nPrevOnionSkinCount = 3;
-    int   nNextOnionSkinCount = 3;
+    bool bPrevOnionSkin = false;
+    bool bNextOnionSkin = false;
+    int nPrevOnionSkinCount = 3;
+    int nNextOnionSkinCount = 3;
     float fOnionSkinMaxOpacity = 0.5f;
     float fOnionSkinMinOpacity = 0.1f;
-    bool  bColorizePrevOnion = false;
-    bool  bColorizeNextOnion = false;
-    bool  bAntiAlias = false;
-    bool  bGrid = false;
-    int   nGridSizeW = 50; /* This is the grid Width IN PIXELS. The grid will scale with the image, though */
-    int   nGridSizeH = 50; /* This is the grid Height IN PIXELS. The grid will scale with the image, though */
-    bool  bCenter = false;
-    bool  bThirds = false;
-    bool  bGoldenRatio = false;
-    bool  bActionSafe = true;
-    int   nActionSafe = 5;
-    bool  bSafeArea = false;
-    bool  bTitleSafe = true;
-    int   nTitleSafe = 10;
+    bool bColorizePrevOnion = false;
+    bool bColorizeNextOnion = false;
+    bool bAntiAlias = false;
+    bool bGrid = false;
+    int nGridSizeW = 50; /* This is the grid Width IN PIXELS. The grid will scale with the image, though */
+    int nGridSizeH = 50; /* This is the grid Height IN PIXELS. The grid will scale with the image, though */
+    bool bCenter = false;
+    bool bThirds = false;
+    bool bGoldenRatio = false;
+    bool bActionSafe = true;
+    int nActionSafe = 5;
+    bool bSafeArea = false;
+    bool bTitleSafe = true;
+    int nTitleSafe = 10;
     bool bShowSafeAreaHelperText = true;
-    bool  bAxis = false;
-    bool  bThinLines = false;
-    bool  bOutlines = false;
-    bool  bIsOnionAbsolute = false;
+    bool bAxis = false;
+    bool bThinLines = false;
+    bool bOutlines = false;
+    bool bIsOnionAbsolute = false;
     LayerVisibility eLayerVisibility = LayerVisibility::RELATED;
     float fLayerVisibilityThreshold;
     float scaling = 1.0f;
@@ -71,65 +71,75 @@ public:
     explicit CanvasPainter();
     virtual ~CanvasPainter();
 
-    void setCanvas(QPixmap* canvas);
+    void setCanvas(QPixmap *canvas);
     void setViewTransform(const QTransform view, const QTransform viewInverse);
-    void setOptions(const CanvasPainterOptions& p) { mOptions = p; }
+    void setOptions(const CanvasPainterOptions &p) { mOptions = p; }
     void setTransformedSelection(QRect selection, QTransform transform);
     void ignoreTransformedSelection();
     QRect getCameraRect();
 
-    void setPaintSettings(const Object* object, int currentLayer, int frame, QRect rect, BitmapImage* buffer);
+    void setPaintSettings(const Object *object, int currentLayer, int frame, QRect rect, BitmapImage *buffer);
     void paint();
     void paintCached();
-    void renderGrid(QPainter& painter);
-    void renderOverlays(QPainter& painter);
+    void renderGrid(QPainter &painter);
+    void renderOverlays(QPainter &painter);
     void resetLayerCache();
 
 private:
-
     /**
      * CanvasPainter::initializePainter
      * Enriches the painter with a context and sets it's initial matrix.
      * @param The in/out painter
      * @param The paint device ie. a pixmap
      */
-    void initializePainter(QPainter& painter, QPixmap& pixmap);
+    void initializePainter(QPainter &painter, QPixmap &pixmap);
 
-    void renderPreLayers(QPainter& painter);
-    void renderCurLayer(QPainter& painter);
-    void renderPostLayers(QPainter& painter);
+    void renderPreLayers(QPainter &painter);
+    void renderCurLayer(QPainter &painter);
+    void renderPostLayers(QPainter &painter);
 
     void paintBackground();
-    void paintOnionSkin(QPainter& painter);
+    void paintOnionSkin(QPainter &painter);
 
-    void renderPostLayers(QPixmap* pixmap);
-    void renderCurLayer(QPixmap* pixmap);
-    void renderPreLayers(QPixmap* pixmap);
+    void renderPostLayers(QPixmap *pixmap);
+    void renderCurLayer(QPixmap *pixmap);
+    void renderPreLayers(QPixmap *pixmap);
 
-    void paintCurrentFrame(QPainter& painter, int startLayer, int endLayer);
+    void paintCurrentFrame(QPainter &painter, int startLayer, int endLayer);
 
-    void paintBitmapFrame(QPainter&, Layer* layer, int nFrame, bool colorize, bool useLastKeyFrame, bool isCurrentFrame);
-    void paintVectorFrame(QPainter&, Layer* layer, int nFrame, bool colorize, bool useLastKeyFrame, bool isCurrentFrame);
+    void paintBitmapFrame(QPainter &,
+                          Layer *layer,
+                          int nFrame,
+                          bool colorize,
+                          bool useLastKeyFrame,
+                          bool isCurrentFrame);
+    void paintVectorFrame(QPainter &,
+                          Layer *layer,
+                          int nFrame,
+                          bool colorize,
+                          bool useLastKeyFrame,
+                          bool isCurrentFrame);
 
-    void paintTransformedSelection(QPainter& painter);
-    void paintGrid(QPainter& painter);
-    void paintOverlayCenter(QPainter& painter);
-    void paintOverlayThirds(QPainter& painter);
-    void paintOverlayGolden(QPainter& painter);
-    void paintOverlaySafeAreas(QPainter& painter);
-    void paintCameraBorder(QPainter& painter);
-    void paintAxis(QPainter& painter);
-    void prescale(BitmapImage* bitmapImage);
+    void paintTransformedSelection(QPainter &painter);
+    void paintGrid(QPainter &painter);
+    void paintOverlayCenter(QPainter &painter);
+    void paintOverlayThirds(QPainter &painter);
+    void paintOverlayGolden(QPainter &painter);
+    void paintOverlaySafeAreas(QPainter &painter);
+    void paintCameraBorder(QPainter &painter);
+    void paintAxis(QPainter &painter);
+    void prescale(BitmapImage *bitmapImage);
 
     /** Calculate layer opacity based on current layer offset */
     qreal calculateRelativeOpacityForLayer(int layerIndex) const;
 
     void savePaintResult(QString layerName, int frameNum);
+
 private:
     CanvasPainterOptions mOptions;
 
-    const Object* mObject = nullptr;
-    QPixmap* mCanvas = nullptr;
+    const Object *mObject = nullptr;
+    QPixmap *mCanvas = nullptr;
     QTransform mViewTransform;
     QTransform mViewInverse;
 
@@ -137,7 +147,7 @@ private:
 
     int mCurrentLayerIndex = 0;
     int mFrameNumber = 0;
-    BitmapImage* mBuffer = nullptr;
+    BitmapImage *mBuffer = nullptr;
 
     QImage mScaledBitmap;
 

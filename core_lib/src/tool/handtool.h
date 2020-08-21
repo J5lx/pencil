@@ -20,12 +20,11 @@ GNU General Public License for more details.
 
 #include "basetool.h"
 
-
 class HandTool : public BaseTool
 {
     Q_OBJECT
 public:
-    explicit HandTool( QObject* parent = 0 );
+    explicit HandTool(QObject *parent = 0);
     ToolType type() override { return HAND; }
     void loadSettings() override;
     QCursor cursor() override;

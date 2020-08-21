@@ -1,11 +1,11 @@
 #include "pegbaralignmentdialog.h"
 #include "ui_pegbaralignmentdialog.h"
 
+#include "layermanager.h"
+#include "selectionmanager.h"
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QMessageBox>
-#include "layermanager.h"
-#include "selectionmanager.h"
 
 PegBarAlignmentDialog::PegBarAlignmentDialog(Editor *editor, QWidget *parent) :
     QDialog(parent),
@@ -103,7 +103,7 @@ void PegBarAlignmentDialog::updatePegRegDialog()
     setRefKey(mEditor->currentFrame());
 
     if (mEditor->layers()->currentLayer()->type() == Layer::BITMAP &&
-            mEditor->layers()->currentLayer()->keyExists(mEditor->currentFrame()))
+        mEditor->layers()->currentLayer()->keyExists(mEditor->currentFrame()))
     {
         setReferenceSelected(true);
     }
@@ -132,16 +132,15 @@ void PegBarAlignmentDialog::alignPegs()
     bitmaplayers = getLayerList();
     if (bitmaplayers.isEmpty())
     {
-        QMessageBox::information(this, nullptr,
-                                 tr("No layers selected!"),
-                                 QMessageBox::Ok);
+        QMessageBox::information(this, nullptr, tr("No layers selected!"), QMessageBox::Ok);
     }
     else
     {
         Status::StatusInt statusint = mEditor->pegBarAlignment(bitmaplayers);
         if (statusint.errorcode == Status::FAIL)
         {
-            QMessageBox::information(this, nullptr,
+            QMessageBox::information(this,
+                                     nullptr,
                                      tr("Peg hole not found!\nCheck selection, and please try again."),
                                      QMessageBox::Ok);
             return;

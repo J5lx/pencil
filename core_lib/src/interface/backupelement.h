@@ -18,10 +18,10 @@ GNU General Public License for more details.
 #ifndef BACKUPELEMENT_H
 #define BACKUPELEMENT_H
 
-#include <QObject>
-#include "vectorimage.h"
 #include "bitmapimage.h"
 #include "soundclip.h"
+#include "vectorimage.h"
+#include <QObject>
 
 class Editor;
 
@@ -29,7 +29,13 @@ class BackupElement : public QObject
 {
     Q_OBJECT
 public:
-    enum types { UNDEFINED, BITMAP_MODIF, VECTOR_MODIF, SOUND_MODIF };
+    enum types
+    {
+        UNDEFINED,
+        BITMAP_MODIF,
+        VECTOR_MODIF,
+        SOUND_MODIF
+    };
 
     QString undoText;
     bool somethingSelected = false;
@@ -37,47 +43,47 @@ public:
     QRectF mySelection, myTransformedSelection, myTempTransformedSelection;
 
     virtual int type() { return UNDEFINED; }
-    virtual void restore(Editor*) { Q_ASSERT(false); }
+    virtual void restore(Editor *) { Q_ASSERT(false); }
 };
 
 class BackupBitmapElement : public BackupElement
 {
     Q_OBJECT
 public:
-    BackupBitmapElement(BitmapImage* bi) { bitmapImage = bi->copy(); }
+    BackupBitmapElement(BitmapImage *bi) { bitmapImage = bi->copy(); }
 
     int layer = 0;
     int frame = 0;
     BitmapImage bitmapImage;
     int type() { return BackupElement::BITMAP_MODIF; }
-    void restore(Editor*);
+    void restore(Editor *);
 };
 
 class BackupVectorElement : public BackupElement
 {
     Q_OBJECT
 public:
-    BackupVectorElement(VectorImage* vi) { vectorImage = *vi; }
+    BackupVectorElement(VectorImage *vi) { vectorImage = *vi; }
     int layer = 0;
     int frame = 0;
     VectorImage vectorImage;
 
     int type() { return BackupElement::VECTOR_MODIF; }
-    void restore(Editor*);
+    void restore(Editor *);
 };
 
 class BackupSoundElement : public BackupElement
 {
     Q_OBJECT
 public:
-    BackupSoundElement(SoundClip* sound) { clip = *sound; }
+    BackupSoundElement(SoundClip *sound) { clip = *sound; }
     int layer = 0;
     int frame = 0;
     SoundClip clip;
     QString fileName;
 
     int type() { return BackupElement::SOUND_MODIF; }
-    void restore( Editor* );
+    void restore(Editor *);
 };
 
 #endif // BACKUPELEMENT_H

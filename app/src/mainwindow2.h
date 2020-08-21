@@ -44,10 +44,9 @@ class BackupElement;
 class PegBarAlignmentDialog;
 enum class SETTING;
 
-
 namespace Ui
 {
-    class MainWindow2;
+class MainWindow2;
 }
 
 class MainWindow2 : public QMainWindow
@@ -55,10 +54,10 @@ class MainWindow2 : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow2(QWidget* parent = nullptr);
+    explicit MainWindow2(QWidget *parent = nullptr);
     ~MainWindow2() override;
 
-    Editor* mEditor = nullptr;
+    Editor *mEditor = nullptr;
 
 public slots:
     void undoActSetText();
@@ -96,21 +95,21 @@ public:
     void setSoundScrubMsec(int msec);
     void setOpacity(int opacity);
     void preferences();
- 
+
     void openFile(QString filename);
 
-    PreferencesDialog* getPrefDialog() { return mPrefDialog; }
+    PreferencesDialog *getPrefDialog() { return mPrefDialog; }
 
-    void displayMessageBox(const QString& title, const QString& body);
-    void displayMessageBoxNoTitle(const QString& body);
+    void displayMessageBox(const QString &title, const QString &body);
+    void displayMessageBoxNoTitle(const QString &body);
 
 Q_SIGNALS:
     void updateRecentFilesList(bool b);
     void appLostFocus();
 
 protected:
-    void tabletEvent(QTabletEvent*) override;
-    void closeEvent(QCloseEvent*) override;
+    void tabletEvent(QTabletEvent *) override;
+    void closeEvent(QCloseEvent *) override;
 
 private slots:
     void resetAndDockAllSubWidgets();
@@ -123,7 +122,7 @@ private:
 
     void createDockWidgets();
     void createMenus();
-    void setMenuActionChecked(QAction*, bool bChecked);
+    void setMenuActionChecked(QAction *, bool bChecked);
     void setupKeyboardShortcuts();
     void clearKeyboardShortcuts();
     void updateZoomLabel();
@@ -138,40 +137,40 @@ private:
 
     void changePlayState(bool isPlaying);
 
-    void makeConnections(Editor*);
-    void makeConnections(Editor*, ColorBox* colorBox);
-    void makeConnections(Editor*, ColorInspector*);
-    void makeConnections(Editor*, ScribbleArea*);
-    void makeConnections(Editor*, ColorPaletteWidget*);
-    void makeConnections(Editor*, TimeLine*);
-    void makeConnections(Editor*, DisplayOptionWidget*);
-    void makeConnections(Editor*, ToolOptionWidget*);
-    void makeConnections(Editor*, OnionSkinWidget*);
+    void makeConnections(Editor *);
+    void makeConnections(Editor *, ColorBox *colorBox);
+    void makeConnections(Editor *, ColorInspector *);
+    void makeConnections(Editor *, ScribbleArea *);
+    void makeConnections(Editor *, ColorPaletteWidget *);
+    void makeConnections(Editor *, TimeLine *);
+    void makeConnections(Editor *, DisplayOptionWidget *);
+    void makeConnections(Editor *, ToolOptionWidget *);
+    void makeConnections(Editor *, OnionSkinWidget *);
 
-    void bindActionWithSetting(QAction*, const SETTING&);
+    void bindActionWithSetting(QAction *, const SETTING &);
 
     // UI: Dock widgets
-    ColorBox*             mColorBox = nullptr;
-    ColorPaletteWidget*   mColorPalette = nullptr;
-    DisplayOptionWidget*  mDisplayOptionWidget = nullptr;
-    ToolOptionWidget*     mToolOptions = nullptr;
-    ToolBoxWidget*        mToolBox = nullptr;
-    Timeline2*            mTimeline2 = nullptr;
-    RecentFileMenu*       mRecentFileMenu = nullptr;
-    PreferencesDialog*    mPrefDialog = nullptr;
-    //PreviewWidget*      mPreview = nullptr;
-    TimeLine*             mTimeLine = nullptr; // be public temporary
-    ColorInspector*       mColorInspector = nullptr;
-    OnionSkinWidget*      mOnionSkinWidget = nullptr;
+    ColorBox *mColorBox = nullptr;
+    ColorPaletteWidget *mColorPalette = nullptr;
+    DisplayOptionWidget *mDisplayOptionWidget = nullptr;
+    ToolOptionWidget *mToolOptions = nullptr;
+    ToolBoxWidget *mToolBox = nullptr;
+    Timeline2 *mTimeline2 = nullptr;
+    RecentFileMenu *mRecentFileMenu = nullptr;
+    PreferencesDialog *mPrefDialog = nullptr;
+    // PreviewWidget*      mPreview = nullptr;
+    TimeLine *mTimeLine = nullptr; // be public temporary
+    ColorInspector *mColorInspector = nullptr;
+    OnionSkinWidget *mOnionSkinWidget = nullptr;
 
     // backup
-    BackupElement* mBackupAtSave = nullptr;
+    BackupElement *mBackupAtSave = nullptr;
 
-    PegBarAlignmentDialog* mPegAlign = nullptr;
+    PegBarAlignmentDialog *mPegAlign = nullptr;
 
 private:
-    ActionCommands* mCommands = nullptr;
-    QList<BaseDockWidget*> mDockWidgets;
+    ActionCommands *mCommands = nullptr;
+    QList<BaseDockWidget *> mDockWidgets;
 
     QIcon mStartIcon;
     QIcon mStopIcon;
@@ -181,8 +180,8 @@ private:
 
     // whether we are currently importing an image sequence.
     bool mIsImportingImageSequence = false;
-    
-    Ui::MainWindow2* ui = nullptr;
+
+    Ui::MainWindow2 *ui = nullptr;
 };
 
 #endif // MAINWINDOW2_H

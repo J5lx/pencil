@@ -17,27 +17,24 @@ GNU General Public License for more details.
 
 #include "timeline.h"
 
-#include <QWidget>
-#include <QScrollBar>
-#include <QHBoxLayout>
-#include <QMenu>
 #include <QAction>
-#include <QSplitter>
-#include <QMessageBox>
+#include <QHBoxLayout>
 #include <QLabel>
-#include <QWheelEvent>
+#include <QMenu>
+#include <QMessageBox>
+#include <QScrollBar>
 #include <QSlider>
+#include <QSplitter>
+#include <QWheelEvent>
+#include <QWidget>
 
-#include "layer.h"
 #include "editor.h"
+#include "layer.h"
 #include "layermanager.h"
 #include "timecontrols.h"
 #include "timelinecells.h"
 
-
-TimeLine::TimeLine(QWidget* parent) : BaseDockWidget(parent)
-{
-}
+TimeLine::TimeLine(QWidget *parent) : BaseDockWidget(parent) {}
 
 void TimeLine::initUI()
 {
@@ -45,7 +42,7 @@ void TimeLine::initUI()
 
     setWindowTitle(tr("Timeline", "Subpanel title"));
 
-    QWidget* timeLineContent = new QWidget(this);
+    QWidget *timeLineContent = new QWidget(this);
 
     mLayerList = new TimeLineCells(this, editor(), TIMELINE_CELL_TYPE::Layers);
     mTracks = new TimeLineCells(this, editor(), TIMELINE_CELL_TYPE::Tracks);
@@ -56,27 +53,27 @@ void TimeLine::initUI()
     mVScrollbar->setMaximum(1);
     mVScrollbar->setPageStep(1);
 
-    QWidget* leftWidget = new QWidget();
+    QWidget *leftWidget = new QWidget();
     leftWidget->setMinimumWidth(120);
-    QWidget* rightWidget = new QWidget();
+    QWidget *rightWidget = new QWidget();
 
-    QWidget* leftToolBar = new QWidget();
+    QWidget *leftToolBar = new QWidget();
     leftToolBar->setFixedHeight(30);
-    QWidget* rightToolBar = new QWidget();
+    QWidget *rightToolBar = new QWidget();
     rightToolBar->setFixedHeight(30);
 
     // --- left widget ---
     // --------- layer buttons ---------
-    QToolBar* layerButtons = new QToolBar(this);
-    QLabel* layerLabel = new QLabel(tr("Layers:"));
+    QToolBar *layerButtons = new QToolBar(this);
+    QLabel *layerLabel = new QLabel(tr("Layers:"));
     layerLabel->setIndent(5);
 
-    QToolButton* addLayerButton = new QToolButton(this);
+    QToolButton *addLayerButton = new QToolButton(this);
     addLayerButton->setIcon(QIcon(":icons/add.png"));
     addLayerButton->setToolTip(tr("Add Layer"));
     addLayerButton->setFixedSize(24, 24);
 
-    QToolButton* removeLayerButton = new QToolButton(this);
+    QToolButton *removeLayerButton = new QToolButton(this);
     removeLayerButton->setIcon(QIcon(":icons/remove.png"));
     removeLayerButton->setToolTip(tr("Remove Layer"));
     removeLayerButton->setFixedSize(24, 24);
@@ -86,17 +83,17 @@ void TimeLine::initUI()
     layerButtons->addWidget(removeLayerButton);
     layerButtons->setFixedHeight(30);
 
-    QHBoxLayout* leftToolBarLayout = new QHBoxLayout();
+    QHBoxLayout *leftToolBarLayout = new QHBoxLayout();
     leftToolBarLayout->setMargin(0);
     leftToolBarLayout->addWidget(layerButtons);
     leftToolBar->setLayout(leftToolBarLayout);
 
-    QAction* newBitmapLayerAct = new QAction(QIcon(":icons/layer-bitmap.png"), tr("New Bitmap Layer"), this);
-    QAction* newVectorLayerAct = new QAction(QIcon(":icons/layer-vector.png"), tr("New Vector Layer"), this);
-    QAction* newSoundLayerAct = new QAction(QIcon(":icons/layer-sound.png"), tr("New Sound Layer"), this);
-    QAction* newCameraLayerAct = new QAction(QIcon(":icons/layer-camera.png"), tr("New Camera Layer"), this);
+    QAction *newBitmapLayerAct = new QAction(QIcon(":icons/layer-bitmap.png"), tr("New Bitmap Layer"), this);
+    QAction *newVectorLayerAct = new QAction(QIcon(":icons/layer-vector.png"), tr("New Vector Layer"), this);
+    QAction *newSoundLayerAct = new QAction(QIcon(":icons/layer-sound.png"), tr("New Sound Layer"), this);
+    QAction *newCameraLayerAct = new QAction(QIcon(":icons/layer-camera.png"), tr("New Camera Layer"), this);
 
-    QMenu* layerMenu = new QMenu(tr("&Layer", "Timeline add-layer menu"), this);
+    QMenu *layerMenu = new QMenu(tr("&Layer", "Timeline add-layer menu"), this);
     layerMenu->addAction(newBitmapLayerAct);
     layerMenu->addAction(newVectorLayerAct);
     layerMenu->addAction(newSoundLayerAct);
@@ -104,7 +101,7 @@ void TimeLine::initUI()
     addLayerButton->setMenu(layerMenu);
     addLayerButton->setPopupMode(QToolButton::InstantPopup);
 
-    QGridLayout* leftLayout = new QGridLayout();
+    QGridLayout *leftLayout = new QGridLayout();
     leftLayout->addWidget(leftToolBar, 0, 0);
     leftLayout->addWidget(mLayerList, 1, 0);
     leftLayout->setMargin(0);
@@ -113,29 +110,29 @@ void TimeLine::initUI()
 
     // --- right widget ---
     // --------- key buttons ---------
-    QToolBar* timelineButtons = new QToolBar(this);
-    QLabel* keyLabel = new QLabel(tr("Keys:"));
+    QToolBar *timelineButtons = new QToolBar(this);
+    QLabel *keyLabel = new QLabel(tr("Keys:"));
     keyLabel->setIndent(5);
 
-    QToolButton* addKeyButton = new QToolButton(this);
+    QToolButton *addKeyButton = new QToolButton(this);
     addKeyButton->setIcon(QIcon(":icons/add.png"));
     addKeyButton->setToolTip(tr("Add Frame"));
     addKeyButton->setFixedSize(24, 24);
 
-    QToolButton* removeKeyButton = new QToolButton(this);
+    QToolButton *removeKeyButton = new QToolButton(this);
     removeKeyButton->setIcon(QIcon(":icons/remove.png"));
     removeKeyButton->setToolTip(tr("Remove Frame"));
     removeKeyButton->setFixedSize(24, 24);
 
-    QToolButton* duplicateKeyButton = new QToolButton(this);
+    QToolButton *duplicateKeyButton = new QToolButton(this);
     duplicateKeyButton->setIcon(QIcon(":icons/controls/duplicate.png"));
     duplicateKeyButton->setToolTip(tr("Duplicate Frame"));
     duplicateKeyButton->setFixedSize(24, 24);
 
-    QLabel* zoomLabel = new QLabel(tr("Zoom:"));
+    QLabel *zoomLabel = new QLabel(tr("Zoom:"));
     zoomLabel->setIndent(5);
 
-    QSlider* zoomSlider = new QSlider(this);
+    QSlider *zoomSlider = new QSlider(this);
     zoomSlider->setRange(4, 40);
     zoomSlider->setFixedWidth(74);
     zoomSlider->setValue(mTracks->getFrameSize());
@@ -161,7 +158,7 @@ void TimeLine::initUI()
     mTimeControls->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     updateLength();
 
-    QHBoxLayout* rightToolBarLayout = new QHBoxLayout();
+    QHBoxLayout *rightToolBarLayout = new QHBoxLayout();
     rightToolBarLayout->addWidget(timelineButtons);
     rightToolBarLayout->setAlignment(Qt::AlignLeft);
     rightToolBarLayout->addWidget(mTimeControls);
@@ -169,7 +166,7 @@ void TimeLine::initUI()
     rightToolBarLayout->setSpacing(0);
     rightToolBar->setLayout(rightToolBarLayout);
 
-    QGridLayout* rightLayout = new QGridLayout();
+    QGridLayout *rightLayout = new QGridLayout();
     rightLayout->addWidget(rightToolBar, 0, 0);
     rightLayout->addWidget(mTracks, 1, 0);
     rightLayout->setMargin(0);
@@ -177,13 +174,12 @@ void TimeLine::initUI()
     rightWidget->setLayout(rightLayout);
 
     // --- Splitter ---
-    QSplitter* splitter = new QSplitter(this);
+    QSplitter *splitter = new QSplitter(this);
     splitter->addWidget(leftWidget);
     splitter->addWidget(rightWidget);
     splitter->setSizes(QList<int>() << 100 << 600);
 
-
-    QGridLayout* lay = new QGridLayout();
+    QGridLayout *lay = new QGridLayout();
     lay->addWidget(splitter, 0, 0);
     lay->addWidget(mVScrollbar, 0, 1);
     lay->addWidget(mHScrollbar, 1, 0);
@@ -223,7 +219,7 @@ void TimeLine::initUI()
 
     connect(editor(), &Editor::currentFrameChanged, this, &TimeLine::updateFrame);
 
-    LayerManager* layer = editor()->layers();
+    LayerManager *layer = editor()->layers();
     connect(layer, &LayerManager::layerCountChanged, this, &TimeLine::updateLayerNumber);
     mNumLayers = layer->count();
 
@@ -253,7 +249,7 @@ void TimeLine::setLength(int frame)
 void TimeLine::extendLength(int frame)
 {
     int currentLength = mTracks->getFrameLength();
-    if(frame > (currentLength * 0.75))
+    if (frame > (currentLength * 0.75))
     {
         int newLength = static_cast<int>(std::max(frame, currentLength) * 1.5);
 
@@ -265,12 +261,12 @@ void TimeLine::extendLength(int frame)
     }
 }
 
-void TimeLine::resizeEvent(QResizeEvent*)
+void TimeLine::resizeEvent(QResizeEvent *)
 {
     updateLayerView();
 }
 
-void TimeLine::wheelEvent(QWheelEvent* event)
+void TimeLine::wheelEvent(QWheelEvent *event)
 {
     if (event->modifiers() & Qt::ShiftModifier)
     {
@@ -284,7 +280,7 @@ void TimeLine::wheelEvent(QWheelEvent* event)
 
 void TimeLine::deleteCurrentLayer()
 {
-    LayerManager* layerMgr = editor()->layers();
+    LayerManager *layerMgr = editor()->layers();
     QString strLayerName = layerMgr->currentLayer()->name();
 
     int ret = QMessageBox::warning(this,
@@ -297,8 +293,7 @@ void TimeLine::deleteCurrentLayer()
         Status st = layerMgr->deleteLayer(editor()->currentLayerIndex());
         if (st == Status::ERROR_NEED_AT_LEAST_ONE_CAMERA_LAYER)
         {
-            QMessageBox::information(this, "",
-                                     tr("Please keep at least one camera layer in project"));
+            QMessageBox::information(this, "", tr("Please keep at least one camera layer in project"));
         }
     }
 }

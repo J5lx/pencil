@@ -18,53 +18,51 @@ GNU General Public License for more details.
 #ifndef OBJECTSAVELOADER_H
 #define OBJECTSAVELOADER_H
 
-
-#include <QObject>
-#include <QString>
-#include <QDomElement>
+#include "colorref.h"
 #include "log.h"
 #include "pencildef.h"
 #include "pencilerror.h"
-#include "colorref.h"
+#include <QDomElement>
+#include <QObject>
+#include <QString>
 
 class Object;
 class ObjectData;
-
 
 class FileManager : public QObject
 {
     Q_OBJECT
 
 public:
-    FileManager(QObject* parent = 0);
+    FileManager(QObject *parent = 0);
 
-    Object* load(QString sFilenNme);
-    Status  save(Object*, QString sFileName);
+    Object *load(QString sFilenNme);
+    Status save(Object *, QString sFileName);
 
     QList<ColorRef> loadPaletteFile(QString strFilename);
     Status error() const { return mError; }
-    Status verifyObject(Object* obj);
+    Status verifyObject(Object *obj);
 
 Q_SIGNALS:
     void progressChanged(int progress);
     void progressRangeChanged(int maxValue);
 
 private:
-    void unzip(const QString& strZipFile, const QString& strUnzipTarget);
+    void unzip(const QString &strZipFile, const QString &strUnzipTarget);
 
-    bool loadObject(Object*, const QDomElement& root);
-    bool loadObjectOldWay(Object*, const QDomElement& root);
-    bool isOldForamt(const QString& fileName) const;
-    bool loadPalette(Object*);
+    bool loadObject(Object *, const QDomElement &root);
+    bool loadObjectOldWay(Object *, const QDomElement &root);
+    bool isOldForamt(const QString &fileName) const;
+    bool loadPalette(Object *);
 
-    ObjectData* loadProjectData(const QDomElement& element);
-    QDomElement saveProjectData(ObjectData*, QDomDocument& xmlDoc);
+    ObjectData *loadProjectData(const QDomElement &element);
+    QDomElement saveProjectData(ObjectData *, QDomDocument &xmlDoc);
 
-    void extractProjectData(const QDomElement& element, ObjectData* data);
-    Object* cleanUpWithErrorCode(Status);
+    void extractProjectData(const QDomElement &element, ObjectData *data);
+    Object *cleanUpWithErrorCode(Status);
 
-    QString backupPreviousFile(const QString& fileName);
-    void deleteBackupFile(const QString& fileName);
+    QString backupPreviousFile(const QString &fileName);
+    void deleteBackupFile(const QString &fileName);
 
     void progressForward();
 

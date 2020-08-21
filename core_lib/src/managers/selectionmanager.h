@@ -1,15 +1,15 @@
 #ifndef SELECTIONMANAGER_H
 #define SELECTIONMANAGER_H
 
-#include "pencildef.h"
 #include "basemanager.h"
 #include "movemode.h"
-#include "vertexref.h"
+#include "pencildef.h"
 #include "vectorselection.h"
+#include "vertexref.h"
 
 #include <QPointF>
-#include <QRectF>
 #include <QPolygonF>
+#include <QRectF>
 #include <QTransform>
 
 class Editor;
@@ -18,13 +18,13 @@ class SelectionManager : public BaseManager
 {
     Q_OBJECT
 public:
-    explicit SelectionManager(Editor* editor);
+    explicit SelectionManager(Editor *editor);
     ~SelectionManager() override;
 
     bool init() override;
-    Status load(Object*) override;
-    Status save(Object*) override;
-    void workingLayerChanged(Layer*) override;
+    Status load(Object *) override;
+    Status save(Object *) override;
+    void workingLayerChanged(Layer *) override;
 
     QVector<QPointF> calcSelectionCenterPoints();
 
@@ -39,7 +39,7 @@ public:
 
     void flipSelection(bool flipVertical);
 
-    void setSelection(QRectF rect, bool roundPixels=false);
+    void setSelection(QRectF rect, bool roundPixels = false);
 
     void translate(QPointF point);
 
@@ -51,7 +51,11 @@ public:
     bool somethingSelected() const { return mSomethingSelected; }
 
     void calculateSelectionTransformation();
-    void adjustSelection(const QPointF& currentPoint, qreal offsetX, qreal offsetY, qreal rotationOffset, int rotationIncrement=0);
+    void adjustSelection(const QPointF &currentPoint,
+                         qreal offsetX,
+                         qreal offsetY,
+                         qreal rotationOffset,
+                         int rotationIncrement = 0);
     MoveMode moveModeForAnchorInRange(QPointF lastPos);
     void setCurves(QList<int> curves) { mClosestCurves = curves; }
     void setVertices(QList<VertexRef> vertices) { mClosestVertices = vertices; }
@@ -82,7 +86,6 @@ public:
 
     qreal selectionTolerance() const;
 
-
     QPolygonF currentSelectionPolygonF() const { return mCurrentSelectionPolygonF; }
     QPolygonF lastSelectionPolygonF() const { return mLastSelectionPolygonF; }
 
@@ -90,16 +93,15 @@ public:
 
     VectorSelection vectorSelection;
 
-    const QRectF& mySelectionRect() { return mSelection; }
-    const QRectF& myTempTransformedSelectionRect() { return mTempTransformedSelection; }
-    const QRectF& myTransformedSelectionRect() { return mTransformedSelection; }
-    const qreal& myRotation() { return mRotatedAngle; }
+    const QRectF &mySelectionRect() { return mSelection; }
+    const QRectF &myTempTransformedSelectionRect() { return mTempTransformedSelection; }
+    const QRectF &myTransformedSelectionRect() { return mTransformedSelection; }
+    const qreal &myRotation() { return mRotatedAngle; }
 
-    void setSelectionRect(const QRectF& rect) { mSelection = rect; }
-    void setTempTransformedSelectionRect(const QRectF& rect) { mTempTransformedSelection = rect; }
-    void setTransformedSelectionRect(const QRectF& rect) { mTransformedSelection = rect; }
-    void setRotation(const qreal& rotation) { mRotatedAngle = rotation; }
-
+    void setSelectionRect(const QRectF &rect) { mSelection = rect; }
+    void setTempTransformedSelectionRect(const QRectF &rect) { mTempTransformedSelection = rect; }
+    void setTransformedSelectionRect(const QRectF &rect) { mTransformedSelection = rect; }
+    void setRotation(const qreal &rotation) { mRotatedAngle = rotation; }
 
 signals:
     void selectionChanged();
@@ -107,7 +109,7 @@ signals:
     void needDeleteSelection();
 
 private:
-    int constrainRotationToAngle(const qreal& rotatedAngle, const int& rotationIncrement) const;
+    int constrainRotationToAngle(const qreal &rotatedAngle, const int &rotationIncrement) const;
 
     QRectF mSelection;
     QRectF mTempTransformedSelection;

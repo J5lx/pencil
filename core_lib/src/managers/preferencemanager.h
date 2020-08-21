@@ -18,11 +18,10 @@ GNU General Public License for more details.
 #ifndef PREFERENCEMANAGER_H
 #define PREFERENCEMANAGER_H
 
-#include <bitset>
-#include <QHash>
 #include "basemanager.h"
 #include "pencildef.h"
-
+#include <QHash>
+#include <bitset>
 
 enum class SETTING
 {
@@ -100,12 +99,12 @@ class PreferenceManager : public BaseManager
     Q_OBJECT
 
 public:
-    explicit PreferenceManager(Editor* editor);
+    explicit PreferenceManager(Editor *editor);
     ~PreferenceManager() override;
 
     virtual bool init() override;
-    Status load(Object*) override;
-    Status save(Object*) override;
+    Status load(Object *) override;
+    Status save(Object *) override;
 
     void loadPrefs();
     void set(SETTING option, QString value);
@@ -118,7 +117,7 @@ public:
     bool isOn(SETTING option);
 
     QString getString(SETTING option);
-    int     getInt(SETTING option);
+    int getInt(SETTING option);
     float getFloat(SETTING option);
 
 Q_SIGNALS:

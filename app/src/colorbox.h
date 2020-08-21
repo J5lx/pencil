@@ -25,7 +25,7 @@ class ColorBox : public BaseDockWidget
     Q_OBJECT
 
 public:
-    explicit ColorBox( QWidget* parent );
+    explicit ColorBox(QWidget *parent);
     virtual ~ColorBox() override;
 
     void initUI() override;
@@ -35,15 +35,15 @@ public:
     void setColor(QColor);
 
 Q_SIGNALS:
-    void colorChanged(const QColor&);
+    void colorChanged(const QColor &);
 
 private:
-    void onWheelMove(const QColor&);
-    void onWheelRelease(const QColor&);
+    void onWheelMove(const QColor &);
+    void onWheelRelease(const QColor &);
 
-    ColorWheel* mColorWheel = nullptr;
+    ColorWheel *mColorWheel = nullptr;
 
-//    ColorInspector* mColorInspector = nullptr;
+    //    ColorInspector* mColorInspector = nullptr;
 };
 
 #endif // COLORBOX_H

@@ -17,8 +17,8 @@ GNU General Public License for more details.
 #ifndef LAYERVECTOR_H
 #define LAYERVECTOR_H
 
-#include <QImage>
 #include "layer.h"
+#include <QImage>
 
 class VectorImage;
 
@@ -27,29 +27,29 @@ class LayerVector : public Layer
     Q_OBJECT
 
 public:
-    LayerVector(Object* object);
+    LayerVector(Object *object);
     ~LayerVector();
 
     // method from layerImage
     void loadImageAtFrame(QString strFileName, int);
 
-    QDomElement createDomElement(QDomDocument& doc) override;
-    void loadDomElement(const QDomElement& element, QString dataDirPath, ProgressCallback progressStep) override;
+    QDomElement createDomElement(QDomDocument &doc) override;
+    void loadDomElement(const QDomElement &element, QString dataDirPath, ProgressCallback progressStep) override;
 
-    VectorImage* getVectorImageAtFrame(int frameNumber) const;
-    VectorImage* getLastVectorImageAtFrame(int frameNumber, int increment) const;
+    VectorImage *getVectorImageAtFrame(int frameNumber) const;
+    VectorImage *getLastVectorImageAtFrame(int frameNumber, int increment) const;
 
     bool usesColor(int index);
     void removeColor(int index);
     void moveColor(int start, int end);
 
 protected:
-    Status saveKeyFrameFile(KeyFrame*, QString path) override;
-    KeyFrame* createKeyFrame(int position, Object*) override;
+    Status saveKeyFrameFile(KeyFrame *, QString path) override;
+    KeyFrame *createKeyFrame(int position, Object *) override;
 
 private:
-    QString fileName(KeyFrame* key);
-    bool needSaveFrame(KeyFrame* key, const QString& strSavePath);
+    QString fileName(KeyFrame *key);
+    bool needSaveFrame(KeyFrame *key, const QString &strSavePath);
 };
 
 #endif

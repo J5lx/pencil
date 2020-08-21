@@ -17,11 +17,11 @@ GNU General Public License for more details.
 #ifndef MOVIEEXPORTER_H
 #define MOVIEEXPORTER_H
 
-#include <functional>
-#include <QString>
-#include <QSize>
-#include <QTemporaryDir>
 #include "pencilerror.h"
+#include <QSize>
+#include <QString>
+#include <QTemporaryDir>
+#include <functional>
 
 class Object;
 class QProcess;
@@ -29,11 +29,11 @@ class QProcess;
 struct ExportMovieDesc
 {
     QString strFileName;
-    int     startFrame = 0;
-    int     endFrame = 0;
-    //int     videoFps   = 30;
-    int     fps = 12;
-    QSize   exportSize{ 0, 0 };
+    int startFrame = 0;
+    int endFrame = 0;
+    // int     videoFps   = 30;
+    int fps = 12;
+    QSize exportSize{0, 0};
     QString strCameraName;
     bool loop = false;
     bool alpha = false;
@@ -45,8 +45,8 @@ public:
     MovieExporter();
     ~MovieExporter();
 
-    Status run(const Object* obj,
-               const ExportMovieDesc& desc,
+    Status run(const Object *obj,
+               const ExportMovieDesc &desc,
                std::function<void(float, float)> majorProgress,
                std::function<void(float)> minorProgress,
                std::function<void(QString)> progressMessage);
@@ -54,14 +54,21 @@ public:
 
     void cancel() { mCanceled = true; }
 
-    static Status executeFFmpeg(const QString& cmd, const QStringList& args, std::function<bool(int)> progress);
-private:
-    Status assembleAudio(const Object* obj, QString ffmpegPath, std::function<void(float)> progress);
-    Status generateMovie(const Object *obj, QString ffmpegPath, QString strOutputFile, std::function<void(float)> progress);
-    Status generateGif(const Object *obj, QString ffmpeg, QString strOut, std::function<void(float)>  progress);
+    static Status executeFFmpeg(const QString &cmd, const QStringList &args, std::function<bool(int)> progress);
 
-    Status executeFFMpegPipe(const QString& cmd, const QStringList& args, std::function<void(float)> progress, std::function<bool(QProcess&,int)> writeFrame);
-    Status checkInputParameters(const ExportMovieDesc&);
+private:
+    Status assembleAudio(const Object *obj, QString ffmpegPath, std::function<void(float)> progress);
+    Status generateMovie(const Object *obj,
+                         QString ffmpegPath,
+                         QString strOutputFile,
+                         std::function<void(float)> progress);
+    Status generateGif(const Object *obj, QString ffmpeg, QString strOut, std::function<void(float)> progress);
+
+    Status executeFFMpegPipe(const QString &cmd,
+                             const QStringList &args,
+                             std::function<void(float)> progress,
+                             std::function<bool(QProcess &, int)> writeFrame);
+    Status checkInputParameters(const ExportMovieDesc &);
 
 private:
     QTemporaryDir mTempDir;

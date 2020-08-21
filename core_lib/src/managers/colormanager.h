@@ -18,26 +18,24 @@ GNU General Public License for more details.
 #ifndef COLORMANAGER_H
 #define COLORMANAGER_H
 
-#include <QColor>
 #include "basemanager.h"
-
-
+#include <QColor>
 
 class ColorManager : public BaseManager
 {
     Q_OBJECT
 public:
-    explicit ColorManager(Editor* editor);
+    explicit ColorManager(Editor *editor);
     ~ColorManager() override;
 
     bool init() override;
-    Status load(Object*) override;
-    Status save(Object*) override;
-    void workingLayerChanged(Layer*) override;
+    Status load(Object *) override;
+    Status save(Object *) override;
+    void workingLayerChanged(Layer *) override;
 
     QColor frontColor();
     int frontColorNumber();
-    void setColor(const QColor& color);
+    void setColor(const QColor &color);
     void setColorNumber(int n);
 
 Q_SIGNALS:
@@ -45,8 +43,8 @@ Q_SIGNALS:
     void colorNumberChanged(int);
 
 private:
-    QColor mCurrentFrontColor{ 33, 33, 33, 255 };
-    int  mCurrentColorIndex = 0;
+    QColor mCurrentFrontColor{33, 33, 33, 255};
+    int mCurrentColorIndex = 0;
     bool mIsWorkingOnVectorLayer = false;
 };
 

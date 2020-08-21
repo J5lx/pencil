@@ -1,14 +1,13 @@
 #include "presetdialog.h"
-#include "ui_presetdialog.h"
 #include "app_util.h"
+#include "ui_presetdialog.h"
 
-#include <QFile>
-#include <QStandardPaths>
 #include <QDir>
+#include <QFile>
 #include <QSettings>
+#include <QStandardPaths>
 
-
-PresetDialog::PresetDialog(PreferenceManager* preferences, QWidget* parent) :
+PresetDialog::PresetDialog(PreferenceManager *preferences, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PresetDialog),
     mPrefs(preferences)
@@ -77,19 +76,21 @@ void PresetDialog::initPresets()
         return;
     }
     QSettings presets(dataDir.filePath("presets.ini"), QSettings::IniFormat, this);
-    
+
     bool ok = true;
-    for (const QString& key : presets.allKeys())
+    for (const QString &key : presets.allKeys())
     {
         int index = key.toInt(&ok);
-        if (!ok || index == 0 || !dataDir.exists(QString("%1.pclx").arg(index))) continue;
+        if (!ok || index == 0 || !dataDir.exists(QString("%1.pclx").arg(index)))
+            continue;
 
         QString name = presets.value(key, QString()).toString();
-        if (name.isEmpty()) continue;
+        if (name.isEmpty())
+            continue;
         ui->presetComboBox->addItem(name, index);
         if (index == defaultIndex)
         {
-            ui->presetComboBox->setCurrentIndex(ui->presetComboBox->count()-1);
+            ui->presetComboBox->setCurrentIndex(ui->presetComboBox->count() - 1);
         }
     }
 

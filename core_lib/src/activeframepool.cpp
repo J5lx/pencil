@@ -20,7 +20,6 @@ GNU General Public License for more details.
 #include "pencildef.h"
 #include <QDebug>
 
-
 ActiveFramePool::ActiveFramePool(unsigned long n)
 {
     size_t maxSize = n;
@@ -31,7 +30,7 @@ ActiveFramePool::ActiveFramePool(unsigned long n)
 
 ActiveFramePool::~ActiveFramePool() {}
 
-void ActiveFramePool::put(KeyFrame* key)
+void ActiveFramePool::put(KeyFrame *key)
 {
     if (key == nullptr)
         return;
@@ -58,7 +57,7 @@ size_t ActiveFramePool::size() const
 
 void ActiveFramePool::clear()
 {
-    for (KeyFrame* key : mCacheFramesList)
+    for (KeyFrame *key : mCacheFramesList)
     {
         key->removeEventListner(this);
     }
@@ -74,13 +73,13 @@ void ActiveFramePool::resize(int n)
     discardLeastUsedFrames();
 }
 
-bool ActiveFramePool::isFrameInPool(KeyFrame* key)
+bool ActiveFramePool::isFrameInPool(KeyFrame *key)
 {
     auto it = mCacheFramesMap.find(key);
     return (it != mCacheFramesMap.end());
 }
 
-void ActiveFramePool::onKeyFrameDestroy(KeyFrame* key)
+void ActiveFramePool::onKeyFrameDestroy(KeyFrame *key)
 {
     auto it = mCacheFramesMap.find(key);
     if (it != mCacheFramesMap.end())
@@ -97,7 +96,7 @@ void ActiveFramePool::discardLeastUsedFrames()
         list_iterator_t last = mCacheFramesList.end();
         last--;
 
-        KeyFrame* lastKeyFrame = *last;
+        KeyFrame *lastKeyFrame = *last;
         unloadFrame(lastKeyFrame);
 
         mCacheFramesMap.erase(lastKeyFrame);
@@ -107,8 +106,8 @@ void ActiveFramePool::discardLeastUsedFrames()
     }
 }
 
-void ActiveFramePool::unloadFrame(KeyFrame* key)
+void ActiveFramePool::unloadFrame(KeyFrame *key)
 {
-    //qDebug() << "Unload frame:" << key->pos();
+    // qDebug() << "Unload frame:" << key->pos();
     key->unloadFile();
 }

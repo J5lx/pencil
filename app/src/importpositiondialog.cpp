@@ -1,14 +1,12 @@
 #include "importpositiondialog.h"
 #include "ui_importpositiondialog.h"
 
-#include <QSettings>
 #include "editor.h"
-#include "viewmanager.h"
 #include "scribblearea.h"
+#include "viewmanager.h"
+#include <QSettings>
 
-ImportPositionDialog::ImportPositionDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::ImportPositionDialog)
+ImportPositionDialog::ImportPositionDialog(QWidget *parent) : QDialog(parent), ui(new Ui::ImportPositionDialog)
 {
     ui->setupUi(this);
 
@@ -17,7 +15,10 @@ ImportPositionDialog::ImportPositionDialog(QWidget *parent) :
     ui->cbImagePosition->addItem(tr("Center of camera, current frame"));
     ui->cbImagePosition->addItem(tr("Center of camera, follow camera"));
 
-    connect(ui->cbImagePosition, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ImportPositionDialog::didChangeComboBoxIndex);
+    connect(ui->cbImagePosition,
+            static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this,
+            &ImportPositionDialog::didChangeComboBoxIndex);
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &ImportPositionDialog::changeImportView);
 
     QSettings settings(PENCIL2D, PENCIL2D);

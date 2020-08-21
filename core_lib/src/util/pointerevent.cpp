@@ -1,18 +1,16 @@
 #include "pointerevent.h"
 
-PointerEvent::PointerEvent(QMouseEvent* event)
+PointerEvent::PointerEvent(QMouseEvent *event)
 {
     mMouseEvent = event;
 }
 
-PointerEvent::PointerEvent(QTabletEvent* event)
+PointerEvent::PointerEvent(QTabletEvent *event)
 {
     mTabletEvent = event;
 }
 
-PointerEvent::~PointerEvent()
-{
-}
+PointerEvent::~PointerEvent() {}
 
 QPoint PointerEvent::pos() const
 {
@@ -116,7 +114,6 @@ int PointerEvent::x() const
         Q_ASSERT(false);
         return 0;
     }
-
 }
 
 int PointerEvent::y() const
@@ -240,4 +237,4 @@ QTabletEvent::PointerType PointerEvent::pointerType() const
     return QTabletEvent::PointerType::UnknownPointer;
 }
 
-//QEvent::device
+// QEvent::device

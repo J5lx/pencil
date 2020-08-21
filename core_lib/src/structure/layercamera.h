@@ -17,16 +17,17 @@ GNU General Public License for more details.
 #ifndef LAYERCAMERA_H
 #define LAYERCAMERA_H
 
-#include <QList>
-#include <QDialog>
 #include "layer.h"
+#include <QDialog>
+#include <QList>
 
 class QLineEdit;
 class QSpinBox;
 class Camera;
 
-namespace Ui {
-    class CameraPropertiesDialog;
+namespace Ui
+{
+class CameraPropertiesDialog;
 }
 
 // TODO: move this to somewhere else
@@ -42,8 +43,9 @@ public:
     void setWidth(int);
     int getHeight();
     void setHeight(int);
+
 private:
-    Ui::CameraPropertiesDialog* ui = nullptr;
+    Ui::CameraPropertiesDialog *ui = nullptr;
 };
 
 class LayerCamera : public Layer
@@ -51,17 +53,17 @@ class LayerCamera : public Layer
     Q_OBJECT
 
 public:
-    LayerCamera(Object* object);
+    LayerCamera(Object *object);
     ~LayerCamera();
 
     void loadImageAtFrame(int frame, qreal dx, qreal dy, qreal rotate, qreal scale);
 
     void editProperties() override;
-    QDomElement createDomElement(QDomDocument& doc) override;
-    void loadDomElement(const QDomElement& element, QString dataDirPath, ProgressCallback progressStep) override;
+    QDomElement createDomElement(QDomDocument &doc) override;
+    void loadDomElement(const QDomElement &element, QString dataDirPath, ProgressCallback progressStep) override;
 
-    Camera* getCameraAtFrame(int frameNumber);
-    Camera* getLastCameraAtFrame(int frameNumber, int increment);
+    Camera *getCameraAtFrame(int frameNumber);
+    Camera *getLastCameraAtFrame(int frameNumber, int increment);
     QTransform getViewAtFrame(int frameNumber);
 
     QRect getViewRect();
@@ -71,16 +73,16 @@ signals:
     void resolutionChanged();
 
 protected:
-    Status saveKeyFrameFile(KeyFrame*, QString path) override;
-    KeyFrame* createKeyFrame(int position, Object*) override;
+    Status saveKeyFrameFile(KeyFrame *, QString path) override;
+    KeyFrame *createKeyFrame(int position, Object *) override;
 
 private:
-    void linearInterpolateTransform(Camera*);
+    void linearInterpolateTransform(Camera *);
 
     int mFieldW = 800;
     int mFieldH = 600;
     QRect viewRect;
-    CameraPropertiesDialog* dialog = nullptr;
+    CameraPropertiesDialog *dialog = nullptr;
 };
 
 #endif

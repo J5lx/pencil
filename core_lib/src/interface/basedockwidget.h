@@ -22,13 +22,12 @@ GNU General Public License for more details.
 
 class Editor;
 
-
 class BaseDockWidget : public QDockWidget
 {
     Q_OBJECT
 protected:
-    explicit BaseDockWidget(QWidget* pParent);
-    virtual  ~BaseDockWidget();
+    explicit BaseDockWidget(QWidget *pParent);
+    virtual ~BaseDockWidget();
 
     void resizeEvent(QResizeEvent *event) override;
 
@@ -36,14 +35,14 @@ public:
     virtual void initUI() = 0;
     virtual void updateUI() = 0;
 
-    Editor* editor() const { return mEditor; }
-    void setEditor( Editor* e ) { mEditor = e; }
+    Editor *editor() const { return mEditor; }
+    void setEditor(Editor *e) { mEditor = e; }
 
 protected:
     virtual int getMinHeightForWidth(int width);
 
 private:
-    Editor* mEditor = nullptr;
+    Editor *mEditor = nullptr;
 };
 
 #endif // BASEDOCKWIDGET_H

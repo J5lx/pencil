@@ -21,23 +21,25 @@ GNU General Public License for more details.
 #include "importexportdialog.h"
 #include <QCheckBox>
 
-namespace Ui {
+namespace Ui
+{
 class ExportMovieOptions;
 }
-
 
 class ExportMovieDialog : public ImportExportDialog
 {
     Q_OBJECT
 
 public:
-    explicit ExportMovieDialog(QWidget* parent = nullptr, Mode mode = ImportExportDialog::Export, FileType fileType = FileType::MOVIE);
+    explicit ExportMovieDialog(QWidget *parent = nullptr,
+                               Mode mode = ImportExportDialog::Export,
+                               FileType fileType = FileType::MOVIE);
     ~ExportMovieDialog();
 
     void setCamerasInfo(const std::vector<std::pair<QString, QSize>>);
-    void updateResolutionCombo( int index );
+    void updateResolutionCombo(int index);
 
-    void setDefaultRange( int startFrame, int endFrame, int endFrameWithSounds );
+    void setDefaultRange(int startFrame, int endFrame, int endFrameWithSounds);
 
     QString getSelectedCameraName();
     QSize getExportSize();
@@ -47,18 +49,18 @@ public:
     int getEndFrame();
 
     bool getLoop();
-    
+
 private:
     void frameCheckboxClicked(bool checked);
     void onFilePathsChanged(QStringList filePaths);
 
     bool supportsLooping(QString filePath) const;
     bool supportsTransparency(QString filePath) const;
-    
+
     int mEndFrameWithSounds = 0;
     int mEndFrame = 0;
 
-    Ui::ExportMovieOptions* ui = nullptr;
+    Ui::ExportMovieOptions *ui = nullptr;
 };
 
 #endif // EXPORTMOVIEDIALOG_H

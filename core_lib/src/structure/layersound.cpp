@@ -16,26 +16,21 @@ GNU General Public License for more details.
 */
 #include "layersound.h"
 
-#include <QDebug>
-#include <QMediaPlayer>
-#include <QFileInfo>
-#include <QDir>
 #include "object.h"
 #include "soundclip.h"
+#include <QDebug>
+#include <QDir>
+#include <QFileInfo>
+#include <QMediaPlayer>
 
-
-LayerSound::LayerSound(Object* object) : Layer(object, Layer::SOUND)
+LayerSound::LayerSound(Object *object) : Layer(object, Layer::SOUND)
 {
     setName(tr("Sound Layer"));
 }
 
-LayerSound::~LayerSound()
-{
-}
+LayerSound::~LayerSound() {}
 
-Status LayerSound::loadSoundClipAtFrame(const QString& sSoundClipName,
-                                        const QString& strFilePath,
-                                        int frameNumber)
+Status LayerSound::loadSoundClipAtFrame(const QString &sSoundClipName, const QString &strFilePath, int frameNumber)
 {
     if (!QFile::exists(strFilePath))
     {
@@ -48,7 +43,7 @@ Status LayerSound::loadSoundClipAtFrame(const QString& sSoundClipName,
         return Status::ERROR_LOAD_SOUND_FILE;
     }
 
-    SoundClip* clip = new SoundClip;
+    SoundClip *clip = new SoundClip;
     clip->setSoundClipName(sSoundClipName);
     clip->init(strFilePath);
     clip->setPos(frameNumber);
@@ -58,27 +53,25 @@ Status LayerSound::loadSoundClipAtFrame(const QString& sSoundClipName,
 
 void LayerSound::updateFrameLengths(int fps)
 {
-    foreachKeyFrame([&fps](KeyFrame* pKeyFrame)
-    {
+    foreachKeyFrame([&fps](KeyFrame *pKeyFrame) {
         auto soundClip = dynamic_cast<SoundClip *>(pKeyFrame);
         soundClip->updateLength(fps);
     });
 }
 
-QDomElement LayerSound::createDomElement(QDomDocument& doc)
+QDomElement LayerSound::createDomElement(QDomDocument &doc)
 {
     QDomElement layerElem = this->createBaseDomElement(doc);
 
-    foreachKeyFrame([&doc, &layerElem](KeyFrame* pKeyFrame)
-    {
-        SoundClip* clip = static_cast<SoundClip*>(pKeyFrame);
+    foreachKeyFrame([&doc, &layerElem](KeyFrame *pKeyFrame) {
+        SoundClip *clip = static_cast<SoundClip *>(pKeyFrame);
 
         QDomElement imageTag = doc.createElement("sound");
         imageTag.setAttribute("frame", clip->pos());
         imageTag.setAttribute("name", clip->soundClipName());
 
         QFileInfo info(clip->fileName());
-        //qDebug() << "Save=" << info.fileName();
+        // qDebug() << "Save=" << info.fileName();
         imageTag.setAttribute("src", info.fileName());
         layerElem.appendChild(imageTag);
     });
@@ -86,7 +79,7 @@ QDomElement LayerSound::createDomElement(QDomDocument& doc)
     return layerElem;
 }
 
-void LayerSound::loadDomElement(const QDomElement& element, QString dataDirPath, ProgressCallback progressStep)
+void LayerSound::loadDomElement(const QDomElement &element, QString dataDirPath, ProgressCallback progressStep)
 {
     this->loadBaseDomElement(element);
 
@@ -120,7 +113,7 @@ void LayerSound::loadDomElement(const QDomElement& element, QString dataDirPath,
     }
 }
 
-Status LayerSound::saveKeyFrameFile(KeyFrame* key, QString path)
+Status LayerSound::saveKeyFrameFile(KeyFrame *key, QString path)
 {
     Q_ASSERT(key);
 
@@ -155,15 +148,15 @@ Status LayerSound::saveKeyFrameFile(KeyFrame* key, QString path)
     return Status::OK;
 }
 
-KeyFrame* LayerSound::createKeyFrame(int position, Object*)
+KeyFrame *LayerSound::createKeyFrame(int position, Object *)
 {
-    SoundClip* s = new SoundClip;
+    SoundClip *s = new SoundClip;
     s->setPos(position);
     return s;
 }
 
-SoundClip* LayerSound::getSoundClipWhichCovers(int frameNumber)
+SoundClip *LayerSound::getSoundClipWhichCovers(int frameNumber)
 {
-    KeyFrame* key = getKeyFrameWhichCovers(frameNumber);
-    return static_cast<SoundClip*>(key);
+    KeyFrame *key = getKeyFrameWhichCovers(frameNumber);
+    return static_cast<SoundClip *>(key);
 }

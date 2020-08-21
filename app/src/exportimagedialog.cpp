@@ -19,7 +19,7 @@ GNU General Public License for more details.
 #include "ui_exportimageoptions.h"
 #include "util.h"
 
-ExportImageDialog::ExportImageDialog(QWidget* parent, FileType eFileType) :
+ExportImageDialog::ExportImageDialog(QWidget *parent, FileType eFileType) :
     ImportExportDialog(parent, ImportExportDialog::Export, eFileType),
     ui(new Ui::ExportImageOptions)
 {
@@ -43,17 +43,17 @@ ExportImageDialog::~ExportImageDialog()
     delete ui;
 }
 
-void ExportImageDialog::setCamerasInfo(const std::vector<std::pair<QString, QSize>>& cameraInfo)
+void ExportImageDialog::setCamerasInfo(const std::vector<std::pair<QString, QSize>> &cameraInfo)
 {
     Q_ASSERT(ui->cameraCombo);
 
     ui->cameraCombo->clear();
-    for (const std::pair<QString, QSize>& it : cameraInfo)
+    for (const std::pair<QString, QSize> &it : cameraInfo)
     {
         ui->cameraCombo->addItem(it.first, it.second);
     }
 
-    const auto indexChanged = static_cast<void(QComboBox::*)(int i)>(&QComboBox::currentIndexChanged);
+    const auto indexChanged = static_cast<void (QComboBox::*)(int i)>(&QComboBox::currentIndexChanged);
     connect(ui->cameraCombo, indexChanged, this, &ExportImageDialog::cameraComboChanged);
 
     cameraComboChanged(0);
@@ -64,11 +64,11 @@ void ExportImageDialog::setDefaultRange(int startFrame, int endFrame, int endFra
     mEndFrame = endFrame;
     mEndFrameWithSounds = endFrameWithSounds;
 
-    QSignalBlocker b1( ui->startSpinBox );
-    QSignalBlocker b2( ui->endSpinBox );
+    QSignalBlocker b1(ui->startSpinBox);
+    QSignalBlocker b2(ui->endSpinBox);
 
-    ui->startSpinBox->setValue( startFrame );
-    ui->endSpinBox->setValue( endFrame );
+    ui->startSpinBox->setValue(startFrame);
+    ui->endSpinBox->setValue(endFrame);
 
     connect(ui->frameCheckBox, &QCheckBox::clicked, this, &ExportImageDialog::frameCheckboxClicked);
 }
@@ -120,7 +120,7 @@ QString ExportImageDialog::getCameraLayerName() const
     return ui->cameraCombo->currentText();
 }
 
-void ExportImageDialog::formatChanged(const QString& format)
+void ExportImageDialog::formatChanged(const QString &format)
 {
     setFileExtension(format.toLower());
     setTransparencyOptionVisibility(format);

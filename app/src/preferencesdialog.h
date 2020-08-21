@@ -21,34 +21,35 @@ GNU General Public License for more details.
 #include <QDir>
 
 #include "pencildef.h"
-#include "scribblearea.h"
 #include "preferencemanager.h"
+#include "scribblearea.h"
 
 class QListWidgetItem;
 class PreferenceManager;
 class QSettings;
 
-namespace Ui {
+namespace Ui
+{
 class PreferencesDialog;
 class GeneralPage;
 class TimelinePage;
 class FilesPage;
 class ToolsPage;
-}
+} // namespace Ui
 
 class PreferencesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    PreferencesDialog(QWidget* parent);
+    PreferencesDialog(QWidget *parent);
     ~PreferencesDialog() override;
 
-    void init(PreferenceManager* m);
+    void init(PreferenceManager *m);
     void updateRecentListBtn(bool isEmpty);
 
 public slots:
-    void changePage(QListWidgetItem* current, QListWidgetItem* previous);
+    void changePage(QListWidgetItem *current, QListWidgetItem *previous);
 
 Q_SIGNALS:
     void windowOpacityChange(int);
@@ -59,14 +60,13 @@ Q_SIGNALS:
     void updateRecentFileListBtn();
 
 protected:
-    void closeEvent(QCloseEvent*) override;
+    void closeEvent(QCloseEvent *) override;
 
 private:
-    Ui::PreferencesDialog* ui = nullptr;
+    Ui::PreferencesDialog *ui = nullptr;
 
-    PreferenceManager* mPrefManager = nullptr;
+    PreferenceManager *mPrefManager = nullptr;
 };
-
 
 class GeneralPage : public QWidget
 {
@@ -74,7 +74,7 @@ class GeneralPage : public QWidget
 public:
     GeneralPage();
     ~GeneralPage();
-    void setManager(PreferenceManager* p) { mManager = p; }
+    void setManager(PreferenceManager *p) { mManager = p; }
 
 public slots:
     void updateValues();
@@ -102,11 +102,10 @@ private slots:
     void frameCacheNumberChanged(int value);
 
 private:
-
     void updateSafeHelperTextEnabledState();
 
-    Ui::GeneralPage* ui = nullptr;
-    PreferenceManager* mManager = nullptr;
+    Ui::GeneralPage *ui = nullptr;
+    PreferenceManager *mManager = nullptr;
 };
 
 class TimelinePage : public QWidget
@@ -116,7 +115,7 @@ public:
     TimelinePage();
     ~TimelinePage();
 
-    void setManager(PreferenceManager* p) { mManager = p; }
+    void setManager(PreferenceManager *p) { mManager = p; }
 
 public slots:
     void updateValues();
@@ -142,8 +141,8 @@ signals:
     void soundScrubMsecChanged(int mSec);
 
 private:
-    Ui::TimelinePage* ui = nullptr;
-    PreferenceManager* mManager = nullptr;
+    Ui::TimelinePage *ui = nullptr;
+    PreferenceManager *mManager = nullptr;
 };
 
 class FilesPage : public QWidget
@@ -153,14 +152,14 @@ class FilesPage : public QWidget
 public:
     FilesPage();
     ~FilesPage();
-    void setManager(PreferenceManager* p) { mManager = p; }
+    void setManager(PreferenceManager *p) { mManager = p; }
 
 public slots:
     void initPreset();
     void addPreset();
     void removePreset();
     void setDefaultPreset();
-    void presetNameChanged(QListWidgetItem* item);
+    void presetNameChanged(QListWidgetItem *item);
 
     void updateValues();
     void askForPresetChange(int b);
@@ -171,13 +170,12 @@ Q_SIGNALS:
     void clearRecentList();
 
 private:
-    Ui::FilesPage* ui = nullptr;
-    PreferenceManager* mManager = nullptr;
-    QSettings* mPresetSettings = nullptr;
+    Ui::FilesPage *ui = nullptr;
+    PreferenceManager *mManager = nullptr;
+    QSettings *mPresetSettings = nullptr;
     QDir mPresetDir;
     int mMaxPresetIndex = 0;
 };
-
 
 class ToolsPage : public QWidget
 {
@@ -185,16 +183,17 @@ class ToolsPage : public QWidget
 public:
     ToolsPage();
     ~ToolsPage();
-    void setManager(PreferenceManager* p) { mManager = p; }
+    void setManager(PreferenceManager *p) { mManager = p; }
 
 public slots:
     void updateValues();
     void quickSizingChange(int);
     void setRotationIncrement(int);
     void rotationIncrementChange(int);
+
 private:
-    Ui::ToolsPage* ui = nullptr;
-    PreferenceManager* mManager = nullptr;
+    Ui::ToolsPage *ui = nullptr;
+    PreferenceManager *mManager = nullptr;
 };
 
 #endif

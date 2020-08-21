@@ -15,19 +15,18 @@ GNU General Public License for more details.
 */
 #include "catch.hpp"
 
-#include <memory>
+#include "layerbitmap.h"
+#include "layersound.h"
+#include "layervector.h"
+#include "object.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QTemporaryDir>
-#include "object.h"
-#include "layerbitmap.h"
-#include "layervector.h"
-#include "layersound.h"
-
+#include <memory>
 
 TEST_CASE("Object::addXXXLayer()")
 {
-    Object* obj = new Object;
+    Object *obj = new Object;
 
     SECTION("Init an Object")
     {
@@ -101,19 +100,17 @@ TEST_CASE("Object::addXXXLayer()")
     delete obj;
 }
 
-
-
 TEST_CASE("Object::getUniqueLayerID()")
 {
     SECTION("getUniqueLayerID")
     {
         std::unique_ptr<Object> obj(new Object);
 
-        Layer* bitmapLayer = obj->addNewBitmapLayer();
+        Layer *bitmapLayer = obj->addNewBitmapLayer();
         REQUIRE(bitmapLayer->id() == 1);
         REQUIRE(obj->getUniqueLayerID() == 2);
 
-        Layer* vectorLayer = obj->addNewVectorLayer();
+        Layer *vectorLayer = obj->addNewVectorLayer();
         REQUIRE(vectorLayer->id() == 2);
         REQUIRE(obj->getUniqueLayerID() == 3);
     }
@@ -151,7 +148,7 @@ void TestObject::testLoadXML()
     QVERIFY( !e.isNull() );
 
     QVERIFY( obj->loadXML( e ) );
-    
+
 }
 
 void TestObject::testExportColorPalette()

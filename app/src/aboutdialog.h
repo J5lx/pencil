@@ -19,7 +19,8 @@ GNU General Public License for more details.
 
 #include <QDialog>
 
-namespace Ui {
+namespace Ui
+{
 class AboutDialog;
 }
 
@@ -28,12 +29,12 @@ class AboutDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AboutDialog(QWidget* parent);
+    explicit AboutDialog(QWidget *parent);
     ~AboutDialog();
     void init();
 
 private:
-    Ui::AboutDialog* ui = nullptr;
+    Ui::AboutDialog *ui = nullptr;
 };
 
 #endif // ABOUTDIALOG_H

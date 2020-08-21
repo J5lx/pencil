@@ -18,8 +18,8 @@ GNU General Public License for more details.
 #ifndef BLITRECT_H
 #define BLITRECT_H
 
-#include <QRect>
 #include <QPoint>
+#include <QRect>
 
 class BlitRect : public QRect
 {

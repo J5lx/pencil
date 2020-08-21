@@ -26,40 +26,39 @@ class LayerVector;
 class LayerCamera;
 class LayerSound;
 
-
 class LayerManager : public BaseManager
 {
     Q_OBJECT
 
 public:
-    explicit LayerManager(Editor* editor);
+    explicit LayerManager(Editor *editor);
     ~LayerManager() override;
     bool init() override;
-    Status load(Object*) override;
-    Status save(Object*) override;
+    Status load(Object *) override;
+    Status save(Object *) override;
 
     // Layer Management
-    Layer* currentLayer();
-    Layer* currentLayer(int offset);
-    Layer* getLayer(int index);
-    Layer* findLayerByName(QString sName, Layer::LAYER_TYPE type = Layer::UNDEFINED);
-    Layer* getLastCameraLayer();
-    int    currentLayerIndex();
-    void   setCurrentLayer(int nIndex);
-    void   setCurrentLayer(Layer* layer);
-    int    count();
+    Layer *currentLayer();
+    Layer *currentLayer(int offset);
+    Layer *getLayer(int index);
+    Layer *findLayerByName(QString sName, Layer::LAYER_TYPE type = Layer::UNDEFINED);
+    Layer *getLastCameraLayer();
+    int currentLayerIndex();
+    void setCurrentLayer(int nIndex);
+    void setCurrentLayer(Layer *layer);
+    int count();
 
     Status deleteLayer(int index);
-    Status renameLayer(Layer*, const QString& newName);
-    void notifyLayerChanged(Layer*);
+    Status renameLayer(Layer *, const QString &newName);
+    void notifyLayerChanged(Layer *);
 
     void gotoNextLayer();
     void gotoPreviouslayer();
 
-    LayerBitmap* createBitmapLayer(const QString& strLayerName);
-    LayerVector* createVectorLayer(const QString& strLayerName);
-    LayerCamera* createCameraLayer(const QString& strLayerName);
-    LayerSound*  createSoundLayer(const QString& strLayerName);
+    LayerBitmap *createBitmapLayer(const QString &strLayerName);
+    LayerVector *createVectorLayer(const QString &strLayerName);
+    LayerCamera *createCameraLayer(const QString &strLayerName);
+    LayerSound *createSoundLayer(const QString &strLayerName);
 
     // KeyFrame Management
     int lastFrameAtFrame(int frameIndex);
@@ -69,7 +68,7 @@ public:
     int animationLength(bool includeSounds = true);
     void notifyAnimationLengthChanged();
 
-    QString nameSuggestLayer(const QString& name);
+    QString nameSuggestLayer(const QString &name);
     int getLastLayerIndex() { return count() - 1; }
 
 Q_SIGNALS:
@@ -79,7 +78,7 @@ Q_SIGNALS:
     void layerDeleted(int index);
 
 private:
-    int getIndex(Layer*) const;
+    int getIndex(Layer *) const;
 
     int mLastCameraLayerIdx = 0;
 };

@@ -24,12 +24,14 @@ GNU General Public License for more details.
 
 class Editor;
 
-namespace Ui {
+namespace Ui
+{
 class ImportImageSeqOptions;
 class ImportImageSeqPreviewGroupBox;
-}
+} // namespace Ui
 
-struct PredefinedKeySetParams {
+struct PredefinedKeySetParams
+{
     int dot;
     int digits;
     QStringList filenames;
@@ -40,7 +42,11 @@ struct PredefinedKeySetParams {
     Status pathsValid() const;
 };
 
-enum ImportCriteria { Arbitrary, PredefinedSet };
+enum ImportCriteria
+{
+    Arbitrary,
+    PredefinedSet
+};
 
 class ImportImageSeqDialog : public ImportExportDialog
 {
@@ -57,7 +63,7 @@ public:
     void importPredefinedSet();
     int getSpace();
 
-    void setCore(Editor* editor) { mEditor = editor; }
+    void setCore(Editor *editor) { mEditor = editor; }
 
 signals:
     void notifyAnimationLengthChanged();
@@ -68,28 +74,28 @@ protected:
 
 private slots:
     void setSpace(int number);
-    void updatePreviewList(const QStringList& list);
+    void updatePreviewList(const QStringList &list);
 
     const PredefinedKeySetParams predefinedKeySetParams() const;
 
 private:
-    int keyFramePosFromFilePath(const QString& path);
+    int keyFramePosFromFilePath(const QString &path);
 
 private:
     const PredefinedKeySet generatePredefinedKeySet() const;
-    void setPreviewModel(const PredefinedKeySet& predefinedKeySet);
+    void setPreviewModel(const PredefinedKeySet &predefinedKeySet);
     void setupLayout();
     void setupPredefinedLayout();
-    Status validateKeySet(const PredefinedKeySet& keySet, const QStringList& filepaths);
-    Status validateFiles(const QStringList& filepaths);
+    Status validateKeySet(const PredefinedKeySet &keySet, const QStringList &filepaths);
+    Status validateFiles(const QStringList &filepaths);
 
     Ui::ImportImageSeqOptions *uiOptionsBox;
     Ui::ImportImageSeqPreviewGroupBox *uiGroupBoxPreview;
 
     QStringList getFilePaths();
 
-    Editor* mEditor = nullptr;
-    QWidget* mParent = nullptr;
+    Editor *mEditor = nullptr;
+    QWidget *mParent = nullptr;
     ImportCriteria mImportCriteria = ImportCriteria::Arbitrary;
     FileType mFileType = FileType::IMAGE_SEQUENCE;
 };

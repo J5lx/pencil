@@ -18,26 +18,25 @@ GNU General Public License for more details.
 #ifndef VIEWMANAGER_H
 #define VIEWMANAGER_H
 
-#include <QTransform>
 #include "basemanager.h"
+#include <QTransform>
 
 class Layer;
 class LayerCamera;
 class Camera;
-
 
 class ViewManager : public BaseManager
 {
     Q_OBJECT
 
 public:
-    explicit ViewManager(Editor* editor);
+    explicit ViewManager(Editor *editor);
     ~ViewManager() override;
 
     bool init() override;
-    Status load(Object*) override;
-    Status save(Object*) override;
-    void workingLayerChanged(Layer* layer) override;
+    Status load(Object *) override;
+    Status save(Object *) override;
+    void workingLayerChanged(Layer *layer) override;
 
     QTransform getView();
     QTransform getViewInverse();
@@ -46,14 +45,14 @@ public:
     QPointF mapCanvasToScreen(QPointF p);
     QPointF mapScreenToCanvas(QPointF p);
 
-    QRectF mapCanvasToScreen(const QRectF& rect);
-    QRectF mapScreenToCanvas(const QRectF& rect);
+    QRectF mapCanvasToScreen(const QRectF &rect);
+    QRectF mapScreenToCanvas(const QRectF &rect);
 
-    QPolygonF mapPolygonToScreen(const QPolygonF& polygon);
-    QPolygonF mapPolygonToCanvas(const QPolygonF& polygon);
+    QPolygonF mapPolygonToScreen(const QPolygonF &polygon);
+    QPolygonF mapPolygonToCanvas(const QPolygonF &polygon);
 
-    QPainterPath mapCanvasToScreen(const QPainterPath& path);
-    QPainterPath mapScreenToCanvas(const QPainterPath& path);
+    QPainterPath mapCanvasToScreen(const QPainterPath &path);
+    QPainterPath mapScreenToCanvas(const QPainterPath &path);
 
     QPointF translation();
     void translate(float dx, float dy);
@@ -89,12 +88,11 @@ public:
     bool getOverlayGoldenRatio() { return mOverlayGoldenRatio; }
     bool getOverlaySafeAreas() { return mOverlaySafeAreas; }
 
-
     void setCanvasSize(QSize size);
-    void setCameraLayer(Layer* layer);
+    void setCameraLayer(Layer *layer);
 
     QTransform getImportView() { return mImportView; }
-    void setImportView(const QTransform& newView) { mImportView = newView; }
+    void setImportView(const QTransform &newView) { mImportView = newView; }
 
     void setImportFollowsCamera(bool b) { mImportFollowsCamera = b; }
     bool getImportFollowsCamera() { return mImportFollowsCamera; }
@@ -105,7 +103,6 @@ public:
     Q_SIGNAL void viewFlipped();
 
 private:
-
     void onCurrentFrameChanged();
 
     QTransform mView;
@@ -115,10 +112,10 @@ private:
     QTransform mCentre;
     QTransform mImportView;
 
-    Camera* mDefaultEditorCamera = nullptr;
-    Camera* mCurrentCamera = nullptr;
+    Camera *mDefaultEditorCamera = nullptr;
+    Camera *mCurrentCamera = nullptr;
 
-    QSize mCanvasSize = { 1, 1 };
+    QSize mCanvasSize = {1, 1};
 
     bool mIsFlipHorizontal = false;
     bool mIsFlipVertical = false;
@@ -129,7 +126,7 @@ private:
 
     bool mImportFollowsCamera = false;
 
-    LayerCamera* mCameraLayer = nullptr;
+    LayerCamera *mCameraLayer = nullptr;
 };
 
 #endif // VIEWMANAGER_H

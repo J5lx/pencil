@@ -15,14 +15,13 @@ GNU General Public License for more details.
 
 */
 
-
 #ifndef RECENTFILEMENU_H
 #define RECENTFILEMENU_H
 
-#include <map>
+#include "pencildef.h"
 #include <QMenu>
 #include <QStringList>
-#include "pencildef.h"
+#include <map>
 
 class QAction;
 class ListItemModel;
@@ -32,13 +31,13 @@ class RecentFileMenu : public QMenu
     Q_OBJECT
 
 public:
-    explicit RecentFileMenu(QString title = tr("Open Recent"), QWidget* parent = nullptr);
+    explicit RecentFileMenu(QString title = tr("Open Recent"), QWidget *parent = nullptr);
     ~RecentFileMenu();
 
     static const int MAX_RECENT_FILES = 10;
 
     QStringList getRecentFiles() { return mRecentFiles; }
-    void setRecentFiles(const QStringList& filenames);
+    void setRecentFiles(const QStringList &filenames);
 
     void addRecentFile(QString filename);
     void removeRecentFile(QString filename);
@@ -57,10 +56,10 @@ protected slots:
 
 private:
     QStringList mRecentFiles;
-    std::map<QString, QAction*> mRecentActions;
-    QAction* mClearAction = nullptr;
-    QAction* mClearSeparator = nullptr;
-    QAction* mEmptyAction = nullptr;
+    std::map<QString, QAction *> mRecentActions;
+    QAction *mClearAction = nullptr;
+    QAction *mClearSeparator = nullptr;
+    QAction *mEmptyAction = nullptr;
 };
 
 #endif // RECENTFILEMENU_H

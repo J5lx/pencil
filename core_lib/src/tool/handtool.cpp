@@ -17,22 +17,19 @@ GNU General Public License for more details.
 
 #include "handtool.h"
 
-#include <QtMath>
 #include <QPixmap>
 #include <QVector2D>
+#include <QtMath>
 #include <pointerevent.h>
 
+#include "editor.h"
 #include "layer.h"
 #include "layercamera.h"
-#include "editor.h"
+#include "scribblearea.h"
 #include "strokemanager.h"
 #include "viewmanager.h"
-#include "scribblearea.h"
 
-
-HandTool::HandTool(QObject* parent) : BaseTool(parent)
-{
-}
+HandTool::HandTool(QObject *parent) : BaseTool(parent) {}
 
 void HandTool::loadSettings()
 {
@@ -48,7 +45,7 @@ QCursor HandTool::cursor()
     return mIsHeld ? Qt::ClosedHandCursor : Qt::OpenHandCursor;
 }
 
-void HandTool::pointerPressEvent(PointerEvent*)
+void HandTool::pointerPressEvent(PointerEvent *)
 {
     mLastPixel = getCurrentPixel();
     mStartPoint = mEditor->view()->mapScreenToCanvas(mLastPixel);
@@ -57,7 +54,7 @@ void HandTool::pointerPressEvent(PointerEvent*)
     mScribbleArea->updateToolCursor();
 }
 
-void HandTool::pointerMoveEvent(PointerEvent* event)
+void HandTool::pointerMoveEvent(PointerEvent *event)
 {
     if (event->buttons() == Qt::NoButton)
     {
@@ -68,7 +65,7 @@ void HandTool::pointerMoveEvent(PointerEvent* event)
     mLastPixel = getCurrentPixel();
 }
 
-void HandTool::pointerReleaseEvent(PointerEvent* event)
+void HandTool::pointerReleaseEvent(PointerEvent *event)
 {
     //---- stop the hand tool if this was mid button
     if (event->button() == Qt::MidButton)
@@ -80,7 +77,7 @@ void HandTool::pointerReleaseEvent(PointerEvent* event)
     mScribbleArea->updateToolCursor();
 }
 
-void HandTool::pointerDoubleClickEvent(PointerEvent* event)
+void HandTool::pointerDoubleClickEvent(PointerEvent *event)
 {
     if (event->button() == Qt::RightButton)
     {
@@ -94,7 +91,7 @@ void HandTool::transformView(Qt::KeyboardModifiers keyMod, Qt::MouseButtons butt
     bool isRotate = keyMod & Qt::AltModifier;
     bool isScale = (keyMod & Qt::ControlModifier) || (buttons & Qt::RightButton);
 
-    ViewManager* viewMgr = mEditor->view();
+    ViewManager *viewMgr = mEditor->view();
 
     if (isTranslate)
     {

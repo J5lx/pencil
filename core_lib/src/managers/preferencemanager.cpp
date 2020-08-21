@@ -19,14 +19,9 @@ GNU General Public License for more details.
 
 #include <QSettings>
 
+PreferenceManager::PreferenceManager(Editor *editor) : BaseManager(editor) {}
 
-PreferenceManager::PreferenceManager(Editor* editor) : BaseManager(editor)
-{
-}
-
-PreferenceManager::~PreferenceManager()
-{
-}
+PreferenceManager::~PreferenceManager() {}
 
 bool PreferenceManager::init()
 {
@@ -34,99 +29,99 @@ bool PreferenceManager::init()
     return true;
 }
 
-Status PreferenceManager::load(Object*)
+Status PreferenceManager::load(Object *)
 {
     return Status::OK;
 }
 
-Status PreferenceManager::save(Object*)
+Status PreferenceManager::save(Object *)
 {
     return Status::OK;
 }
 
 void PreferenceManager::loadPrefs()
 {
-    QSettings settings( PENCIL2D, PENCIL2D );
+    QSettings settings(PENCIL2D, PENCIL2D);
 
     // Display
-    set(SETTING::GRID,                     settings.value(SETTING_SHOW_GRID,              false).toBool());
-    set(SETTING::INVISIBLE_LINES,          settings.value(SETTING_INVISIBLE_LINES,        false).toBool());
-    set(SETTING::OUTLINES,                 settings.value(SETTING_OUTLINES,               false).toBool());
-    set(SETTING::OVERLAY_CENTER,           settings.value(SETTING_OVERLAY_CENTER,         false).toBool());
-    set(SETTING::OVERLAY_THIRDS,           settings.value(SETTING_OVERLAY_THIRDS,         false).toBool());
-    set(SETTING::OVERLAY_GOLDEN,           settings.value(SETTING_OVERLAY_GOLDEN,         false).toBool());
-    set(SETTING::OVERLAY_SAFE,             settings.value(SETTING_OVERLAY_SAFE,           false).toBool());
-    set(SETTING::ACTION_SAFE,              settings.value(SETTING_ACTION_SAFE,            5).toInt());
-    set(SETTING::ACTION_SAFE_ON,           settings.value(SETTING_ACTION_SAFE_ON,         true).toBool());
+    set(SETTING::GRID, settings.value(SETTING_SHOW_GRID, false).toBool());
+    set(SETTING::INVISIBLE_LINES, settings.value(SETTING_INVISIBLE_LINES, false).toBool());
+    set(SETTING::OUTLINES, settings.value(SETTING_OUTLINES, false).toBool());
+    set(SETTING::OVERLAY_CENTER, settings.value(SETTING_OVERLAY_CENTER, false).toBool());
+    set(SETTING::OVERLAY_THIRDS, settings.value(SETTING_OVERLAY_THIRDS, false).toBool());
+    set(SETTING::OVERLAY_GOLDEN, settings.value(SETTING_OVERLAY_GOLDEN, false).toBool());
+    set(SETTING::OVERLAY_SAFE, settings.value(SETTING_OVERLAY_SAFE, false).toBool());
+    set(SETTING::ACTION_SAFE, settings.value(SETTING_ACTION_SAFE, 5).toInt());
+    set(SETTING::ACTION_SAFE_ON, settings.value(SETTING_ACTION_SAFE_ON, true).toBool());
     set(SETTING::OVERLAY_SAFE_HELPER_TEXT_ON, settings.value(SETTING_OVERLAY_SAFE_HELPER_TEXT_ON, true).toBool());
-    set(SETTING::TITLE_SAFE,               settings.value(SETTING_TITLE_SAFE,             10).toInt());
-    set(SETTING::TITLE_SAFE_ON,            settings.value(SETTING_TITLE_SAFE_ON,          true).toBool());
+    set(SETTING::TITLE_SAFE, settings.value(SETTING_TITLE_SAFE, 10).toInt());
+    set(SETTING::TITLE_SAFE_ON, settings.value(SETTING_TITLE_SAFE_ON, true).toBool());
 
     // Grid
-    set(SETTING::GRID_SIZE_W,              settings.value(SETTING_GRID_SIZE_W,            100).toInt());
-    set(SETTING::GRID_SIZE_H,              settings.value(SETTING_GRID_SIZE_H,            100).toInt());
+    set(SETTING::GRID_SIZE_W, settings.value(SETTING_GRID_SIZE_W, 100).toInt());
+    set(SETTING::GRID_SIZE_H, settings.value(SETTING_GRID_SIZE_H, 100).toInt());
 
     // General
-    set(SETTING::ANTIALIAS,                settings.value(SETTING_ANTIALIAS,              true).toBool());
-    set(SETTING::TOOL_CURSOR,              settings.value(SETTING_TOOL_CURSOR,            true).toBool());
-    set(SETTING::DOTTED_CURSOR,            settings.value(SETTING_DOTTED_CURSOR,          true).toBool());
-    set(SETTING::HIGH_RESOLUTION,          settings.value(SETTING_HIGH_RESOLUTION,        true).toBool());
-    set(SETTING::SHADOW,                   settings.value(SETTING_SHADOW,                 false).toBool());
-    set(SETTING::QUICK_SIZING,             settings.value(SETTING_QUICK_SIZING,           true).toBool());
+    set(SETTING::ANTIALIAS, settings.value(SETTING_ANTIALIAS, true).toBool());
+    set(SETTING::TOOL_CURSOR, settings.value(SETTING_TOOL_CURSOR, true).toBool());
+    set(SETTING::DOTTED_CURSOR, settings.value(SETTING_DOTTED_CURSOR, true).toBool());
+    set(SETTING::HIGH_RESOLUTION, settings.value(SETTING_HIGH_RESOLUTION, true).toBool());
+    set(SETTING::SHADOW, settings.value(SETTING_SHADOW, false).toBool());
+    set(SETTING::QUICK_SIZING, settings.value(SETTING_QUICK_SIZING, true).toBool());
 
-    set(SETTING::ROTATION_INCREMENT,       settings.value(SETTING_ROTATION_INCREMENT,     15).toInt());
+    set(SETTING::ROTATION_INCREMENT, settings.value(SETTING_ROTATION_INCREMENT, 15).toInt());
 
-    set(SETTING::WINDOW_OPACITY,           settings.value(SETTING_WINDOW_OPACITY,         0).toInt());
-    set(SETTING::CURVE_SMOOTHING,          settings.value(SETTING_CURVE_SMOOTHING,        20).toInt());
+    set(SETTING::WINDOW_OPACITY, settings.value(SETTING_WINDOW_OPACITY, 0).toInt());
+    set(SETTING::CURVE_SMOOTHING, settings.value(SETTING_CURVE_SMOOTHING, 20).toInt());
 
-    set(SETTING::BACKGROUND_STYLE,         settings.value(SETTING_BACKGROUND_STYLE,       "white").toString());
+    set(SETTING::BACKGROUND_STYLE, settings.value(SETTING_BACKGROUND_STYLE, "white").toString());
 
-    set(SETTING::LAYOUT_LOCK,              settings.value(SETTING_LAYOUT_LOCK,            false).toBool());
-    set(SETTING::FRAME_POOL_SIZE,          settings.value(SETTING_FRAME_POOL_SIZE,        200).toInt());
+    set(SETTING::LAYOUT_LOCK, settings.value(SETTING_LAYOUT_LOCK, false).toBool());
+    set(SETTING::FRAME_POOL_SIZE, settings.value(SETTING_FRAME_POOL_SIZE, 200).toInt());
 
-    set(SETTING::FPS,                      settings.value(SETTING_FPS,                    12).toInt());
-    set(SETTING::FIELD_W,                  settings.value(SETTING_FIELD_W,                800).toInt());
-    set(SETTING::FIELD_H,                  settings.value(SETTING_FIELD_H,                600).toInt());
+    set(SETTING::FPS, settings.value(SETTING_FPS, 12).toInt());
+    set(SETTING::FIELD_W, settings.value(SETTING_FIELD_W, 800).toInt());
+    set(SETTING::FIELD_H, settings.value(SETTING_FIELD_H, 600).toInt());
 
     // Files
-    set(SETTING::AUTO_SAVE,                settings.value(SETTING_AUTO_SAVE,              false).toBool());
-    set(SETTING::AUTO_SAVE_NUMBER,         settings.value(SETTING_AUTO_SAVE_NUMBER,       256).toInt());
-    set(SETTING::ASK_FOR_PRESET,           settings.value(SETTING_ASK_FOR_PRESET,         false).toBool());
-    set(SETTING::DEFAULT_PRESET,           settings.value(SETTING_DEFAULT_PRESET,         0).toInt());
+    set(SETTING::AUTO_SAVE, settings.value(SETTING_AUTO_SAVE, false).toBool());
+    set(SETTING::AUTO_SAVE_NUMBER, settings.value(SETTING_AUTO_SAVE_NUMBER, 256).toInt());
+    set(SETTING::ASK_FOR_PRESET, settings.value(SETTING_ASK_FOR_PRESET, false).toBool());
+    set(SETTING::DEFAULT_PRESET, settings.value(SETTING_DEFAULT_PRESET, 0).toInt());
 
     // Timeline
-    set(SETTING::SHORT_SCRUB,              settings.value(SETTING_SHORT_SCRUB,            false ).toBool());
-    set(SETTING::FRAME_SIZE,               settings.value(SETTING_FRAME_SIZE,             12).toInt());
-    set(SETTING::TIMELINE_SIZE,            settings.value(SETTING_TIMELINE_SIZE,          240).toInt());
-    set(SETTING::DRAW_LABEL,               settings.value(SETTING_DRAW_LABEL,             false ).toBool());
-    set(SETTING::LABEL_FONT_SIZE,          settings.value(SETTING_LABEL_FONT_SIZE,        12).toInt());
+    set(SETTING::SHORT_SCRUB, settings.value(SETTING_SHORT_SCRUB, false).toBool());
+    set(SETTING::FRAME_SIZE, settings.value(SETTING_FRAME_SIZE, 12).toInt());
+    set(SETTING::TIMELINE_SIZE, settings.value(SETTING_TIMELINE_SIZE, 240).toInt());
+    set(SETTING::DRAW_LABEL, settings.value(SETTING_DRAW_LABEL, false).toBool());
+    set(SETTING::LABEL_FONT_SIZE, settings.value(SETTING_LABEL_FONT_SIZE, 12).toInt());
 
-    set( SETTING::DRAW_ON_EMPTY_FRAME_ACTION, settings.value( SETTING_DRAW_ON_EMPTY_FRAME_ACTION,
-                                                              KEEP_DRAWING_ON_PREVIOUS_KEY).toInt() );
+    set(SETTING::DRAW_ON_EMPTY_FRAME_ACTION,
+        settings.value(SETTING_DRAW_ON_EMPTY_FRAME_ACTION, KEEP_DRAWING_ON_PREVIOUS_KEY).toInt());
 
     // Onion Skin
-    set(SETTING::PREV_ONION,               settings.value(SETTING_PREV_ONION,             false).toBool());
-    set(SETTING::NEXT_ONION,               settings.value(SETTING_NEXT_ONION,             false).toBool());
-    set(SETTING::MULTILAYER_ONION,         settings.value(SETTING_MULTILAYER_ONION,       false).toBool());
-    set(SETTING::ONION_BLUE,               settings.value(SETTING_ONION_BLUE,             false).toBool());
-    set(SETTING::ONION_RED,                settings.value(SETTING_ONION_RED,              false).toBool());
+    set(SETTING::PREV_ONION, settings.value(SETTING_PREV_ONION, false).toBool());
+    set(SETTING::NEXT_ONION, settings.value(SETTING_NEXT_ONION, false).toBool());
+    set(SETTING::MULTILAYER_ONION, settings.value(SETTING_MULTILAYER_ONION, false).toBool());
+    set(SETTING::ONION_BLUE, settings.value(SETTING_ONION_BLUE, false).toBool());
+    set(SETTING::ONION_RED, settings.value(SETTING_ONION_RED, false).toBool());
 
-    set(SETTING::ONION_MAX_OPACITY,        settings.value(SETTING_ONION_MAX_OPACITY,      50).toInt());
-    set(SETTING::ONION_MIN_OPACITY,        settings.value(SETTING_ONION_MIN_OPACITY,      20).toInt());
-    set(SETTING::ONION_PREV_FRAMES_NUM,    settings.value(SETTING_ONION_PREV_FRAMES_NUM,  5).toInt());
-    set(SETTING::ONION_NEXT_FRAMES_NUM,    settings.value(SETTING_ONION_NEXT_FRAMES_NUM,  5).toInt());
-    set(SETTING::ONION_WHILE_PLAYBACK,     settings.value(SETTING_ONION_WHILE_PLAYBACK,   0).toInt());
-    set(SETTING::ONION_TYPE,               settings.value(SETTING_ONION_TYPE,             "relative").toString());
-    set(SETTING::LAYER_VISIBILITY,         settings.value(SETTING_LAYER_VISIBILITY,       2).toInt());
+    set(SETTING::ONION_MAX_OPACITY, settings.value(SETTING_ONION_MAX_OPACITY, 50).toInt());
+    set(SETTING::ONION_MIN_OPACITY, settings.value(SETTING_ONION_MIN_OPACITY, 20).toInt());
+    set(SETTING::ONION_PREV_FRAMES_NUM, settings.value(SETTING_ONION_PREV_FRAMES_NUM, 5).toInt());
+    set(SETTING::ONION_NEXT_FRAMES_NUM, settings.value(SETTING_ONION_NEXT_FRAMES_NUM, 5).toInt());
+    set(SETTING::ONION_WHILE_PLAYBACK, settings.value(SETTING_ONION_WHILE_PLAYBACK, 0).toInt());
+    set(SETTING::ONION_TYPE, settings.value(SETTING_ONION_TYPE, "relative").toString());
+    set(SETTING::LAYER_VISIBILITY, settings.value(SETTING_LAYER_VISIBILITY, 2).toInt());
     set(SETTING::LAYER_VISIBILITY_THRESHOLD, settings.value(SETTING_LAYER_VISIBILITY_THRESHOLD, 0.5f).toFloat());
 
-    set(SETTING::FLIP_ROLL_MSEC,           settings.value(SETTING_FLIP_ROLL_MSEC,         100).toInt());
-    set(SETTING::FLIP_ROLL_DRAWINGS,       settings.value(SETTING_FLIP_ROLL_DRAWINGS,     5).toInt());
-    set(SETTING::FLIP_INBETWEEN_MSEC,      settings.value(SETTING_FLIP_INBETWEEN_MSEC,    100).toInt());
-    set(SETTING::SOUND_SCRUB_ACTIVE,       settings.value(SETTING_SOUND_SCRUB_ACTIVE,     false).toBool());
-    set(SETTING::SOUND_SCRUB_MSEC,         settings.value(SETTING_SOUND_SCRUB_MSEC,       100).toInt());
+    set(SETTING::FLIP_ROLL_MSEC, settings.value(SETTING_FLIP_ROLL_MSEC, 100).toInt());
+    set(SETTING::FLIP_ROLL_DRAWINGS, settings.value(SETTING_FLIP_ROLL_DRAWINGS, 5).toInt());
+    set(SETTING::FLIP_INBETWEEN_MSEC, settings.value(SETTING_FLIP_INBETWEEN_MSEC, 100).toInt());
+    set(SETTING::SOUND_SCRUB_ACTIVE, settings.value(SETTING_SOUND_SCRUB_ACTIVE, false).toBool());
+    set(SETTING::SOUND_SCRUB_MSEC, settings.value(SETTING_SOUND_SCRUB_MSEC, 100).toInt());
 
-    set(SETTING::LANGUAGE,                 settings.value(SETTING_LANGUAGE).toString());
+    set(SETTING::LANGUAGE, settings.value(SETTING_LANGUAGE).toString());
 }
 
 void PreferenceManager::turnOn(SETTING option)
@@ -207,7 +202,7 @@ void PreferenceManager::set(SETTING option, QString value)
 void PreferenceManager::set(SETTING option, float value)
 {
     QSettings settings(PENCIL2D, PENCIL2D);
-    switch(option)
+    switch (option)
     {
     case SETTING::LAYER_VISIBILITY_THRESHOLD:
         settings.setValue(SETTING_LAYER_VISIBILITY_THRESHOLD, value);
@@ -216,7 +211,6 @@ void PreferenceManager::set(SETTING option, float value)
         Q_ASSERT(false);
         break;
     }
-
 
     int optionId = static_cast<int>(option);
 
@@ -242,16 +236,28 @@ void PreferenceManager::set(SETTING option, int value)
         settings.setValue(SETTING_AUTO_SAVE_NUMBER, value);
         break;
     case SETTING::FRAME_SIZE:
-        if (value < 4) { value = 4; }
-        else if (value > 40) { value = 40; }
+        if (value < 4)
+        {
+            value = 4;
+        }
+        else if (value > 40)
+        {
+            value = 40;
+        }
         settings.setValue(SETTING_FRAME_SIZE, value);
         break;
     case SETTING::TIMELINE_SIZE:
-        if (value < 2) { value = 2; }
+        if (value < 2)
+        {
+            value = 2;
+        }
         settings.setValue(SETTING_TIMELINE_SIZE, value);
         break;
     case SETTING::LABEL_FONT_SIZE:
-        if (value < 12) { value = 12; }
+        if (value < 12)
+        {
+            value = 12;
+        }
         settings.setValue(SETTING_LABEL_FONT_SIZE, value);
         break;
     case SETTING::ONION_MAX_OPACITY:
@@ -266,16 +272,16 @@ void PreferenceManager::set(SETTING option, int value)
     case SETTING::ONION_NEXT_FRAMES_NUM:
         settings.setValue(SETTING_ONION_NEXT_FRAMES_NUM, value);
         break;
-    case SETTING::FLIP_ROLL_MSEC :
+    case SETTING::FLIP_ROLL_MSEC:
         settings.setValue(SETTING_FLIP_ROLL_MSEC, value);
         break;
-    case SETTING::FLIP_ROLL_DRAWINGS :
+    case SETTING::FLIP_ROLL_DRAWINGS:
         settings.setValue(SETTING_FLIP_ROLL_DRAWINGS, value);
         break;
-    case SETTING::FLIP_INBETWEEN_MSEC :
+    case SETTING::FLIP_INBETWEEN_MSEC:
         settings.setValue(SETTING_FLIP_INBETWEEN_MSEC, value);
         break;
-    case SETTING::SOUND_SCRUB_MSEC :
+    case SETTING::SOUND_SCRUB_MSEC:
         settings.setValue(SETTING_SOUND_SCRUB_MSEC, value);
         break;
     case SETTING::GRID_SIZE_W:
@@ -294,7 +300,7 @@ void PreferenceManager::set(SETTING option, int value)
         settings.setValue(SETTING_FRAME_POOL_SIZE, value);
         break;
     case SETTING::DRAW_ON_EMPTY_FRAME_ACTION:
-        settings.setValue( SETTING_DRAW_ON_EMPTY_FRAME_ACTION, value);
+        settings.setValue(SETTING_DRAW_ON_EMPTY_FRAME_ACTION, value);
         break;
     case SETTING::ONION_WHILE_PLAYBACK:
         settings.setValue(SETTING_ONION_WHILE_PLAYBACK, value);

@@ -25,17 +25,16 @@ class QTimer;
 class QElapsedTimer;
 class SoundClip;
 
-
 class PlaybackManager : public BaseManager
 {
     Q_OBJECT
 public:
-    explicit PlaybackManager(Editor* editor);
+    explicit PlaybackManager(Editor *editor);
     ~PlaybackManager() override;
 
     bool init() override;
-    Status load(Object*) override;
-    Status save(Object*) override;
+    Status load(Object *) override;
+    Status save(Object *) override;
 
     bool isPlaying();
     bool isLooping() { return mIsLooping; }
@@ -47,7 +46,7 @@ public:
     void playFlipInBetween();
     void playScrub(int frame);
     void setSoundScrubMsec(int mSec) { mMsecSoundScrub = mSec; }
-    int  getSoundScrubMsec() { return mMsecSoundScrub; }
+    int getSoundScrubMsec() { return mMsecSoundScrub; }
     void setSoundScrubActive(bool b) { mSoundScrub = b; }
     bool getSoundScrubActive() { return mSoundScrub; }
 
@@ -105,15 +104,15 @@ private:
     int mMsecSoundScrub = 100;
     bool mSoundScrub = false;
 
-    QTimer* mTimer = nullptr;
-    QTimer* mFlipTimer = nullptr;
-    QTimer* mScrubTimer = nullptr;
-    QElapsedTimer* mElapsedTimer = nullptr;
+    QTimer *mTimer = nullptr;
+    QTimer *mFlipTimer = nullptr;
+    QTimer *mScrubTimer = nullptr;
+    QElapsedTimer *mElapsedTimer = nullptr;
     int mPlayingFrameCounter = 0; // how many frames has passed after pressing play
 
     bool mCheckForSoundsHalfway = false;
     QVector<int> mListOfActiveSoundFrames;
-    QVector<SoundClip*> mSoundclipsToPLay;
+    QVector<SoundClip *> mSoundclipsToPLay;
     QVector<int> mFlipList;
 };
 

@@ -16,8 +16,7 @@ GNU General Public License for more details.
 */
 
 #pragma once
-#include<QLoggingCategory>
-
+#include <QLoggingCategory>
 
 /**
  * With Qt Category logging, it allows devs to turn on/off the debug log for certain modules
@@ -28,17 +27,17 @@ GNU General Public License for more details.
 //#define DEBUG_LOG_FILEMANAGER
 
 #ifdef DEBUG_LOG_CANVASPAINTER
-  Q_DECLARE_LOGGING_CATEGORY(logCanvasPainter);
-  #define CANVASPAINTER_LOG(...) qCDebug(logCanvasPainter, __VA_ARGS__)
+Q_DECLARE_LOGGING_CATEGORY(logCanvasPainter);
+#define CANVASPAINTER_LOG(...) qCDebug(logCanvasPainter, __VA_ARGS__)
 #else
-  #define CANVASPAINTER_LOG(...) ((void)0)
+#define CANVASPAINTER_LOG(...) ((void)0)
 #endif
 
 #ifdef DEBUG_LOG_FILEMANAGER
-  Q_DECLARE_LOGGING_CATEGORY(logFileManager);
-  #define FILEMANAGER_LOG(...) qCDebug(logFileManager, __VA_ARGS__)
+Q_DECLARE_LOGGING_CATEGORY(logFileManager);
+#define FILEMANAGER_LOG(...) qCDebug(logFileManager, __VA_ARGS__)
 #else
-  #define FILEMANAGER_LOG(...) ((void)0)
+#define FILEMANAGER_LOG(...) ((void)0)
 #endif
 
 void initCategoryLogging();

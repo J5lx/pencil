@@ -17,22 +17,20 @@ GNU General Public License for more details.
 
 #include "filedialogex.h"
 
-#include <QSettings>
-#include <QFileInfo>
-#include <QFileDialog>
 #include <QDebug>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QSettings>
 
 #include "fileformat.h"
 #include "pencildef.h"
 
-FileDialog::FileDialog(QWidget* parent) : QObject(parent)
+FileDialog::FileDialog(QWidget *parent) : QObject(parent)
 {
     mRoot = parent;
 }
 
-FileDialog::~FileDialog()
-{
-}
+FileDialog::~FileDialog() {}
 
 QString FileDialog::openFile(FileType fileType)
 {
@@ -40,10 +38,7 @@ QString FileDialog::openFile(FileType fileType)
     QString strInitialFilePath = getLastOpenPath(fileType);
     QString strFilter = openFileFilters(fileType);
 
-    QString filePath = QFileDialog::getOpenFileName(mRoot,
-                                                    strTitle,
-                                                    strInitialFilePath,
-                                                    strFilter);
+    QString filePath = QFileDialog::getOpenFileName(mRoot, strTitle, strInitialFilePath, strFilter);
     if (!filePath.isEmpty())
     {
         setLastOpenPath(fileType, filePath);
@@ -85,7 +80,10 @@ QString FileDialog::saveFile(FileType fileType)
                                                     strFilter,
                                                     strSelectedFilter.isNull() ? nullptr : &strSelectedFilter);
 
-    if (filePath.isEmpty()) { return QString(); }
+    if (filePath.isEmpty())
+    {
+        return QString();
+    }
 
     setLastSavePath(fileType, filePath);
 
@@ -102,11 +100,16 @@ QString FileDialog::addDefaultExtensionSuffix(const FileType fileType)
 {
     switch (fileType)
     {
-    case FileType::ANIMATION: return PFF_DEFAULT_PROJECT_EXT;
-    case FileType::IMAGE: return PFF_DEFAULT_IMAGE_EXT;
-    case FileType::IMAGE_SEQUENCE: return PFF_DEFAULT_IMAGE_SEQ_EXT;
-    case FileType::GIF: return PFF_DEFAULT_ANIMATED_EXT;
-    case FileType::PALETTE: return PFF_DEFAULT_PALETTE_EXT;
+    case FileType::ANIMATION:
+        return PFF_DEFAULT_PROJECT_EXT;
+    case FileType::IMAGE:
+        return PFF_DEFAULT_IMAGE_EXT;
+    case FileType::IMAGE_SEQUENCE:
+        return PFF_DEFAULT_IMAGE_SEQ_EXT;
+    case FileType::GIF:
+        return PFF_DEFAULT_ANIMATED_EXT;
+    case FileType::PALETTE:
+        return PFF_DEFAULT_PALETTE_EXT;
     default:
         return "";
     }
@@ -133,8 +136,7 @@ QString FileDialog::getLastSavePath(FileType fileType)
     QSettings setting(PENCIL2D, PENCIL2D);
     setting.beginGroup("LastSavePath");
 
-    return setting.value(toSettingKey(fileType),
-                         QDir::homePath() + "/" + defaultFileName(fileType)).toString();
+    return setting.value(toSettingKey(fileType), QDir::homePath() + "/" + defaultFileName(fileType)).toString();
 }
 
 void FileDialog::setLastSavePath(FileType fileType, QString savePath)
@@ -149,13 +151,20 @@ QString FileDialog::openDialogTitle(FileType fileType)
 {
     switch (fileType)
     {
-    case FileType::ANIMATION: return tr("Open animation");
-    case FileType::IMAGE: return tr("Import image");
-    case FileType::IMAGE_SEQUENCE: return tr("Import image sequence");
-    case FileType::GIF: return tr("Import Animated GIF");
-    case FileType::MOVIE: return tr("Import movie");
-    case FileType::SOUND: return tr("Import sound");
-    case FileType::PALETTE: return tr("Open palette");
+    case FileType::ANIMATION:
+        return tr("Open animation");
+    case FileType::IMAGE:
+        return tr("Import image");
+    case FileType::IMAGE_SEQUENCE:
+        return tr("Import image sequence");
+    case FileType::GIF:
+        return tr("Import Animated GIF");
+    case FileType::MOVIE:
+        return tr("Import movie");
+    case FileType::SOUND:
+        return tr("Import sound");
+    case FileType::PALETTE:
+        return tr("Open palette");
     }
     return "";
 }
@@ -164,13 +173,20 @@ QString FileDialog::saveDialogTitle(FileType fileType)
 {
     switch (fileType)
     {
-    case FileType::ANIMATION: return tr("Save animation");
-    case FileType::IMAGE: return tr("Export image");
-    case FileType::IMAGE_SEQUENCE: return tr("Export image sequence");
-    case FileType::GIF: return tr("Export Animated GIF");
-    case FileType::MOVIE: return tr("Export movie");
-    case FileType::SOUND: return tr("Export sound");
-    case FileType::PALETTE: return tr("Export palette");
+    case FileType::ANIMATION:
+        return tr("Save animation");
+    case FileType::IMAGE:
+        return tr("Export image");
+    case FileType::IMAGE_SEQUENCE:
+        return tr("Export image sequence");
+    case FileType::GIF:
+        return tr("Export Animated GIF");
+    case FileType::MOVIE:
+        return tr("Export movie");
+    case FileType::SOUND:
+        return tr("Export sound");
+    case FileType::PALETTE:
+        return tr("Export palette");
     }
     return "";
 }
@@ -179,13 +195,20 @@ QString FileDialog::openFileFilters(FileType fileType)
 {
     switch (fileType)
     {
-    case FileType::ANIMATION: return PFF_PROJECT_EXT_FILTER;
-    case FileType::IMAGE: return PFF_IMAGE_FILTER;
-    case FileType::IMAGE_SEQUENCE: return PFF_IMAGE_SEQ_FILTER;
-    case FileType::GIF: return PFF_GIF_EXT_FILTER;
-    case FileType::MOVIE: return PFF_MOVIE_EXT;
-    case FileType::SOUND: return PFF_SOUND_EXT_FILTER;
-    case FileType::PALETTE: return PFF_PALETTE_EXT_FILTER;
+    case FileType::ANIMATION:
+        return PFF_PROJECT_EXT_FILTER;
+    case FileType::IMAGE:
+        return PFF_IMAGE_FILTER;
+    case FileType::IMAGE_SEQUENCE:
+        return PFF_IMAGE_SEQ_FILTER;
+    case FileType::GIF:
+        return PFF_GIF_EXT_FILTER;
+    case FileType::MOVIE:
+        return PFF_MOVIE_EXT;
+    case FileType::SOUND:
+        return PFF_SOUND_EXT_FILTER;
+    case FileType::PALETTE:
+        return PFF_PALETTE_EXT_FILTER;
     }
     return "";
 }
@@ -194,13 +217,20 @@ QString FileDialog::saveFileFilters(FileType fileType)
 {
     switch (fileType)
     {
-    case FileType::ANIMATION: return PFF_PROJECT_EXT_FILTER;
-    case FileType::IMAGE: return "";
-    case FileType::IMAGE_SEQUENCE: return "";
-    case FileType::GIF: return QString("%1 (*.gif)").arg(tr("Animated GIF"));
-    case FileType::MOVIE: return "MP4 (*.mp4);; AVI (*.avi);; WebM (*.webm);; APNG (*.apng)";
-    case FileType::SOUND: return "";
-    case FileType::PALETTE: return PFF_PALETTE_EXT_FILTER;
+    case FileType::ANIMATION:
+        return PFF_PROJECT_EXT_FILTER;
+    case FileType::IMAGE:
+        return "";
+    case FileType::IMAGE_SEQUENCE:
+        return "";
+    case FileType::GIF:
+        return QString("%1 (*.gif)").arg(tr("Animated GIF"));
+    case FileType::MOVIE:
+        return "MP4 (*.mp4);; AVI (*.avi);; WebM (*.webm);; APNG (*.apng)";
+    case FileType::SOUND:
+        return "";
+    case FileType::PALETTE:
+        return PFF_PALETTE_EXT_FILTER;
     }
     return "";
 }
@@ -237,13 +267,20 @@ QString FileDialog::defaultFileName(FileType fileType)
 {
     switch (fileType)
     {
-    case FileType::ANIMATION: return tr("MyAnimation.pclx");
-    case FileType::IMAGE: return tr("untitled.png");
-    case FileType::IMAGE_SEQUENCE: return tr("untitled.png");
-    case FileType::GIF: return tr("untitled.gif");
-    case FileType::MOVIE: return tr("untitled.mp4");
-    case FileType::SOUND: return tr("untitled.wav");
-    case FileType::PALETTE: return tr("untitled.xml");
+    case FileType::ANIMATION:
+        return tr("MyAnimation.pclx");
+    case FileType::IMAGE:
+        return tr("untitled.png");
+    case FileType::IMAGE_SEQUENCE:
+        return tr("untitled.png");
+    case FileType::GIF:
+        return tr("untitled.gif");
+    case FileType::MOVIE:
+        return tr("untitled.mp4");
+    case FileType::SOUND:
+        return tr("untitled.wav");
+    case FileType::PALETTE:
+        return tr("untitled.xml");
     }
     return "";
 }
@@ -252,13 +289,20 @@ QString FileDialog::toSettingKey(FileType fileType)
 {
     switch (fileType)
     {
-    case FileType::ANIMATION: return "Animation";
-    case FileType::IMAGE: return "Image";
-    case FileType::IMAGE_SEQUENCE: return "ImageSequence";
-    case FileType::GIF: return "Animated GIF";
-    case FileType::MOVIE: return "Movie";
-    case FileType::SOUND: return "Sound";
-    case FileType::PALETTE: return "Palette";
+    case FileType::ANIMATION:
+        return "Animation";
+    case FileType::IMAGE:
+        return "Image";
+    case FileType::IMAGE_SEQUENCE:
+        return "ImageSequence";
+    case FileType::GIF:
+        return "Animated GIF";
+    case FileType::MOVIE:
+        return "Movie";
+    case FileType::SOUND:
+        return "Sound";
+    case FileType::PALETTE:
+        return "Palette";
     }
     return "";
 }

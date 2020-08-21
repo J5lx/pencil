@@ -1,14 +1,14 @@
 #ifndef POINTEREVENT_H
 #define POINTEREVENT_H
 
-#include <QTabletEvent>
 #include <QMouseEvent>
+#include <QTabletEvent>
 
 class PointerEvent
 {
 public:
-    PointerEvent(QMouseEvent* event);
-    PointerEvent(QTabletEvent* event);
+    PointerEvent(QMouseEvent *event);
+    PointerEvent(QTabletEvent *event);
     ~PointerEvent();
 
     /**
@@ -69,8 +69,8 @@ public:
     QTabletEvent::PointerType pointerType() const;
 
 private:
-    QTabletEvent* mTabletEvent = nullptr;
-    QMouseEvent* mMouseEvent = nullptr;
+    QTabletEvent *mTabletEvent = nullptr;
+    QMouseEvent *mMouseEvent = nullptr;
 };
 
 #endif // POINTEREVENT_H

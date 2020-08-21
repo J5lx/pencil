@@ -3,11 +3,10 @@
 
 namespace PlatformHandler
 {
-
 void configurePlatformSpecificSettings();
 bool isDarkMode();
 void initialise();
 
-}
+} // namespace PlatformHandler
 
 #endif // PLATFORMHANDLER_H

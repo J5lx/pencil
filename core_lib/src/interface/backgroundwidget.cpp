@@ -17,22 +17,19 @@ GNU General Public License for more details.
 
 #include "backgroundwidget.h"
 
-#include <QStyleOption>
 #include <QPainter>
+#include <QStyleOption>
 
-
-BackgroundWidget::BackgroundWidget(QWidget* parent) : QWidget(parent)
+BackgroundWidget::BackgroundWidget(QWidget *parent) : QWidget(parent)
 {
     setObjectName("BackgroundWidget");
 
     // Qt::WA_StaticContents ensure that the widget contents are rooted to the top-left corner
     // and don't change when the widget is resized.
-    setAttribute( Qt::WA_StaticContents );
+    setAttribute(Qt::WA_StaticContents);
 }
 
-BackgroundWidget::~BackgroundWidget()
-{
-}
+BackgroundWidget::~BackgroundWidget() {}
 
 void BackgroundWidget::init(PreferenceManager *prefs)
 {
@@ -47,7 +44,7 @@ void BackgroundWidget::init(PreferenceManager *prefs)
 
 void BackgroundWidget::settingUpdated(SETTING setting)
 {
-    switch ( setting )
+    switch (setting)
     {
     case SETTING::BACKGROUND_STYLE:
 
@@ -82,29 +79,33 @@ void BackgroundWidget::loadBackgroundStyle()
     QString bgName = mPrefs->getString(SETTING::BACKGROUND_STYLE);
     mStyle = "background-color:white; border: 1px solid lightGrey;";
 
-    if ( bgName == "white" )
+    if (bgName == "white")
     {
         mStyle = "background-color:white; border: 1px solid lightGrey;";
     }
-    else if ( bgName == "grey" )
+    else if (bgName == "grey")
     {
         mStyle = "background-color:lightGrey; border: 1px solid grey;";
     }
-    else if ( bgName == "checkerboard" )
+    else if (bgName == "checkerboard")
     {
-        mStyle = "background-image: url(:background/checkerboard.png); background-repeat: repeat-xy; border: 1px solid lightGrey;";
+        mStyle = "background-image: url(:background/checkerboard.png); background-repeat: repeat-xy; border: 1px solid "
+                 "lightGrey;";
     }
-    else if ( bgName == "dots" )
+    else if (bgName == "dots")
     {
-        mStyle = "background-image: url(:background/dots.png); background-repeat: repeat-xy; border: 1px solid lightGrey;";
+        mStyle =
+            "background-image: url(:background/dots.png); background-repeat: repeat-xy; border: 1px solid lightGrey;";
     }
-    else if ( bgName == "weave" )
+    else if (bgName == "weave")
     {
-        mStyle = "background-image: url(:background/weave.jpg); background-repeat: repeat-xy; border: 1px solid lightGrey;";
+        mStyle =
+            "background-image: url(:background/weave.jpg); background-repeat: repeat-xy; border: 1px solid lightGrey;";
     }
-    else if ( bgName == "grid" )
+    else if (bgName == "grid")
     {
-        mStyle = "background-image: url(:background/grid.jpg); background-repeat: repeat-xy; border: 1px solid lightGrey;";
+        mStyle =
+            "background-image: url(:background/grid.jpg); background-repeat: repeat-xy; border: 1px solid lightGrey;";
     }
 
     mStyle = QString("BackgroundWidget { %1 }").arg(mStyle);
@@ -112,7 +113,7 @@ void BackgroundWidget::loadBackgroundStyle()
     setStyleSheet(mStyle);
 }
 
-void BackgroundWidget::drawShadow( QPainter& painter )
+void BackgroundWidget::drawShadow(QPainter &painter)
 {
     int radius1 = 12;
     int radius2 = 8;
@@ -120,30 +121,30 @@ void BackgroundWidget::drawShadow( QPainter& painter )
     QColor color = Qt::black;
     qreal opacity = 0.15;
 
-    QLinearGradient shadow = QLinearGradient( 0, 0, 0, radius1 );
+    QLinearGradient shadow = QLinearGradient(0, 0, 0, radius1);
 
     int r = color.red();
     int g = color.green();
     int b = color.blue();
     qreal a = color.alphaF();
-    shadow.setColorAt( 0.0, QColor( r, g, b, qRound( a * 255 * opacity ) ) );
-    shadow.setColorAt( 1.0, QColor( r, g, b, 0 ) );
+    shadow.setColorAt(0.0, QColor(r, g, b, qRound(a * 255 * opacity)));
+    shadow.setColorAt(1.0, QColor(r, g, b, 0));
 
-    painter.setPen( Qt::NoPen );
-    painter.setBrush( shadow );
-    painter.drawRect( QRect( 0, 0, width(), radius1 ) );
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(shadow);
+    painter.drawRect(QRect(0, 0, width(), radius1));
 
-    shadow.setFinalStop( radius1, 0 );
-    painter.setBrush( shadow );
-    painter.drawRect( QRect( 0, 0, radius1, height() ) );
+    shadow.setFinalStop(radius1, 0);
+    painter.setBrush(shadow);
+    painter.drawRect(QRect(0, 0, radius1, height()));
 
-    shadow.setStart( 0, height() );
-    shadow.setFinalStop( 0, height() - radius2 );
-    painter.setBrush( shadow );
-    painter.drawRect( QRect( 0, height() - radius2, width(), height() ) );
+    shadow.setStart(0, height());
+    shadow.setFinalStop(0, height() - radius2);
+    painter.setBrush(shadow);
+    painter.drawRect(QRect(0, height() - radius2, width(), height()));
 
-    shadow.setStart( width(), 0 );
-    shadow.setFinalStop( width() - radius2, 0 );
-    painter.setBrush( shadow );
-    painter.drawRect( QRect( width() - radius2, 0, width(), height() ) );
+    shadow.setStart(width(), 0);
+    shadow.setFinalStop(width() - radius2, 0);
+    painter.setBrush(shadow);
+    painter.drawRect(QRect(width() - radius2, 0, width(), height()));
 }

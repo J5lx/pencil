@@ -16,19 +16,18 @@ GNU General Public License for more details.
 */
 
 #include "checkupdatesdialog.h"
-#include <QNetworkReply>
-#include <QNetworkAccessManager>
+#include <QDesktopServices>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QLabel>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include <QProgressBar>
 #include <QPushButton>
-#include <QDesktopServices>
+#include <QVBoxLayout>
 #include <QVersionNumber>
 #include <QXmlStreamReader>
 
 #include "util.h"
-
 
 CheckUpdatesDialog::CheckUpdatesDialog()
 {
@@ -36,7 +35,7 @@ CheckUpdatesDialog::CheckUpdatesDialog()
     setWindowFlags(eFlags);
     setMinimumSize(QSize(400, 150));
 
-    QLabel* logoLabel = new QLabel;
+    QLabel *logoLabel = new QLabel;
     logoLabel->setPixmap(QPixmap(":/icons/logo.png"));
     logoLabel->setFixedSize(QSize(72, 72));
 
@@ -46,7 +45,7 @@ CheckUpdatesDialog::CheckUpdatesDialog()
     mDetailLabel = new QLabel;
     mDetailLabel->setWordWrap(true);
 
-    //If minimum and maximum both are set to 0, the bar shows a busy indicator instead of a percentage of steps.
+    // If minimum and maximum both are set to 0, the bar shows a busy indicator instead of a percentage of steps.
     mProgressBar = new QProgressBar;
     mProgressBar->setMaximum(0);
     mProgressBar->setMinimum(0);
@@ -56,18 +55,18 @@ CheckUpdatesDialog::CheckUpdatesDialog()
     mDownloadButton = new QPushButton(tr("Download"));
     mCloseButton = new QPushButton(tr("Close"));
 
-    QHBoxLayout* hButtonLayout = new QHBoxLayout;
+    QHBoxLayout *hButtonLayout = new QHBoxLayout;
     hButtonLayout->addWidget(mDownloadButton);
     hButtonLayout->addWidget(mCloseButton);
 
-    QVBoxLayout* vLayout = new QVBoxLayout;
+    QVBoxLayout *vLayout = new QVBoxLayout;
     vLayout->addWidget(mTitleLabel);
     vLayout->addWidget(mDetailLabel);
     vLayout->addWidget(mProgressBar);
     vLayout->addSpacerItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
     vLayout->addLayout(hButtonLayout);
 
-    QHBoxLayout* mainLayout = new QHBoxLayout;
+    QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->addWidget(logoLabel);
     mainLayout->addLayout(vLayout);
     setLayout(mainLayout);
@@ -109,7 +108,8 @@ void CheckUpdatesDialog::nightlyBuildCheck()
 {
     mTitleLabel->setText(tr("<b>You are using a Pencil2D nightly build</b>"));
     mDetailLabel->setText(tr("Please go %1 here %2 to check new nightly builds.")
-                          .arg("<a href=\"https://www.pencil2d.org/download/#nightlybuild\">").arg("</a>"));
+                              .arg("<a href=\"https://www.pencil2d.org/download/#nightlybuild\">")
+                              .arg("</a>"));
     mDetailLabel->setOpenExternalLinks(true);
     mProgressBar->setRange(0, 1);
     mProgressBar->setValue(1);
@@ -119,7 +119,8 @@ void CheckUpdatesDialog::nightlyBuildCheck()
 void CheckUpdatesDialog::networkErrorHappened()
 {
     mTitleLabel->setText(tr("<b>An error occurred while checking for updates</b>", "error msg of check-for-update"));
-    mDetailLabel->setText(tr("Please check your internet connection and try again later.", "error msg of check-for-update"));
+    mDetailLabel->setText(
+        tr("Please check your internet connection and try again later.", "error msg of check-for-update"));
     mProgressBar->setRange(0, 1);
     mProgressBar->setValue(1);
     mDownloadButton->setEnabled(false);
@@ -143,7 +144,7 @@ void CheckUpdatesDialog::invalidReleaseXml()
     mDownloadButton->setEnabled(false);
 }
 
-void CheckUpdatesDialog::networkRequestFinished(QNetworkReply* reply)
+void CheckUpdatesDialog::networkRequestFinished(QNetworkReply *reply)
 {
     reply->deleteLater();
 
@@ -175,8 +176,8 @@ void CheckUpdatesDialog::networkRequestFinished(QNetworkReply* reply)
     {
         mTitleLabel->setText(tr("<b>A new version of Pencil2D is available!</b>"));
         mDetailLabel->setText(tr("Pencil2D %1 is now available -- you have %2. Would you like to download it?")
-                              .arg(latestVersionString)
-                              .arg(APP_VERSION));
+                                  .arg(latestVersionString)
+                                  .arg(APP_VERSION));
         mProgressBar->hide();
         mDownloadButton->setEnabled(true);
     }

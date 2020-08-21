@@ -17,15 +17,15 @@ GNU General Public License for more details.
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <memory>
-#include <QObject>
-#include <QList>
-#include <QColor>
-#include "layer.h"
 #include "colorref.h"
-#include "pencilerror.h"
-#include "pencildef.h"
+#include "layer.h"
 #include "objectdata.h"
+#include "pencildef.h"
+#include "pencilerror.h"
+#include <QColor>
+#include <QList>
+#include <QObject>
+#include <memory>
 
 class QProgressDialog;
 class QFile;
@@ -36,13 +36,12 @@ class LayerSound;
 class ObjectData;
 class ActiveFramePool;
 
-
 struct ExportMovieParameters
 {
     int startFrame;
     int endFrame;
     QTransform view;
-    Layer* currentLayer;
+    Layer *currentLayer;
     QSize exportSize;
     QString filePath;
     int fps;
@@ -50,13 +49,12 @@ struct ExportMovieParameters
     QString exportFormat;
 };
 
-
 class Object : public QObject
 {
     Q_OBJECT
 
 public:
-    Object(QObject* parent = nullptr);
+    Object(QObject *parent = nullptr);
     virtual ~Object();
 
     void init();
@@ -65,20 +63,20 @@ public:
     void createDefaultLayers();
 
     QString filePath() const { return mFilePath; }
-    void    setFilePath(QString strFileName) { mFilePath = strFileName; }
+    void setFilePath(QString strFileName) { mFilePath = strFileName; }
 
     QString workingDir() const { return mWorkingDirPath; }
 
     QString dataDir() const { return mDataDirPath; }
-    void    setDataDir(QString dirPath) { mDataDirPath = dirPath; }
+    void setDataDir(QString dirPath) { mDataDirPath = dirPath; }
 
     QString mainXMLFile() const { return mMainXMLFile; }
-    void    setMainXMLFile(QString file) { mMainXMLFile = file; }
+    void setMainXMLFile(QString file) { mMainXMLFile = file; }
 
-    QDomElement saveXML(QDomDocument& doc);
+    QDomElement saveXML(QDomDocument &doc);
     bool loadXML(QDomElement element, ProgressCallback progressForward);
 
-    void paintImage(QPainter& painter, int frameNumber, bool background, bool antialiasing) const;
+    void paintImage(QPainter &painter, int frameNumber, bool background, bool antialiasing) const;
 
     QString copyFileToDataFolder(QString strFilePath);
 
@@ -97,38 +95,37 @@ public:
     void renameColor(int i, QString text);
     int getColorCount() { return mPalette.size(); }
     bool importPalette(QString filePath);
-    void importPaletteGPL(QFile& file);
-    void importPalettePencil(QFile& file);
+    void importPaletteGPL(QFile &file);
+    void importPalettePencil(QFile &file);
     void openPalette(QString filePath);
 
     bool exportPalette(QString filePath);
-    void exportPaletteGPL(QFile& file);
-    void exportPalettePencil(QFile& file);
+    void exportPaletteGPL(QFile &file);
+    void exportPalettePencil(QFile &file);
     QString savePalette(QString filePath);
 
     void loadDefaultPalette();
 
-    LayerBitmap* addNewBitmapLayer();
-    LayerVector* addNewVectorLayer();
-    LayerSound* addNewSoundLayer();
-    LayerCamera* addNewCameraLayer();
+    LayerBitmap *addNewBitmapLayer();
+    LayerVector *addNewVectorLayer();
+    LayerSound *addNewSoundLayer();
+    LayerCamera *addNewCameraLayer();
 
-    int  getLayerCount() const;
-    Layer* getLayer(int i) const;
-    Layer* findLayerByName(QString strName, Layer::LAYER_TYPE type = Layer::UNDEFINED) const;
+    int getLayerCount() const;
+    Layer *getLayer(int i) const;
+    Layer *findLayerByName(QString strName, Layer::LAYER_TYPE type = Layer::UNDEFINED) const;
 
     bool swapLayers(int i, int j);
     void deleteLayer(int i);
-    void deleteLayer(Layer*);
-    void addLayer(Layer* layer);
+    void deleteLayer(Layer *);
+    void addLayer(Layer *layer);
 
-    template<typename T>
-    std::vector<T*> getLayersByType() const
+    template<typename T> std::vector<T *> getLayersByType() const
     {
-        std::vector<T*> result;
-        for (Layer* layer : mLayers)
+        std::vector<T *> result;
+        for (Layer *layer : mLayers)
         {
-            T* t = dynamic_cast<T*>(layer);
+            T *t = dynamic_cast<T *>(layer);
             if (t)
                 result.push_back(t);
         }
@@ -136,10 +133,27 @@ public:
     }
 
     // these functions need to be moved to somewhere...
-    bool exportFrames(int frameStart, int frameEnd, LayerCamera* cameraLayer, QSize exportSize, QString filePath, QString format,
-                      bool transparency, bool exportKeyframesOnly, QString layerName, bool antialiasing, QProgressDialog* progress, int progressMax);
+    bool exportFrames(int frameStart,
+                      int frameEnd,
+                      LayerCamera *cameraLayer,
+                      QSize exportSize,
+                      QString filePath,
+                      QString format,
+                      bool transparency,
+                      bool exportKeyframesOnly,
+                      QString layerName,
+                      bool antialiasing,
+                      QProgressDialog *progress,
+                      int progressMax);
     bool exportX(int frameStart, int frameEnd, QTransform view, QSize exportSize, QString filePath, bool antialiasing);
-    bool exportIm(int frameStart, QTransform view, QSize cameraSize, QSize exportSize, QString filePath, QString format, bool antialiasing, bool transparency);
+    bool exportIm(int frameStart,
+                  QTransform view,
+                  QSize cameraSize,
+                  QSize exportSize,
+                  QString filePath,
+                  QString format,
+                  bool antialiasing,
+                  bool transparency);
 
     void modification() { modified = true; }
     bool isModified() { return modified; }
@@ -147,8 +161,8 @@ public:
 
     int getUniqueLayerID();
 
-    ObjectData* data();
-    void setData(ObjectData*);
+    ObjectData *data();
+    void setData(ObjectData *);
 
     int totalKeyFrameCount();
     void updateActiveFrames(int frame) const;
@@ -166,7 +180,7 @@ private:
     QString mDataDirPath;    //< the folder which contains all bitmap & vector image & sound files.
     QString mMainXMLFile;    //< the location of main.xml
 
-    QList<Layer*> mLayers;
+    QList<Layer *> mLayers;
     bool modified = false;
 
     QList<ColorRef> mPalette;
@@ -174,6 +188,5 @@ private:
     std::unique_ptr<ObjectData> mData;
     mutable std::unique_ptr<ActiveFramePool> mActiveFramePool;
 };
-
 
 #endif

@@ -18,9 +18,8 @@ GNU General Public License for more details.
 #ifndef TIMELINECELLS_H
 #define TIMELINECELLS_H
 
-#include <QWidget>
 #include <QString>
-
+#include <QWidget>
 
 class TimeLine;
 class QPaintEvent;
@@ -41,7 +40,7 @@ class TimeLineCells : public QWidget
     Q_OBJECT
 
 public:
-    TimeLineCells( TimeLine* parent, Editor* editor, TIMELINE_CELL_TYPE );
+    TimeLineCells(TimeLine *parent, Editor *editor, TIMELINE_CELL_TYPE);
     ~TimeLineCells();
 
     int getLayerNumber(int y);
@@ -53,14 +52,19 @@ public:
     int getOffsetX() { return mOffsetX; }
     int getOffsetY() { return mOffsetY; }
     int getLayerHeight() { return mLayerHeight; }
-    
-    int getFrameLength() {return mFrameLength;}
+
+    int getFrameLength() { return mFrameLength; }
     void setFrameLength(int n) { mFrameLength = n; }
     void setFrameSize(int size);
 
     int getFrameSize() { return mFrameSize; }
-    void clearCache() { if ( mCache ) delete mCache; mCache = new QPixmap( size() ); }
-    void paintLayerGutter(QPainter& painter);
+    void clearCache()
+    {
+        if (mCache)
+            delete mCache;
+        mCache = new QPixmap(size());
+    }
+    void paintLayerGutter(QPainter &painter);
     bool didDetatchLayer();
     int getCurrentFrame() { return mCurrentFrame; }
 
@@ -79,26 +83,25 @@ public slots:
 protected:
     void trackScrubber();
     void drawContent();
-    void paintOnionSkin(QPainter& painter);
-    void paintEvent(QPaintEvent* event);
-    void resizeEvent(QResizeEvent* event);
-    void mousePressEvent(QMouseEvent* event);
-    void mouseMoveEvent(QMouseEvent* event);
-    void mouseReleaseEvent(QMouseEvent* event);
-    void mouseDoubleClickEvent(QMouseEvent* event);
+    void paintOnionSkin(QPainter &painter);
+    void paintEvent(QPaintEvent *event);
+    void resizeEvent(QResizeEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
 
 private slots:
     void loadSetting(SETTING setting);
 
 private:
-
-    TimeLine* mTimeLine;
-    Editor* mEditor; // the editor for which this timeLine operates
-    PreferenceManager* mPrefs;
+    TimeLine *mTimeLine;
+    Editor *mEditor; // the editor for which this timeLine operates
+    PreferenceManager *mPrefs;
 
     TIMELINE_CELL_TYPE mType;
 
-    QPixmap* mCache = nullptr;
+    QPixmap *mCache = nullptr;
     bool mDrawFrameNumber = true;
     bool mbShortScrub = false;
     int mFrameLength = 1;
@@ -107,13 +110,13 @@ private:
     bool mScrubbing = false;
     int mLayerHeight = 20;
     int mStartY = 0;
-    int mEndY   = 0;
+    int mEndY = 0;
 
     int mCurrentFrame = 0;
     int mLastScrubFrame = 0;
 
     int mFromLayer = 0;
-    int mToLayer   = 1;
+    int mToLayer = 1;
     int mStartLayerNumber = -1;
     int mStartFrameNumber = 0;
     int mLastFrameNumber = -1;
@@ -124,11 +127,11 @@ private:
     int mLayerOffset = 0;
     Qt::MouseButton primaryButton = Qt::NoButton;
 
-    bool mCanMoveFrame   = false;
-    bool mMovingFrames   = false;
+    bool mCanMoveFrame = false;
+    bool mMovingFrames = false;
 
-    bool mCanBoxSelect   = false;
-    bool mBoxSelecting   = false;
+    bool mCanBoxSelect = false;
+    bool mBoxSelecting = false;
 
     bool mClickSelecting = false;
 

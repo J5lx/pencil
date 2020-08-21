@@ -27,19 +27,19 @@ class PencilTool : public StrokeTool
 {
     Q_OBJECT
 public:
-    explicit PencilTool(QObject* parent);
+    explicit PencilTool(QObject *parent);
     ToolType type() override { return PENCIL; }
     void loadSettings() override;
     QCursor cursor() override;
     void resetToDefault() override;
 
-    void pointerPressEvent(PointerEvent*) override;
-    void pointerMoveEvent(PointerEvent*) override;
-    void pointerReleaseEvent(PointerEvent*) override;
+    void pointerPressEvent(PointerEvent *) override;
+    void pointerMoveEvent(PointerEvent *) override;
+    void pointerReleaseEvent(PointerEvent *) override;
 
     void drawStroke();
     void paintAt(QPointF point);
-    void paintVectorStroke(Layer* layer);
+    void paintVectorStroke(Layer *layer);
     void paintBitmapStroke();
 
     void setWidth(const qreal width) override;
@@ -52,8 +52,8 @@ public:
     void setUseFillContour(const bool useFillContour) override;
 
 private:
-    QColor mCurrentPressuredColor{ 0, 0, 0, 255 };
-    QPointF mLastBrushPoint{ 0, 0 };
+    QColor mCurrentPressuredColor{0, 0, 0, 255};
+    QPointF mLastBrushPoint{0, 0};
     qreal mOpacity = 1.0f;
     QPointF mMouseDownPoint;
 };

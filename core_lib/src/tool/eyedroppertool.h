@@ -27,22 +27,22 @@ class EyedropperTool : public BaseTool
 {
     Q_OBJECT
 public:
-    explicit EyedropperTool( QObject* parent = 0 );
+    explicit EyedropperTool(QObject *parent = 0);
     ToolType type() override { return EYEDROPPER; }
     void loadSettings() override;
     QCursor cursor() override;
-    QCursor cursor( const QColor color );
+    QCursor cursor(const QColor color);
 
-    void pointerPressEvent( PointerEvent* ) override;
-    void pointerReleaseEvent( PointerEvent* event ) override;
-    void pointerMoveEvent( PointerEvent* ) override;
+    void pointerPressEvent(PointerEvent *) override;
+    void pointerReleaseEvent(PointerEvent *event) override;
+    void pointerMoveEvent(PointerEvent *) override;
 
     /** Updates front color for bitmap and color index for vector */
     void updateFrontColor();
 
 private:
     /** Retrieves color of the pixel under the cursor for a bitmap layer */
-    QColor getBitmapColor(LayerBitmap* layer);
+    QColor getBitmapColor(LayerBitmap *layer);
     /** Retrieves the color index of the pixel under the cursor for a vector layer */
     int getVectorColor(LayerVector *layer);
 };

@@ -17,8 +17,8 @@ GNU General Public License for more details.
 #ifndef TOOLBOXWIDGET_H
 #define TOOLBOXWIDGET_H
 
-#include "pencildef.h"
 #include "basedockwidget.h"
+#include "pencildef.h"
 
 class QToolButton;
 class QGridLayout;
@@ -28,7 +28,8 @@ class DisplayOptionWidget;
 class ToolOptionWidget;
 class Editor;
 
-namespace Ui {
+namespace Ui
+{
 class ToolBoxWidget;
 }
 
@@ -37,7 +38,7 @@ class ToolBoxWidget : public BaseDockWidget
     Q_OBJECT
 
 public:
-    ToolBoxWidget(QWidget* parent);
+    ToolBoxWidget(QWidget *parent);
     ~ToolBoxWidget() override;
 
     void initUI() override;
@@ -64,9 +65,9 @@ signals:
 
 private:
     void deselectAllTools();
-    bool leavingTool(QToolButton*);
+    bool leavingTool(QToolButton *);
 
-    Ui::ToolBoxWidget* ui = nullptr;
+    Ui::ToolBoxWidget *ui = nullptr;
 };
 
 #endif

@@ -19,25 +19,24 @@ GNU General Public License for more details.
 
 #include "basedockwidget.h"
 
-
-namespace Ui {
+namespace Ui
+{
 class Timeline2;
 }
-
 
 class Timeline2 : public BaseDockWidget
 {
     Q_OBJECT
 
 public:
-    explicit Timeline2(QWidget* parent = nullptr);
+    explicit Timeline2(QWidget *parent = nullptr);
     ~Timeline2() override;
 
     void initUI() override;
     void updateUI() override;
 
 private:
-    Ui::Timeline2* ui;
+    Ui::Timeline2 *ui;
 };
 
 #endif // TIMELINE2_H

@@ -20,14 +20,13 @@
 
 #include "strokemanager.h"
 
-#include <cmath>
-#include <limits>
+#include "object.h"
+#include "pointerevent.h"
 #include <QDebug>
 #include <QLineF>
 #include <QPainterPath>
-#include "object.h"
-#include "pointerevent.h"
-
+#include <cmath>
+#include <limits>
 
 StrokeManager::StrokeManager()
 {
@@ -56,12 +55,12 @@ void StrokeManager::setPressure(float pressure)
     mTabletPressure = pressure;
 }
 
-void StrokeManager::pointerPressEvent(PointerEvent* event)
+void StrokeManager::pointerPressEvent(PointerEvent *event)
 {
     reset();
     if (!(event->button() == Qt::NoButton)) // if the user is pressing the left/right button
     {
-        //qDebug() << "press";
+        // qDebug() << "press";
         mLastPressPixel = mCurrentPressPixel;
         mCurrentPressPixel = event->posF();
     }
@@ -72,7 +71,7 @@ void StrokeManager::pointerPressEvent(PointerEvent* event)
     setPressure(event->pressure());
 }
 
-void StrokeManager::pointerMoveEvent(PointerEvent* event)
+void StrokeManager::pointerMoveEvent(PointerEvent *event)
 {
     // only applied to drawing tools.
     if (mStabilizerLevel != -1)
@@ -86,13 +85,13 @@ void StrokeManager::pointerMoveEvent(PointerEvent* event)
         mCurrentPixel = event->posF();
         mLastInterpolated = mCurrentPixel;
     }
-    if(event->isTabletEvent())
+    if (event->isTabletEvent())
     {
         setPressure(event->pressure());
     }
 }
 
-void StrokeManager::pointerReleaseEvent(PointerEvent* event)
+void StrokeManager::pointerReleaseEvent(PointerEvent *event)
 {
     // flush out stroke
     if (mStrokeStarted)
@@ -151,12 +150,11 @@ void StrokeManager::smoothMousePos(QPointF pos)
         return;
     }
 
-    if (!mTabletInUse)   // a mouse is used instead of a tablet
+    if (!mTabletInUse) // a mouse is used instead of a tablet
     {
         setPressure(1.0);
     }
 }
-
 
 QPointF StrokeManager::interpolateStart(QPointF firstPoint)
 {
@@ -179,7 +177,7 @@ QPointF StrokeManager::interpolateStart(QPointF firstPoint)
         // Clear queue
         strokeQueue.clear();
         pressureQueue.clear();
-    
+
         const int sampleSize = 5;
         Q_ASSERT(sampleSize > 0);
 
@@ -218,7 +216,7 @@ void StrokeManager::interpolatePoll()
 
 void StrokeManager::interpolatePollAndPaint()
 {
-    //qDebug() <<"inpol:" << mStabilizerLevel << "strokes"<< strokeQueue;
+    // qDebug() <<"inpol:" << mStabilizerLevel << "strokes"<< strokeQueue;
     if (!strokeQueue.isEmpty())
     {
         interpolatePoll();
@@ -234,7 +232,6 @@ QList<QPointF> StrokeManager::interpolateStroke()
     if (mStabilizerLevel == StabilizationLevel::SIMPLE)
     {
         result = tangentInpolOp(result);
-
     }
     else if (mStabilizerLevel == StabilizationLevel::STRONG)
     {
@@ -242,7 +239,6 @@ QList<QPointF> StrokeManager::interpolateStroke()
         qreal y = 0;
         qreal pressure = 0;
         result = meanInpolOp(result, x, y, pressure);
-
     }
     else if (mStabilizerLevel == StabilizationLevel::NONE)
     {
@@ -281,7 +277,7 @@ QList<QPointF> StrokeManager::tangentInpolOp(QList<QPointF> points)
                  << "last pixel" << mLastPixel;
          */
         m_previousTangent = (mCurrentPixel - mLastPixel) * smoothness / (3.0 * scaleFactor);
-        //qDebug() << "previous tangent" << m_previousTangent;
+        // qDebug() << "previous tangent" << m_previousTangent;
         QLineF _line(QPointF(0, 0), m_previousTangent);
         // don't bother for small tangents, as they can induce single pixel wobbliness
         if (_line.length() < 2)
@@ -293,24 +289,24 @@ QList<QPointF> StrokeManager::tangentInpolOp(QList<QPointF> points)
     {
         QPointF c1 = mLastPixel + m_previousTangent * scaleFactor;
         QPointF newTangent = (mCurrentPixel - c1) * smoothness / (3.0 * scaleFactor);
-        //qDebug() << "scalefactor1=" << scaleFactor << m_previousTangent << newTangent;
+        // qDebug() << "scalefactor1=" << scaleFactor << m_previousTangent << newTangent;
         if (scaleFactor == 0)
         {
             newTangent = QPointF(0, 0);
         }
         else
         {
-            //QLineF _line(QPointF(0,0), newTangent);
-            //if (_line.length() < 2)
+            // QLineF _line(QPointF(0,0), newTangent);
+            // if (_line.length() < 2)
             //{
             //    newTangent = QPointF(0,0);
             //}
         }
         QPointF c2 = mCurrentPixel - newTangent * scaleFactor;
-        //c1 = mLastPixel;
-        //c2 = mCurrentPixel;
+        // c1 = mLastPixel;
+        // c2 = mCurrentPixel;
         points << mLastPixel << c1 << c2 << mCurrentPixel;
-        //qDebug() << mLastPixel << c1 << c2 << mCurrentPixel;
+        // qDebug() << mLastPixel << c1 << c2 << mCurrentPixel;
         m_previousTangent = newTangent;
     }
 

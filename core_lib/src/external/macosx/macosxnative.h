@@ -3,11 +3,11 @@
 
 namespace MacOSXNative
 {
-    void removeUnwantedMenuItems();
+void removeUnwantedMenuItems();
 
-    bool isMouseCoalescingEnabled();
-    void setMouseCoalescingEnabled(bool enabled);
-    bool isDarkMode();
-}
+bool isMouseCoalescingEnabled();
+void setMouseCoalescingEnabled(bool enabled);
+bool isDarkMode();
+} // namespace MacOSXNative
 
 #endif // MACOSXNATIVE_H

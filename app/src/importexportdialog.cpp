@@ -17,10 +17,10 @@ GNU General Public License for more details.
 
 #include "importexportdialog.h"
 #include "ui_importexportdialog.h"
-#include <QFileInfo>
 #include <QDialogButtonBox>
+#include <QFileInfo>
 
-ImportExportDialog::ImportExportDialog(QWidget* parent, Mode eMode, FileType eFileType) : QDialog(parent)
+ImportExportDialog::ImportExportDialog(QWidget *parent, Mode eMode, FileType eFileType) : QDialog(parent)
 {
     mMode = eMode;
     mFileType = eFileType;
@@ -40,11 +40,10 @@ ImportExportDialog::~ImportExportDialog()
     delete ui;
 }
 
-QDialogButtonBox* ImportExportDialog::getDialogButtonBox()
+QDialogButtonBox *ImportExportDialog::getDialogButtonBox()
 {
     return ui->buttonBox;
 }
-
 
 QString ImportExportDialog::getFilePath() const
 {
@@ -67,7 +66,7 @@ void ImportExportDialog::hideInstructionsLabel(bool hide)
     ui->instructionsLabel->setHidden(hide);
 }
 
-void ImportExportDialog::setInstructionsLabel(const QString& text)
+void ImportExportDialog::setInstructionsLabel(const QString &text)
 {
     ui->instructionsLabel->setText(text);
 }
@@ -76,21 +75,21 @@ void ImportExportDialog::init()
 {
     switch (mMode)
     {
-        case Import:
-            m_filePaths = QStringList(m_fileDialog->getLastOpenPath(mFileType));
-            break;
-        case Export:
-            m_filePaths = QStringList(m_fileDialog->getLastSavePath(mFileType));
-            break;
-        default:
-            Q_ASSERT(false);
+    case Import:
+        m_filePaths = QStringList(m_fileDialog->getLastOpenPath(mFileType));
+        break;
+    case Export:
+        m_filePaths = QStringList(m_fileDialog->getLastSavePath(mFileType));
+        break;
+    default:
+        Q_ASSERT(false);
     }
     ui->fileEdit->setText("\"" + m_filePaths.first() + "\"");
 
     emit filePathsChanged(m_filePaths);
 }
 
-QGroupBox* ImportExportDialog::getOptionsGroupBox()
+QGroupBox *ImportExportDialog::getOptionsGroupBox()
 {
     return ui->optionsGroupBox;
 }
@@ -105,7 +104,7 @@ void ImportExportDialog::hidePreviewGroupBox(bool hide)
     ui->previewGroupBox->setHidden(hide);
 }
 
-QGroupBox* ImportExportDialog::getPreviewGroupBox()
+QGroupBox *ImportExportDialog::getPreviewGroupBox()
 {
     return ui->previewGroupBox;
 }
@@ -127,19 +126,19 @@ void ImportExportDialog::browse()
     QStringList filePaths;
     switch (mMode)
     {
-        case Import:
-            if (mFileType == FileType::IMAGE_SEQUENCE)
-            {
-                filePaths = m_fileDialog->openFiles( FileType::IMAGE_SEQUENCE );
-                break;
-            }
-            filePaths = QStringList(m_fileDialog->openFile(mFileType));
+    case Import:
+        if (mFileType == FileType::IMAGE_SEQUENCE)
+        {
+            filePaths = m_fileDialog->openFiles(FileType::IMAGE_SEQUENCE);
             break;
-        case Export:
-            filePaths = QStringList(m_fileDialog->saveFile(mFileType));
-            break;
-        default:
-            Q_ASSERT(false);
+        }
+        filePaths = QStringList(m_fileDialog->openFile(mFileType));
+        break;
+    case Export:
+        filePaths = QStringList(m_fileDialog->saveFile(mFileType));
+        break;
+    default:
+        Q_ASSERT(false);
     }
 
     if (filePaths.isEmpty() || filePaths.first().isEmpty())

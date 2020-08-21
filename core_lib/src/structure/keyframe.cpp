@@ -17,12 +17,9 @@ GNU General Public License for more details.
 
 #include "keyframe.h"
 
+KeyFrame::KeyFrame() {}
 
-KeyFrame::KeyFrame()
-{
-}
-
-KeyFrame::KeyFrame(const KeyFrame& k2)
+KeyFrame::KeyFrame(const KeyFrame &k2)
 {
     mFrame = k2.mFrame;
     mLength = k2.mLength;
@@ -33,13 +30,13 @@ KeyFrame::KeyFrame(const KeyFrame& k2)
 
 KeyFrame::~KeyFrame()
 {
-    for (KeyFrameEventListener* listener : mEventListeners)
+    for (KeyFrameEventListener *listener : mEventListeners)
     {
         listener->onKeyFrameDestroy(this);
     }
 }
 
-void KeyFrame::addEventListener(KeyFrameEventListener* listener)
+void KeyFrame::addEventListener(KeyFrameEventListener *listener)
 {
     auto it = std::find(mEventListeners.begin(), mEventListeners.end(), listener);
     if (it == mEventListeners.end())
@@ -48,7 +45,7 @@ void KeyFrame::addEventListener(KeyFrameEventListener* listener)
     }
 }
 
-void KeyFrame::removeEventListner(KeyFrameEventListener* listener)
+void KeyFrame::removeEventListner(KeyFrameEventListener *listener)
 {
     auto it = std::find(mEventListeners.begin(), mEventListeners.end(), listener);
     if (it != mEventListeners.end())

@@ -15,24 +15,24 @@ GNU General Public License for more details.
 
 */
 
-#include <QTranslator>
-#include <QLibraryInfo>
-#include <QCommandLineParser>
 #include <QCommandLineOption>
-#include <QSettings>
-#include <QFileInfo>
+#include <QCommandLineParser>
 #include <QDebug>
+#include <QFileInfo>
+#include <QLibraryInfo>
+#include <QSettings>
+#include <QTranslator>
 #include <clocale>
 
 #include "editor.h"
+#include "layercamera.h"
+#include "layermanager.h"
+#include "log.h"
 #include "mainwindow2.h"
 #include "pencilapplication.h"
-#include "layermanager.h"
-#include "layercamera.h"
 #include "platformhandler.h"
-#include "log.h"
 
-void installTranslator(PencilApplication& app)
+void installTranslator(PencilApplication &app)
 {
     QSettings setting(PENCIL2D, PENCIL2D);
     QString strUserLocale = setting.value(SETTING_LANGUAGE).toString();
@@ -43,13 +43,13 @@ void installTranslator(PencilApplication& app)
     QLocale::setDefault(QLocale(strUserLocale));
 
     strUserLocale.replace("-", "_");
-    QTranslator* qtTranslator = new QTranslator(&app);
+    QTranslator *qtTranslator = new QTranslator(&app);
     qtTranslator->load("qt_" + strUserLocale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app.installTranslator(qtTranslator);
 
     qDebug() << "Detect locale = " << strUserLocale;
 
-    QTranslator* pencil2DTranslator = new QTranslator(&app);
+    QTranslator *pencil2DTranslator = new QTranslator(&app);
     bool b = pencil2DTranslator->load(":/qm/pencil_" + strUserLocale);
 
     qDebug() << "Load translation = " << b;
@@ -59,26 +59,29 @@ void installTranslator(PencilApplication& app)
     qDebug() << "Install translation = " << b;
 }
 
-int handleArguments(PencilApplication& app)
+int handleArguments(PencilApplication &app)
 {
     QTextStream out(stdout);
     QTextStream err(stderr);
     QStringList args = PencilApplication::arguments();
     QString inputPath;
     QStringList outputPaths;
-    LayerCamera* cameraLayer = nullptr;
+    LayerCamera *cameraLayer = nullptr;
     int width = -1, height = -1, startFrame = 1, endFrame = -1;
     bool transparency = false;
 
     QCommandLineParser parser;
     args.removeOne("-NSDocumentRevisionsDebugMode");
 
-    parser.setApplicationDescription(QObject::tr("Pencil2D is an animation/drawing software for Mac OS X, Windows, and Linux. It lets you create traditional hand-drawn animation (cartoon) using both bitmap and vector graphics."));
+    parser.setApplicationDescription(
+        QObject::tr("Pencil2D is an animation/drawing software for Mac OS X, Windows, and Linux. It lets you create "
+                    "traditional hand-drawn animation (cartoon) using both bitmap and vector graphics."));
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addPositionalArgument("input", QObject::tr("Path to the input pencil file."));
 
-    QCommandLineOption exportOutOption(QStringList() << "o" << "export",
+    QCommandLineOption exportOutOption(QStringList() << "o"
+                                                     << "export",
                                        QObject::tr("Render the file to <output_path>"),
                                        QObject::tr("output_path"));
     parser.addOption(exportOutOption);
@@ -114,8 +117,8 @@ int handleArguments(PencilApplication& app)
 
     QCommandLineOption endOption(QStringList() << "end",
                                  QObject::tr("The last frame you want to include in the exported movie. "
-                                                       "Can also be last or last-sound to automatically use the last "
-                                                       "frame containing animation or sound, respectively"),
+                                             "Can also be last or last-sound to automatically use the last "
+                                             "frame containing animation or sound, respectively"),
                                  QObject::tr("frame"));
     parser.addOption(endOption);
 
@@ -139,7 +142,8 @@ int handleArguments(PencilApplication& app)
         width = parser.value(widthOption).toInt(&ok);
         if (!ok)
         {
-            err << QObject::tr("Warning: width value %1 is not an integer, ignoring.").arg(parser.value(widthOption)) << endl;
+            err << QObject::tr("Warning: width value %1 is not an integer, ignoring.").arg(parser.value(widthOption))
+                << endl;
             width = -1;
         }
     }
@@ -149,7 +153,8 @@ int handleArguments(PencilApplication& app)
         height = parser.value(heightOption).toInt(&ok);
         if (!ok)
         {
-            err << QObject::tr("Warning: height value %1 is not an integer, ignoring.").arg(parser.value(heightOption)) << endl;
+            err << QObject::tr("Warning: height value %1 is not an integer, ignoring.").arg(parser.value(heightOption))
+                << endl;
             height = -1;
         }
     }
@@ -159,7 +164,8 @@ int handleArguments(PencilApplication& app)
         startFrame = parser.value(startOption).toInt(&ok);
         if (!ok)
         {
-            err << QObject::tr("Warning: start value %1 is not an integer, ignoring.").arg(parser.value(startOption)) << endl;
+            err << QObject::tr("Warning: start value %1 is not an integer, ignoring.").arg(parser.value(startOption))
+                << endl;
             startFrame = 1;
         }
         if (startFrame < 1)
@@ -184,13 +190,18 @@ int handleArguments(PencilApplication& app)
             endFrame = parser.value(endOption).toInt(&ok);
             if (!ok)
             {
-                err << QObject::tr("Warning: end value %1 is not an integer, last or last-sound, ignoring.").arg(parser.value(endOption)) << endl;
+                err << QObject::tr("Warning: end value %1 is not an integer, last or last-sound, ignoring.")
+                           .arg(parser.value(endOption))
+                    << endl;
                 endFrame = -1;
             }
         }
         if (endFrame > -1 && endFrame < startFrame)
         {
-            err << QObject::tr("Warning: end value %1 is smaller than start value %2, ignoring.").arg(endFrame).arg(startFrame) << endl;
+            err << QObject::tr("Warning: end value %1 is smaller than start value %2, ignoring.")
+                       .arg(endFrame)
+                       .arg(startFrame)
+                << endl;
             endFrame = startFrame;
         }
     }
@@ -208,7 +219,8 @@ int handleArguments(PencilApplication& app)
         QFileInfo inputFileInfo(inputPath);
         if (!inputFileInfo.exists())
         {
-            err << QObject::tr("Error: the input file at '%1' does not exist", "Command line error").arg(inputPath) << endl;
+            err << QObject::tr("Error: the input file at '%1' does not exist", "Command line error").arg(inputPath)
+                << endl;
             return 1;
         }
         if (!inputFileInfo.isFile())
@@ -240,34 +252,36 @@ int handleArguments(PencilApplication& app)
 
     if (!parser.value(cameraOption).isEmpty())
     {
-        cameraLayer = dynamic_cast<LayerCamera*>(mainWindow.mEditor->layers()->findLayerByName(parser.value(cameraOption), Layer::CAMERA));
+        cameraLayer = dynamic_cast<LayerCamera *>(
+            mainWindow.mEditor->layers()->findLayerByName(parser.value(cameraOption), Layer::CAMERA));
         if (cameraLayer == nullptr)
         {
-            err << QObject::tr("Warning: the specified camera layer %1 was not found, ignoring.").arg(parser.value(cameraOption)) << endl;
+            err << QObject::tr("Warning: the specified camera layer %1 was not found, ignoring.")
+                       .arg(parser.value(cameraOption))
+                << endl;
         }
     }
     if (cameraLayer == nullptr)
     {
-        cameraLayer = dynamic_cast<LayerCamera*>(mainWindow.mEditor->layers()->getLastCameraLayer());
+        cameraLayer = dynamic_cast<LayerCamera *>(mainWindow.mEditor->layers()->getLastCameraLayer());
     }
 
     for (int i = 0; i < outputPaths.length(); i++)
     {
         // Detect format
         QString format;
-        QMap<QString, QString> extensionMapping
-        {
-            { "png",  "PNG" },
-            { "jpg" , "JPG" },
-            { "jpeg", "JPG" },
-            { "tif",  "TIF" },
-            { "tiff", "TIF" },
-            { "bmp",  "BMP" },
-            { "mp4",  "MP4" },
-            { "avi",  "AVI" },
-            { "gif",  "GIF" },
-            { "webm", "WEBM" },
-            { "apng", "APNG" },
+        QMap<QString, QString> extensionMapping{
+            {"png", "PNG"},
+            {"jpg", "JPG"},
+            {"jpeg", "JPG"},
+            {"tif", "TIF"},
+            {"tiff", "TIF"},
+            {"bmp", "BMP"},
+            {"mp4", "MP4"},
+            {"avi", "AVI"},
+            {"gif", "GIF"},
+            {"webm", "WEBM"},
+            {"apng", "APNG"},
         };
         QString extension = outputPaths[i].mid(outputPaths[i].lastIndexOf(".") + 1).toLower();
         if (inputPath.contains(".") && extensionMapping.contains(extension))
@@ -276,21 +290,22 @@ int handleArguments(PencilApplication& app)
         }
         else
         {
-            err << QObject::tr("Warning: Output format is not specified or unsupported. Using PNG.", "Command line warning") << endl;
+            err << QObject::tr("Warning: Output format is not specified or unsupported. Using PNG.",
+                               "Command line warning")
+                << endl;
             format = "PNG";
         }
 
-        QMap<QString, bool> formatMapping
-        {
-            { "PNG", false },
-            { "JPG", false },
-            { "TIF", false },
-            { "BMP", false },
-            { "MP4",  true },
-            { "AVI",  true },
-            { "GIF",  true },
-            { "WEBM", true },
-            { "APNG", true },
+        QMap<QString, bool> formatMapping{
+            {"PNG", false},
+            {"JPG", false},
+            {"TIF", false},
+            {"BMP", false},
+            {"MP4", true},
+            {"AVI", true},
+            {"GIF", true},
+            {"WEBM", true},
+            {"APNG", true},
         };
         bool asMovie = formatMapping[format];
 
@@ -298,15 +313,19 @@ int handleArguments(PencilApplication& app)
         {
             if (transparency)
             {
-                err << QObject::tr("Warning: Transparency is not currently supported in movie files", "Command line warning") << endl;
+                err << QObject::tr("Warning: Transparency is not currently supported in movie files",
+                                   "Command line warning")
+                    << endl;
             }
             out << QObject::tr("Exporting movie...", "Command line task progress") << endl;
             mainWindow.mEditor->exportMovieCLI(outputPaths[i], cameraLayer, width, height, startFrame, endFrame);
             out << QObject::tr("Done.", "Command line task done") << endl;
         }
-        else {
+        else
+        {
             out << QObject::tr("Exporting image sequence...", "Command line task progress") << endl;
-            mainWindow.mEditor->exportSeqCLI(outputPaths[i], cameraLayer, format, width, height, startFrame, endFrame, transparency);
+            mainWindow.mEditor
+                ->exportSeqCLI(outputPaths[i], cameraLayer, format, width, height, startFrame, endFrame, transparency);
             out << QObject::tr("Done.", "Command line task done") << endl;
         }
     }
@@ -314,7 +333,7 @@ int handleArguments(PencilApplication& app)
     return 0;
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     // iss #940
     // Force dot separator on numbers because some localizations

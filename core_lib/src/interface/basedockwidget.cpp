@@ -21,39 +21,38 @@ GNU General Public License for more details.
 #include "basedockwidget.h"
 #include "platformhandler.h"
 
-BaseDockWidget::BaseDockWidget(QWidget* pParent) 
-: QDockWidget(pParent, Qt::Tool)
+BaseDockWidget::BaseDockWidget(QWidget *pParent) : QDockWidget(pParent, Qt::Tool)
 {
-
 #ifdef __APPLE__
     if (PlatformHandler::isDarkMode())
     {
-        setStyleSheet("QDockWidget::title { background: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #4e4f4d, stop: 1 #424241);  "
+        setStyleSheet("QDockWidget::title { background: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #4e4f4d, "
+                      "stop: 1 #424241);  "
                       "background-repeat: repeat-x; text-align: center;"
                       "border-style: solid; border-bottom-color: #000000;"
                       "border-width: 1px; }");
     }
 #endif
-
 }
 
-BaseDockWidget::~BaseDockWidget()
-{
-}
+BaseDockWidget::~BaseDockWidget() {}
 
 void BaseDockWidget::resizeEvent(QResizeEvent *event)
 {
     QDockWidget::resizeEvent(event);
 
-    // Not sure where the -2 comes from, but the event width is always 2 more than what is passed to FlowLayout::setGeometry
+    // Not sure where the -2 comes from, but the event width is always 2 more than what is passed to
+    // FlowLayout::setGeometry
     int minHeight = getMinHeightForWidth(event->size().width() - 2);
 
-    if (minHeight < 0) return;
+    if (minHeight < 0)
+        return;
 
 #ifdef __APPLE__
-    // For some reason the behavior of minimumSize and the margin changes on mac when floating, so we need to do this
+        // For some reason the behavior of minimumSize and the margin changes on mac when floating, so we need to do
+        // this
 #else
-    minHeight += layout()->margin()*2;
+    minHeight += layout()->margin() * 2;
 #endif
     setMinimumSize(QSize(layout()->minimumSize().width(), minHeight));
 }

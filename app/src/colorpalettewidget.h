@@ -32,7 +32,7 @@ class QString;
 
 namespace Ui
 {
-    class ColorPalette;
+class ColorPalette;
 }
 
 class ColorPaletteWidget : public BaseDockWidget
@@ -40,13 +40,12 @@ class ColorPaletteWidget : public BaseDockWidget
     Q_OBJECT
 
 public:
-
-    explicit ColorPaletteWidget(QWidget* parent);
+    explicit ColorPaletteWidget(QWidget *parent);
     ~ColorPaletteWidget() override;
 
     void initUI() override;
     void updateUI() override;
-    void setCore(Editor* editor);
+    void setCore(Editor *editor);
 
     int currentColorNumber();
 
@@ -56,19 +55,19 @@ public:
 
     void adjustSwatches();
 
-    void showContextMenu(const QPoint&);
+    void showContextMenu(const QPoint &);
 
 signals:
     void colorChanged(QColor);
     void colorNumberChanged(int);
 
 protected:
-    void resizeEvent(QResizeEvent* event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private slots:
-    void clickColorListItem(QListWidgetItem*);
-    void changeColorName(QListWidgetItem*);
-    void onItemChanged(QListWidgetItem* item);
+    void clickColorListItem(QListWidgetItem *);
+    void changeColorName(QListWidgetItem *);
+    void onItemChanged(QListWidgetItem *item);
     void onRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row);
     void clickAddColorButton();
     void clickColorDialogButton();
@@ -91,18 +90,18 @@ private:
     void updateItemColor(int, QColor);
     void updateGridUI();
 
-    Ui::ColorPalette* ui = nullptr;
-    QActionGroup* mLayoutModeActionGroup = nullptr;
-    QAction* mListModeAction = nullptr;
-    QAction* mGridModeAction = nullptr;
-    QActionGroup* mIconSizesActionGroup = nullptr;
-    QAction* mSmallSwatchAction = nullptr;
-    QAction* mMediumSwatchAction = nullptr;
-    QAction* mLargeSwatchAction = nullptr;
-    QAction* mSeparator = nullptr;
+    Ui::ColorPalette *ui = nullptr;
+    QActionGroup *mLayoutModeActionGroup = nullptr;
+    QAction *mListModeAction = nullptr;
+    QAction *mGridModeAction = nullptr;
+    QActionGroup *mIconSizesActionGroup = nullptr;
+    QAction *mSmallSwatchAction = nullptr;
+    QAction *mMediumSwatchAction = nullptr;
+    QAction *mLargeSwatchAction = nullptr;
+    QAction *mSeparator = nullptr;
 
-    QSize mIconSize{ 34, 34 };
-    QMenu* mToolMenu = nullptr;
+    QSize mIconSize{34, 34};
+    QMenu *mToolMenu = nullptr;
     int stepper = 0;
 
     QString buttonStylesheet;
@@ -115,9 +114,8 @@ private:
     const int MEDIUM_ICON_SIZE = 26;
     const int MAX_ICON_SIZE = 36;
 
-    Editor* mEditor = nullptr;
-    Object* mObject = nullptr;
+    Editor *mEditor = nullptr;
+    Object *mObject = nullptr;
 };
 
 #endif
-

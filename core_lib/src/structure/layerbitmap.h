@@ -27,25 +27,25 @@ class LayerBitmap : public Layer
     Q_OBJECT
 
 public:
-    LayerBitmap(Object* object);
+    LayerBitmap(Object *object);
     ~LayerBitmap() override;
 
-    QDomElement createDomElement(QDomDocument& doc) override;
-    void loadDomElement(const QDomElement& element, QString dataDirPath, ProgressCallback progressStep) override;
-    Status presave(const QString& sDataFolder) override;
+    QDomElement createDomElement(QDomDocument &doc) override;
+    void loadDomElement(const QDomElement &element, QString dataDirPath, ProgressCallback progressStep) override;
+    Status presave(const QString &sDataFolder) override;
 
-    BitmapImage* getBitmapImageAtFrame(int frameNumber);
-    BitmapImage* getLastBitmapImageAtFrame(int frameNumber, int increment = 0);
+    BitmapImage *getBitmapImageAtFrame(int frameNumber);
+    BitmapImage *getLastBitmapImageAtFrame(int frameNumber, int increment = 0);
 
 protected:
-    Status saveKeyFrameFile(KeyFrame*, QString strPath) override;
-    KeyFrame* createKeyFrame(int position, Object*) override;
+    Status saveKeyFrameFile(KeyFrame *, QString strPath) override;
+    KeyFrame *createKeyFrame(int position, Object *) override;
 
 private:
     void loadImageAtFrame(QString strFilePath, QPoint topLeft, int frameNumber);
-    QString filePath(KeyFrame* key, const QDir& dataFolder) const;
-    QString fileName(KeyFrame* key) const;
-    bool needSaveFrame(KeyFrame* key, const QString& strSavePath);
+    QString filePath(KeyFrame *key, const QDir &dataFolder) const;
+    QString fileName(KeyFrame *key) const;
+    bool needSaveFrame(KeyFrame *key, const QString &strSavePath);
 };
 
 #endif

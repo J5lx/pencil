@@ -17,13 +17,12 @@ GNU General Public License for more details.
 
 #include "shortcutfilter.h"
 
-ShortcutFilter::ShortcutFilter(ScribbleArea* scribbleArea , QObject* parent) :
-    QObject(parent)
+ShortcutFilter::ShortcutFilter(ScribbleArea *scribbleArea, QObject *parent) : QObject(parent)
 {
     mScribbleArea = scribbleArea;
 }
 
-bool ShortcutFilter::eventFilter(QObject* obj, QEvent* event)
+bool ShortcutFilter::eventFilter(QObject *obj, QEvent *event)
 {
     if (mScribbleArea->isMouseInUse())
     {

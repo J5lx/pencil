@@ -18,10 +18,10 @@ GNU General Public License for more details.
 #ifndef TOOLMANAGER_H
 #define TOOLMANAGER_H
 
-#include <QObject>
-#include <QHash>
-#include "basetool.h"
 #include "basemanager.h"
+#include "basetool.h"
+#include <QHash>
+#include <QObject>
 
 class ScribbleArea;
 
@@ -29,14 +29,14 @@ class ToolManager : public BaseManager
 {
     Q_OBJECT
 public:
-    explicit ToolManager(Editor* editor);
+    explicit ToolManager(Editor *editor);
 
     bool init() override;
-    Status load(Object*) override;
-    Status save(Object*) override;
+    Status load(Object *) override;
+    Status save(Object *) override;
 
-    BaseTool* currentTool() { return mCurrentTool; }
-    BaseTool* getTool(ToolType eToolType);
+    BaseTool *currentTool() { return mCurrentTool; }
+    BaseTool *getTool(ToolType eToolType);
     void setDefaultTool();
     void setCurrentTool(ToolType eToolType);
     void cleanupAllToolsData();
@@ -71,13 +71,12 @@ public slots:
     void setUseFillContour(bool);
 
 private:
-    BaseTool* mCurrentTool = nullptr;
-    ToolType  meTabletBackupTool = PENCIL;
+    BaseTool *mCurrentTool = nullptr;
+    ToolType meTabletBackupTool = PENCIL;
     bool mIsSwitchedToEraser = false;
-    QHash<ToolType, BaseTool*> mToolSetHash;
+    QHash<ToolType, BaseTool *> mToolSetHash;
 
     int mOldValue = 0;
-
 };
 
 #endif // TOOLMANAGER_H

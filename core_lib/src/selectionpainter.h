@@ -1,8 +1,8 @@
 #ifndef SelectionPainter_H
 #define SelectionPainter_H
 
-#include "QRectF"
 #include "QPolygonF"
+#include "QRectF"
 
 class QPainter;
 class Object;
@@ -19,7 +19,11 @@ class SelectionPainter
 public:
     SelectionPainter();
 
-    void paint(QPainter& painter, const Object* object, int layerIndex, BaseTool* tool, TransformParameters& transformParameters);
+    void paint(QPainter &painter,
+               const Object *object,
+               int layerIndex,
+               BaseTool *tool,
+               TransformParameters &transformParameters);
 };
 
 #endif // SelectionPainter_H

@@ -21,7 +21,8 @@ GNU General Public License for more details.
 #include <QDialog>
 #include <QProgressBar>
 
-namespace Ui {
+namespace Ui
+{
 class DoubleProgressDialog;
 }
 
@@ -36,29 +37,35 @@ public:
     QString getStatus();
     void setStatus(QString msg);
 
-    class ProgressBarControl {
-        public:
-            ProgressBarControl(QProgressBar *b);
+    class ProgressBarControl
+    {
+    public:
+        ProgressBarControl(QProgressBar *b);
 
-            float getMin() { return min; }
-            void setMin(float minimum);
+        float getMin() { return min; }
+        void setMin(float minimum);
 
-            float getMax() { return max; }
-            void setMax(float maximum);
+        float getMax() { return max; }
+        void setMax(float maximum);
 
-            void setRange(float minimum, float maximum) { setMin(minimum); setMax(maximum); }
+        void setRange(float minimum, float maximum)
+        {
+            setMin(minimum);
+            setMax(maximum);
+        }
 
-            float getValue() { return val; }
-            void setValue(float value);
+        float getValue() { return val; }
+        void setValue(float value);
 
-            int getPrecision();
-            void setPrecision(int e);
-        private:
-            QProgressBar *bar;
-            float min = 0, max = 1, val = 0;
+        int getPrecision();
+        void setPrecision(int e);
 
-            int convertUnits(float value);
-            int unitFactor = 100;
+    private:
+        QProgressBar *bar;
+        float min = 0, max = 1, val = 0;
+
+        int convertUnits(float value);
+        int unitFactor = 100;
     };
 
     ProgressBarControl *major, *minor;

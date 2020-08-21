@@ -18,12 +18,11 @@ GNU General Public License for more details.
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#include <memory>
-#include <QObject>
-#include <QList>
-#include "pencilerror.h"
 #include "pencildef.h"
-
+#include "pencilerror.h"
+#include <QList>
+#include <QObject>
+#include <memory>
 
 class QDragEnterEvent;
 class QDropEvent;
@@ -48,22 +47,21 @@ class ActiveFramePool;
 
 enum class SETTING;
 
-
 class Editor : public QObject
 {
     Q_OBJECT
 
-        Q_PROPERTY(ColorManager*    color    READ color)
-        Q_PROPERTY(ToolManager*     tools    READ tools)
-        Q_PROPERTY(LayerManager*    layers   READ layers)
-        Q_PROPERTY(PlaybackManager* playback READ playback)
-        Q_PROPERTY(ViewManager*     view     READ view)
-        Q_PROPERTY(PreferenceManager* preference READ preference)
-        Q_PROPERTY(SoundManager*    sound    READ sound)
-        Q_PROPERTY(SelectionManager* select READ select)
+    Q_PROPERTY(ColorManager *color READ color)
+    Q_PROPERTY(ToolManager *tools READ tools)
+    Q_PROPERTY(LayerManager *layers READ layers)
+    Q_PROPERTY(PlaybackManager *playback READ playback)
+    Q_PROPERTY(ViewManager *view READ view)
+    Q_PROPERTY(PreferenceManager *preference READ preference)
+    Q_PROPERTY(SoundManager *sound READ sound)
+    Q_PROPERTY(SelectionManager *select READ select)
 
 public:
-    explicit Editor(QObject* parent = nullptr);
+    explicit Editor(QObject *parent = nullptr);
     virtual ~Editor();
 
     bool init();
@@ -71,40 +69,52 @@ public:
     /************************************************************************/
     /* Managers                                                             */
     /************************************************************************/
-    ColorManager*      color() const { return mColorManager; }
-    ToolManager*       tools() const { return mToolManager; }
-    LayerManager*      layers() const { return mLayerManager; }
-    PlaybackManager*   playback() const { return mPlaybackManager; }
-    ViewManager*       view() const { return mViewManager; }
-    PreferenceManager* preference() const { return mPreferenceManager; }
-    SoundManager*      sound() const { return mSoundManager; }
-    SelectionManager*  select() const { return mSelectionManager; }
+    ColorManager *color() const { return mColorManager; }
+    ToolManager *tools() const { return mToolManager; }
+    LayerManager *layers() const { return mLayerManager; }
+    PlaybackManager *playback() const { return mPlaybackManager; }
+    ViewManager *view() const { return mViewManager; }
+    PreferenceManager *preference() const { return mPreferenceManager; }
+    SoundManager *sound() const { return mSoundManager; }
+    SelectionManager *select() const { return mSelectionManager; }
 
-    Object* object() const { return mObject.get(); }
-    Status setObject(Object* object);
+    Object *object() const { return mObject.get(); }
+    Status setObject(Object *object);
     void updateObject();
     void prepareSave();
 
-    void setScribbleArea(ScribbleArea* pScirbbleArea) { mScribbleArea = pScirbbleArea; }
-    ScribbleArea* getScribbleArea() { return mScribbleArea; }
+    void setScribbleArea(ScribbleArea *pScirbbleArea) { mScribbleArea = pScirbbleArea; }
+    ScribbleArea *getScribbleArea() { return mScribbleArea; }
 
     int currentFrame();
     int fps();
     void setFps(int fps);
 
-    int  currentLayerIndex() { return mCurrentLayerIndex; }
+    int currentLayerIndex() { return mCurrentLayerIndex; }
     void setCurrentLayerIndex(int i);
 
     void scrubTo(int frameNumber);
-
 
     /**
      * @brief The visiblity value should match any of the VISIBILITY enum values
      */
     void setLayerVisibility(LayerVisibility visibility);
     LayerVisibility layerVisibility();
-    bool exportSeqCLI(QString filePath, LayerCamera* cameraLayer, QString format = "PNG", int width = -1, int height = -1, int startFrame = 1, int endFrame = -1, bool transparency = false, bool antialias = true);
-    bool exportMovieCLI(QString filePath, LayerCamera* cameraLayer, int width = -1, int height = -1, int startFrame = 1, int endFrame = -1);
+    bool exportSeqCLI(QString filePath,
+                      LayerCamera *cameraLayer,
+                      QString format = "PNG",
+                      int width = -1,
+                      int height = -1,
+                      int startFrame = 1,
+                      int endFrame = -1,
+                      bool transparency = false,
+                      bool antialias = true);
+    bool exportMovieCLI(QString filePath,
+                        LayerCamera *cameraLayer,
+                        int width = -1,
+                        int height = -1,
+                        int startFrame = 1,
+                        int endFrame = -1);
 
     qreal viewScaleInversed();
     void deselectAll();
@@ -114,8 +124,8 @@ public:
 
     // backup
     int mBackupIndex;
-    BackupElement* currentBackup();
-    QList<BackupElement*> mBackupList;
+    BackupElement *currentBackup();
+    QList<BackupElement *> mBackupList;
 
 Q_SIGNALS:
     void updateTimeLine();
@@ -128,10 +138,10 @@ Q_SIGNALS:
     void currentFrameChanged(int n);
 
     void needSave();
-    void needDisplayInfo(const QString& title, const QString& body);
-    void needDisplayInfoNoTitle(const QString& body);
+    void needDisplayInfo(const QString &title, const QString &body);
+    void needDisplayInfoNoTitle(const QString &body);
 
-public: //slots
+public: // slots
     void clearCurrentFrame();
 
     void cut();
@@ -149,7 +159,7 @@ public: //slots
     void scrubForward();
     void scrubBackward();
 
-    KeyFrame* addNewKey();
+    KeyFrame *addNewKey();
     void removeKey();
 
     void notifyAnimationLengthChanged();
@@ -172,7 +182,7 @@ public: //slots
     void toogleOnionSkinType();
 
     void clearTemporary();
-    void addTemporaryDir(QTemporaryDir* const dir);
+    void addTemporaryDir(QTemporaryDir *const dir);
 
     void settingUpdated(SETTING);
 
@@ -180,15 +190,15 @@ public: //slots
     bool autoSaveNeverAskAgain() { return mAutosaveNeverAskAgain; }
     void resetAutoSaveCounter();
 
-    void createNewBitmapLayer(const QString& name);
-    void createNewVectorLayer(const QString& name);
-    void createNewSoundLayer(const QString& name);
-    void createNewCameraLayer(const QString& name);
+    void createNewBitmapLayer(const QString &name);
+    void createNewVectorLayer(const QString &name);
+    void createNewSoundLayer(const QString &name);
+    void createNewCameraLayer(const QString &name);
 
 protected:
     // Need to move to somewhere...
-    void dragEnterEvent(QDragEnterEvent*);
-    void dropEvent(QDropEvent*);
+    void dragEnterEvent(QDragEnterEvent *);
+    void dropEvent(QDropEvent *);
 
 private:
     bool importBitmapImage(QString, int space = 0);
@@ -197,21 +207,21 @@ private:
     // the object to be edited by the editor
     std::shared_ptr<Object> mObject = nullptr;
 
-    int mFrame = 1; // current frame number.
+    int mFrame = 1;             // current frame number.
     int mCurrentLayerIndex = 0; // the current layer to be edited/displayed
 
-    ScribbleArea* mScribbleArea = nullptr;
+    ScribbleArea *mScribbleArea = nullptr;
 
-    ColorManager*      mColorManager = nullptr;
-    ToolManager*       mToolManager = nullptr;
-    LayerManager*      mLayerManager = nullptr;
-    PlaybackManager*   mPlaybackManager = nullptr;
-    ViewManager*       mViewManager = nullptr;
-    PreferenceManager* mPreferenceManager = nullptr;
-    SoundManager*      mSoundManager = nullptr;
-    SelectionManager* mSelectionManager = nullptr;
+    ColorManager *mColorManager = nullptr;
+    ToolManager *mToolManager = nullptr;
+    LayerManager *mLayerManager = nullptr;
+    PlaybackManager *mPlaybackManager = nullptr;
+    ViewManager *mViewManager = nullptr;
+    PreferenceManager *mPreferenceManager = nullptr;
+    SoundManager *mSoundManager = nullptr;
+    SelectionManager *mSelectionManager = nullptr;
 
-    std::vector< BaseManager* > mAllManagers;
+    std::vector<BaseManager *> mAllManagers;
 
     bool mIsAltPressed = false;
 
@@ -221,9 +231,9 @@ private:
     bool mAutosaveNeverAskAgain = false;
 
     void makeConnections();
-    KeyFrame* addKeyFrame(int layerNumber, int frameNumber);
+    KeyFrame *addKeyFrame(int layerNumber, int frameNumber);
 
-    QList<QTemporaryDir*> mTemporaryDirs;
+    QList<QTemporaryDir *> mTemporaryDirs;
 
     // backup
     void clearUndoStack();

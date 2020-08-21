@@ -19,22 +19,19 @@ GNU General Public License for more details.
 #include <QPixmap>
 #include <QSettings>
 
-#include "vectorimage.h"
-#include "layervector.h"
-#include "colormanager.h"
-#include "strokemanager.h"
-#include "layermanager.h"
-#include "viewmanager.h"
-#include "selectionmanager.h"
-#include "editor.h"
-#include "scribblearea.h"
 #include "blitrect.h"
+#include "colormanager.h"
+#include "editor.h"
+#include "layermanager.h"
+#include "layervector.h"
 #include "pointerevent.h"
+#include "scribblearea.h"
+#include "selectionmanager.h"
+#include "strokemanager.h"
+#include "vectorimage.h"
+#include "viewmanager.h"
 
-
-PenTool::PenTool(QObject* parent) : StrokeTool(parent)
-{
-}
+PenTool::PenTool(QObject *parent) : StrokeTool(parent) {}
 
 void PenTool::loadSettings()
 {
@@ -126,7 +123,7 @@ void PenTool::pointerPressEvent(PointerEvent *)
     startStroke();
 }
 
-void PenTool::pointerMoveEvent(PointerEvent* event)
+void PenTool::pointerMoveEvent(PointerEvent *event)
 {
     if (event->buttons() & Qt::LeftButton)
     {
@@ -137,11 +134,11 @@ void PenTool::pointerMoveEvent(PointerEvent* event)
     }
 }
 
-void PenTool::pointerReleaseEvent(PointerEvent*)
+void PenTool::pointerReleaseEvent(PointerEvent *)
 {
     mEditor->backup(typeName());
 
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
 
     qreal distance = QLineF(getCurrentPoint(), mMouseDownPoint).length();
     if (distance < 1)
@@ -163,19 +160,16 @@ void PenTool::pointerReleaseEvent(PointerEvent*)
 // draw a single paint dab at the given location
 void PenTool::paintAt(QPointF point)
 {
-    //qDebug() << "Made a single dab at " << point;
+    // qDebug() << "Made a single dab at " << point;
 
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
     if (layer->type() == Layer::BITMAP)
     {
         qreal pressure = (properties.pressure) ? mCurrentPressure : 1.0;
         qreal brushWidth = properties.width * pressure;
         mCurrentWidth = brushWidth;
 
-        mScribbleArea->drawPen(point,
-                               brushWidth,
-                               mEditor->color()->frontColor(),
-                               properties.useAA);
+        mScribbleArea->drawPen(point, brushWidth, mEditor->color()->frontColor(), properties.useAA);
 
         int rad = qRound(brushWidth) / 2 + 2;
 
@@ -189,7 +183,7 @@ void PenTool::drawStroke()
     StrokeTool::drawStroke();
     QList<QPointF> p = strokeManager()->interpolateStroke();
 
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
 
     if (layer->type() == Layer::BITMAP)
     {
@@ -219,10 +213,7 @@ void PenTool::drawStroke()
         {
             QPointF point = mLastBrushPoint + (i + 1) * brushStep * (getCurrentPoint() - mLastBrushPoint) / distance;
             rect.extend(point.toPoint());
-            mScribbleArea->drawPen(point,
-                                   brushWidth,
-                                   mEditor->color()->frontColor(),
-                                   properties.useAA);
+            mScribbleArea->drawPen(point, brushWidth, mEditor->color()->frontColor(), properties.useAA);
 
             if (i == (steps - 1))
             {
@@ -265,7 +256,7 @@ void PenTool::paintBitmapStroke()
     mScribbleArea->clearBitmapBuffer();
 }
 
-void PenTool::paintVectorStroke(Layer* layer)
+void PenTool::paintVectorStroke(Layer *layer)
 {
     if (mStrokePoints.empty())
         return;
@@ -282,9 +273,12 @@ void PenTool::paintVectorStroke(Layer* layer)
     curve.setVariableWidth(properties.pressure);
     curve.setColorNumber(mEditor->color()->frontColorNumber());
 
-    auto pLayerVector = static_cast<LayerVector*>(layer);
-    VectorImage* vectorImage = pLayerVector->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
-    if (vectorImage == nullptr) { return; } // Can happen if the first frame is deleted while drawing
+    auto pLayerVector = static_cast<LayerVector *>(layer);
+    VectorImage *vectorImage = pLayerVector->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+    if (vectorImage == nullptr)
+    {
+        return;
+    } // Can happen if the first frame is deleted while drawing
     vectorImage->addCurve(curve, mEditor->view()->scaling(), false);
 
     if (vectorImage->isAnyCurveSelected() || mEditor->select()->somethingSelected())

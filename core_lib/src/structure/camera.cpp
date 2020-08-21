@@ -16,9 +16,7 @@ GNU General Public License for more details.
 
 #include "camera.h"
 
-Camera::Camera()
-{
-}
+Camera::Camera() {}
 
 Camera::Camera(QPointF translation, qreal rotation, qreal scaling)
 {
@@ -29,7 +27,7 @@ Camera::Camera(QPointF translation, qreal rotation, qreal scaling)
     updateViewTransform();
 }
 
-Camera::Camera(const Camera& c2) : KeyFrame(c2)
+Camera::Camera(const Camera &c2) : KeyFrame(c2)
 {
     mTranslate = c2.mTranslate;
     mRotate = c2.mRotate;
@@ -37,16 +35,14 @@ Camera::Camera(const Camera& c2) : KeyFrame(c2)
     mNeedUpdateView = true;
 }
 
-Camera::~Camera()
-{
-}
+Camera::~Camera() {}
 
-Camera* Camera::clone()
+Camera *Camera::clone()
 {
     return new Camera(*this);
 }
 
-void Camera::assign(const Camera& rhs)
+void Camera::assign(const Camera &rhs)
 {
     mTranslate = rhs.mTranslate;
     mRotate = rhs.mRotate;
@@ -137,11 +133,9 @@ void Camera::scaleWithOffset(qreal scaleValue, QPointF offset)
     modification();
 }
 
-bool Camera::operator==(const Camera& rhs) const
+bool Camera::operator==(const Camera &rhs) const
 {
-    bool b = (mTranslate == rhs.mTranslate)
-        && qFuzzyCompare(mRotate, rhs.mRotate)
-        && qFuzzyCompare(mScale, rhs.mScale);
+    bool b = (mTranslate == rhs.mTranslate) && qFuzzyCompare(mRotate, rhs.mRotate) && qFuzzyCompare(mScale, rhs.mScale);
 
     return b;
 }

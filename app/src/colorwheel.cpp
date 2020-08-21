@@ -14,20 +14,20 @@ GNU General Public License for more details.
 
 */
 
-#include <QVBoxLayout>
-#include <QtMath>
+#include "pencildef.h"
+#include <QDebug>
 #include <QPainter>
-#include <QResizeEvent>
 #include <QPixmapCache>
+#include <QRect>
+#include <QResizeEvent>
 #include <QStyleOption>
 #include <QStylePainter>
-#include <QRect>
-#include <QDebug>
-#include "pencildef.h"
+#include <QVBoxLayout>
+#include <QtMath>
 
 #include "colorwheel.h"
 
-ColorWheel::ColorWheel(QWidget* parent) : QWidget(parent)
+ColorWheel::ColorWheel(QWidget *parent) : QWidget(parent)
 {
     setWindowTitle(tr("Color Wheel", "Color Wheel's window title"));
     mCurrentColor = mCurrentColor.toHsv();
@@ -62,7 +62,7 @@ void ColorWheel::setColor(QColor color)
     update();
 }
 
-QColor ColorWheel::pickColor(const QPoint& point)
+QColor ColorWheel::pickColor(const QPoint &point)
 {
     if (!mWheelPixmap.rect().contains(point))
     {
@@ -77,28 +77,26 @@ QColor ColorWheel::pickColor(const QPoint& point)
         hue = qAtan2(-diff.y(), diff.x()) / M_PI * 180;
         hue = fmod((hue + 360), 360); // shift -180~180 to 0~360
 
-        //QString strDebug = "";
-        //strDebug += QString("Radius=%1").arg(r);
-        //strDebug += QString(" Atan2=%1").arg(qAtan2(diff.y(), diff.x()));
-        //strDebug += QString(" Hue=%1").arg(hue);
-        //qDebug() << strDebug;
+        // QString strDebug = "";
+        // strDebug += QString("Radius=%1").arg(r);
+        // strDebug += QString(" Atan2=%1").arg(qAtan2(diff.y(), diff.x()));
+        // strDebug += QString(" Hue=%1").arg(hue);
+        // qDebug() << strDebug;
 
         hue = (hue > 359) ? 359 : hue;
         hue = (hue < 0) ? 0 : hue;
 
-        return QColor::fromHsv(static_cast<int>(hue),
-                               mCurrentColor.saturation(),
-                               mCurrentColor.value());
+        return QColor::fromHsv(static_cast<int>(hue), mCurrentColor.saturation(), mCurrentColor.value());
     }
     else if (mIsInSquare)
     {
         QPointF p = point - mSquareRect.topLeft();
-        //qDebug("TopRight(%d, %d) Point(%d, %d)", rect.topRight().x(), rect.topRight().y(), point.x(), point.y());
+        // qDebug("TopRight(%d, %d) Point(%d, %d)", rect.topRight().x(), rect.topRight().y(), point.x(), point.y());
 
-        //qDebug("p(%d, %d), Region(%.1f, %.1f)", p.x(), p.y(), regionSize.width(), regionSize.height());
+        // qDebug("p(%d, %d), Region(%.1f, %.1f)", p.x(), p.y(), regionSize.width(), regionSize.height());
         return QColor::fromHsvF(mCurrentColor.hueF(),
                                 p.x() / (mSquareRect.width() - 1),
-                                1.0 - (p.y() / (mSquareRect.height()-1)));
+                                1.0 - (p.y() / (mSquareRect.height() - 1)));
     }
     return QColor();
 }
@@ -113,7 +111,6 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
         QColor color = pickColor(lastPos);
         saturationChanged(color.saturation());
         valueChanged(color.value());
-
     }
     else if (mWheelRect.contains(lastPos))
     {
@@ -124,7 +121,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void ColorWheel::mouseMoveEvent(QMouseEvent* event)
+void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint lastPos = event->pos();
     if (event->buttons() == Qt::NoButton)
@@ -169,7 +166,7 @@ void ColorWheel::mouseReleaseEvent(QMouseEvent *)
     emit colorSelected(mCurrentColor);
 }
 
-void ColorWheel::resizeEvent(QResizeEvent* event)
+void ColorWheel::resizeEvent(QResizeEvent *event)
 {
     mWheelPixmap = QPixmap(event->size());
     mWheelPixmap.fill(palette().window().color());
@@ -179,7 +176,7 @@ void ColorWheel::resizeEvent(QResizeEvent* event)
     update();
 }
 
-void ColorWheel::paintEvent(QPaintEvent*)
+void ColorWheel::paintEvent(QPaintEvent *)
 {
     QPainter painter;
 
@@ -259,14 +256,14 @@ void ColorWheel::drawSquareImage(const int &hue)
     QImage square(255, 255, QImage::Format_ARGB32);
 
     QLinearGradient colorGradient = QLinearGradient(0, 0, square.width(), 0);
-    colorGradient.setColorAt(0, QColor(255,255,255));
+    colorGradient.setColorAt(0, QColor(255, 255, 255));
 
     // color square should always use full value and saturation
     colorGradient.setColorAt(1, QColor::fromHsv(hue, 255, 255));
 
     QLinearGradient blackGradient = QLinearGradient(0, 0, 0, square.height());
-    blackGradient.setColorAt(0, QColor(0,0,0,0));
-    blackGradient.setColorAt(1, QColor(0,0,0,255));
+    blackGradient.setColorAt(0, QColor(0, 0, 0, 0));
+    blackGradient.setColorAt(1, QColor(0, 0, 0, 255));
 
     QBrush colorGradiantBrush = QBrush(colorGradient);
     QBrush blackGradiantBrush = QBrush(blackGradient);
@@ -279,7 +276,6 @@ void ColorWheel::drawSquareImage(const int &hue)
     qreal SquareWidth = 2 * ir / qSqrt(2.1);
     mSquareRect = QRectF(m1, m2, SquareWidth, SquareWidth).toAlignedRect();
     mSquareImage = square.scaled(mSquareRect.size());
-
 }
 
 void ColorWheel::drawHueIndicator(const int &hue)
@@ -307,7 +303,7 @@ void ColorWheel::drawHueIndicator(const int &hue)
     painter.drawEllipse(QPointF(r, 0), 7, 7);
 }
 
-void ColorWheel::drawPicker(const QColor& color)
+void ColorWheel::drawPicker(const QColor &color)
 {
     QPainter painter(&mWheelPixmap);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -316,8 +312,8 @@ void ColorWheel::drawPicker(const QColor& color)
     QPoint squareTopLeft = mSquareRect.topLeft();
     QSize squareSize = mSquareRect.size();
 
-    qreal S = color.hsvSaturationF() * (squareSize.width()-1);
-    qreal V = (squareSize.height() - (color.valueF() * squareSize.height()-1));
+    qreal S = color.hsvSaturationF() * (squareSize.width() - 1);
+    qreal V = (squareSize.height() - (color.valueF() * squareSize.height() - 1));
 
     QPen pen;
     pen.setWidth(1);
@@ -328,13 +324,13 @@ void ColorWheel::drawPicker(const QColor& color)
     painter.setPen(pen);
 
     QTransform transform;
-    transform.translate(-ellipseSize/2,-ellipseSize/2);
-    transform.translate(squareTopLeft.x(),squareTopLeft.y()-1);
+    transform.translate(-ellipseSize / 2, -ellipseSize / 2);
+    transform.translate(squareTopLeft.x(), squareTopLeft.y() - 1);
     painter.setTransform(transform);
     painter.drawEllipse(static_cast<int>(S), static_cast<int>(V), ellipseSize, ellipseSize);
 }
 
-void ColorWheel::composeWheel(QPixmap& pixmap)
+void ColorWheel::composeWheel(QPixmap &pixmap)
 {
     QPainter composePainter(&pixmap);
     composePainter.drawImage(0, 0, mWheelImage);

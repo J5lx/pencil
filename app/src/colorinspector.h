@@ -16,10 +16,11 @@ GNU General Public License for more details.
 #ifndef COLORSPINBOXGROUP_H
 #define COLORSPINBOXGROUP_H
 
-#include <QPaintEvent>
 #include "basedockwidget.h"
+#include <QPaintEvent>
 
-namespace Ui {
+namespace Ui
+{
 class ColorInspector;
 }
 
@@ -28,7 +29,7 @@ class ColorInspector : public BaseDockWidget
     Q_OBJECT
 
     friend class ColorSliders;
-    
+
 public:
     explicit ColorInspector(QWidget *parent = nullptr);
     ~ColorInspector() override;
@@ -41,8 +42,8 @@ protected:
     void paintEvent(QPaintEvent *) override;
 
 signals:
-    void colorChanged(const QColor& c);
-    void modeChange(const bool& isRgb);
+    void colorChanged(const QColor &c);
+    void modeChange(const bool &isRgb);
 
 public slots:
     void setColor(QColor newColor);
@@ -51,10 +52,9 @@ private slots:
     void onModeChanged();
     void onColorChanged();
     void onSliderChanged(QColor color);
-    
-private:
 
-    Ui::ColorInspector* ui = nullptr;
+private:
+    Ui::ColorInspector *ui = nullptr;
     bool isRgbColors = true;
     QColor mCurrentColor;
 };

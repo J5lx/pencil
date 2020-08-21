@@ -19,60 +19,58 @@ GNU General Public License for more details.
 
 #include <QString>
 
-//Pencil File Format
-//PFF - acronym for "Pencil File Format"
-#define PFF_OLD_EXTENSION				".pcl"
-#define PFF_OLD_BIG_LETTER_EXTENSION	"PCL"
-#define PFF_EXTENSION				    ".pclx"
-#define PFF_BIG_LETTER_EXTENSION	    "PCLX"
+// Pencil File Format
+// PFF - acronym for "Pencil File Format"
+#define PFF_OLD_EXTENSION ".pcl"
+#define PFF_OLD_BIG_LETTER_EXTENSION "PCL"
+#define PFF_EXTENSION ".pclx"
+#define PFF_BIG_LETTER_EXTENSION "PCLX"
 
-#define PFF_PROJECT_EXT_FILTER \
-    QObject::tr("Pencil formats") + " (*.pclx *.pcl);;" + QObject::tr("Pencil Project") + " (*.pclx);;" + QObject::tr("Legacy Pencil Project") + " (*.pcl)"
+#define PFF_PROJECT_EXT_FILTER                                                                            \
+    QObject::tr("Pencil formats") + " (*.pclx *.pcl);;" + QObject::tr("Pencil Project") + " (*.pclx);;" + \
+        QObject::tr("Legacy Pencil Project") + " (*.pcl)"
 
-#define PFF_MOVIE_EXT \
-    QObject::tr("Movie formats") + "*.avi *.mpg *.mpeg *.mov *.mp4 *.mkv *.ogv *.swf *.flv *.webm *.wmv);;" \
-        "AVI(*.avi);;MPEG(*.mpg *.mpeg);;MOV(*.mov);;MP4(*.mp4);;MKV(*.mkv);;OGV(*.ogv)" \
-        ";;SWF(*.swf);;FLV(*.flv);;WEBM(*.webm);;WMV(*.wmv)"
+#define PFF_MOVIE_EXT                                                                                               \
+    QObject::tr("Movie formats") + "*.avi *.mpg *.mpeg *.mov *.mp4 *.mkv *.ogv *.swf *.flv *.webm *.wmv);;"         \
+                                   "AVI(*.avi);;MPEG(*.mpg *.mpeg);;MOV(*.mov);;MP4(*.mp4);;MKV(*.mkv);;OGV(*.ogv)" \
+                                   ";;SWF(*.swf);;FLV(*.flv);;WEBM(*.webm);;WMV(*.wmv)"
 
-#define PFF_IMAGE_FILTER \
-   QObject::tr( "Image formats") + " (*.png *.jpg *.jpeg *.bmp *.tif *.tiff);;PNG (*.png);;JPG(*.jpg *.jpeg);;BMP(*.bmp);;TIFF(*.tif *.tiff)"
+#define PFF_IMAGE_FILTER           \
+    QObject::tr("Image formats") + \
+        " (*.png *.jpg *.jpeg *.bmp *.tif *.tiff);;PNG (*.png);;JPG(*.jpg *.jpeg);;BMP(*.bmp);;TIFF(*.tif *.tiff)"
 
-#define PFF_IMAGE_SEQ_FILTER \
-    QObject::tr( "Image formats") + " (*.png *.jpg *.jpeg *.bmp *.tif *.tiff);;PNG (*.png);;JPG(*.jpg *.jpeg);;BMP(*.bmp);;TIFF(*.tif *.tiff)"
+#define PFF_IMAGE_SEQ_FILTER       \
+    QObject::tr("Image formats") + \
+        " (*.png *.jpg *.jpeg *.bmp *.tif *.tiff);;PNG (*.png);;JPG(*.jpg *.jpeg);;BMP(*.bmp);;TIFF(*.tif *.tiff)"
 
-#define PFF_PALETTE_EXT_FILTER \
-    QObject::tr("Palette formats") + " (*.xml *.gpl);;" + QObject::tr("Pencil Palette") + " (*.xml);;" + QObject::tr("GIMP Palette") + " (*.gpl)"
+#define PFF_PALETTE_EXT_FILTER                                                                           \
+    QObject::tr("Palette formats") + " (*.xml *.gpl);;" + QObject::tr("Pencil Palette") + " (*.xml);;" + \
+        QObject::tr("GIMP Palette") + " (*.gpl)"
 
-#define PFF_GIF_EXT_FILTER \
-    QObject::tr("Animated GIF") + " (*.gif)"
+#define PFF_GIF_EXT_FILTER QObject::tr("Animated GIF") + " (*.gif)"
 
-#define PFF_SOUND_EXT_FILTER \
-    QObject::tr("Sound formats") + " (*.wav *.mp3 *.wma *.ogg *.flac *.opus *.aiff *.aac *.caf);;WAV (*.wav);;MP3 (*.mp3);;WMA (*.wma);;OGG (*.ogg);;FLAC (*.flac);;Opus (*.opus);;AIFF (*.aiff);;AAC (*.aac);;CAF (*.caf)"
+#define PFF_SOUND_EXT_FILTER                                                                                       \
+    QObject::tr("Sound formats") +                                                                                 \
+        " (*.wav *.mp3 *.wma *.ogg *.flac *.opus *.aiff *.aac *.caf);;WAV (*.wav);;MP3 (*.mp3);;WMA (*.wma);;OGG " \
+        "(*.ogg);;FLAC (*.flac);;Opus (*.opus);;AIFF (*.aiff);;AAC (*.aac);;CAF (*.caf)"
 
+#define PFF_DEFAULT_PROJECT_EXT QString(".pclx")
 
-#define PFF_DEFAULT_PROJECT_EXT \
-    QString(".pclx")
+#define PFF_DEFAULT_IMAGE_EXT QString(".png")
 
-#define PFF_DEFAULT_IMAGE_EXT \
-   QString(".png")
+#define PFF_DEFAULT_IMAGE_SEQ_EXT QString(".png")
 
-#define PFF_DEFAULT_IMAGE_SEQ_EXT \
-    QString(".png")
+#define PFF_DEFAULT_ANIMATED_EXT QString(".gif")
 
-#define PFF_DEFAULT_ANIMATED_EXT \
-    QString(".gif")
+#define PFF_DEFAULT_PALETTE_EXT QString(".xml")
 
-#define PFF_DEFAULT_PALETTE_EXT \
-    QString(".xml")
+#define PFF_OLD_DATA_DIR "data"
+#define PFF_DATA_DIR "data"
+#define PFF_XML_FILE_NAME "main.xml"
+#define PFF_TMP_DECOMPRESS_EXT "Y2xD"
+#define PFF_PALETTE_FILE "palette.xml"
 
-#define PFF_OLD_DATA_DIR 		"data"
-#define PFF_DATA_DIR            "data"
-#define PFF_XML_FILE_NAME 		"main.xml"
-#define PFF_TMP_DECOMPRESS_EXT 	"Y2xD"
-#define PFF_PALETTE_FILE        "palette.xml"
-
-bool removePFFTmpDirectory (const QString& dirName);
+bool removePFFTmpDirectory(const QString &dirName);
 QString uniqueString(int len);
-
 
 #endif

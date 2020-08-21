@@ -17,12 +17,12 @@ GNU General Public License for more details.
 #ifndef TIMECONTROL_H
 #define TIMECONTROL_H
 
-#include <QWidget>
-#include <QToolBar>
-#include <QPushButton>
-#include <QToolButton>
-#include <QSpinBox>
 #include <QCheckBox>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QToolBar>
+#include <QToolButton>
+#include <QWidget>
 
 class Editor;
 class PreferenceManager;
@@ -33,10 +33,10 @@ class TimeControls : public QToolBar
     Q_OBJECT
 
 public:
-    TimeControls(TimeLine* parent = nullptr);
+    TimeControls(TimeLine *parent = nullptr);
     void initUI();
     void updateUI();
-    void setEditor(Editor* editor);
+    void setEditor(Editor *editor);
     void setFps(int value);
     void setLoop(bool);
     void setRangeState(bool);
@@ -71,16 +71,16 @@ private:
     void updateSoundScrubIcon(bool soundScrubEnabled);
 
 private:
-    QPushButton* mPlayButton = nullptr;
-    QPushButton* mJumpToEndButton = nullptr;
-    QPushButton* mJumpToStartButton = nullptr;
-    QPushButton* mLoopButton = nullptr;
-    QPushButton* mSoundButton = nullptr;
-    QPushButton* mSoundScrubButton = nullptr;
-    QSpinBox*    mFpsBox = nullptr;
-    QCheckBox*   mPlaybackRangeCheckBox = nullptr;
-    QSpinBox*    mLoopStartSpinBox = nullptr;
-    QSpinBox*    mLoopEndSpinBox = nullptr;
+    QPushButton *mPlayButton = nullptr;
+    QPushButton *mJumpToEndButton = nullptr;
+    QPushButton *mJumpToStartButton = nullptr;
+    QPushButton *mLoopButton = nullptr;
+    QPushButton *mSoundButton = nullptr;
+    QPushButton *mSoundScrubButton = nullptr;
+    QSpinBox *mFpsBox = nullptr;
+    QCheckBox *mPlaybackRangeCheckBox = nullptr;
+    QSpinBox *mLoopStartSpinBox = nullptr;
+    QSpinBox *mLoopEndSpinBox = nullptr;
 
     QIcon mStartIcon;
     QIcon mStopIcon;
@@ -90,8 +90,8 @@ private:
     QIcon mJumpToEndIcon;
     QIcon mJumpToStartIcon;
 
-    TimeLine* mTimeline = nullptr;
-    Editor* mEditor = nullptr;
+    TimeLine *mTimeline = nullptr;
+    Editor *mEditor = nullptr;
 };
 
 #endif

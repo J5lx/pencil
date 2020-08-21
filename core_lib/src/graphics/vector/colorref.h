@@ -35,6 +35,6 @@ public:
     static QString getDefaultColorName(const QColor c);
 };
 
-QDebug& operator<<(QDebug debug, const ColorRef &colorRef);
+QDebug &operator<<(QDebug debug, const ColorRef &colorRef);
 
 #endif

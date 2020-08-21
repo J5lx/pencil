@@ -17,21 +17,18 @@ GNU General Public License for more details.
 
 #include "playbackmanager.h"
 
-#include <QTimer>
-#include <QElapsedTimer>
-#include <QDebug>
-#include <QSettings>
-#include "object.h"
 #include "editor.h"
-#include "layersound.h"
 #include "layermanager.h"
+#include "layersound.h"
+#include "object.h"
 #include "soundclip.h"
 #include "toolmanager.h"
+#include <QDebug>
+#include <QElapsedTimer>
+#include <QSettings>
+#include <QTimer>
 
-
-PlaybackManager::PlaybackManager(Editor* editor) : BaseManager(editor)
-{
-}
+PlaybackManager::PlaybackManager(Editor *editor) : BaseManager(editor) {}
 
 PlaybackManager::~PlaybackManager()
 {
@@ -50,10 +47,13 @@ bool PlaybackManager::init()
     mScrubTimer->setTimerType(Qt::PreciseTimer);
     mSoundclipsToPLay.clear();
 
-    QSettings settings (PENCIL2D, PENCIL2D);
+    QSettings settings(PENCIL2D, PENCIL2D);
     mFps = settings.value(SETTING_FPS).toInt();
     mMsecSoundScrub = settings.value(SETTING_SOUND_SCRUB_MSEC).toInt();
-    if (mMsecSoundScrub == 0) { mMsecSoundScrub = 100; }
+    if (mMsecSoundScrub == 0)
+    {
+        mMsecSoundScrub = 100;
+    }
     mSoundScrub = settings.value(SETTING_SOUND_SCRUB_ACTIVE).toBool();
 
     mElapsedTimer = new QElapsedTimer;
@@ -62,9 +62,9 @@ bool PlaybackManager::init()
     return true;
 }
 
-Status PlaybackManager::load(Object* o)
+Status PlaybackManager::load(Object *o)
 {
-    const ObjectData* data = o->data();
+    const ObjectData *data = o->data();
 
     mIsLooping = data->isLooping();
     mIsRangedPlayback = data->isRangedPlayback();
@@ -78,9 +78,9 @@ Status PlaybackManager::load(Object* o)
     return Status::OK;
 }
 
-Status PlaybackManager::save(Object* o)
+Status PlaybackManager::save(Object *o)
 {
-    ObjectData* data = o->data();
+    ObjectData *data = o->data();
     data->setLooping(mIsLooping);
     data->setRangedPlayback(mIsRangedPlayback);
     data->setMarkInFrameNumber(mMarkInFrame);
@@ -100,10 +100,12 @@ void PlaybackManager::play()
     updateStartFrame();
     updateEndFrame();
 
-    // This is probably not the right place or function to be calling this, but it's the easiest thing to do right now that works
+    // This is probably not the right place or function to be calling this, but it's the easiest thing to do right now
+    // that works
     // TODO make a new tool function to handle playing (or perhaps generic scrubbing)
     bool switchLayer = editor()->tools()->currentTool()->switchingLayer();
-    if (!switchLayer) return;
+    if (!switchLayer)
+        return;
 
     int frame = editor()->currentFrame();
     if (frame >= mEndFrame || frame < mStartFrame)
@@ -136,7 +138,10 @@ void PlaybackManager::stop()
 
 void PlaybackManager::playFlipRoll()
 {
-    if (isPlaying()) { return; }
+    if (isPlaying())
+    {
+        return;
+    }
 
     int start = editor()->currentFrame();
     int tmp = start;
@@ -152,7 +157,10 @@ void PlaybackManager::playFlipRoll()
             tmp = prev;
         }
     }
-    if (mFlipList.isEmpty()) { return; }
+    if (mFlipList.isEmpty())
+    {
+        return;
+    }
 
     // run the roll...
     mFlipRollInterval = settings.value(SETTING_FLIP_ROLL_MSEC).toInt();
@@ -166,17 +174,19 @@ void PlaybackManager::playFlipRoll()
 
 void PlaybackManager::playFlipInBetween()
 {
-    if (isPlaying()) { return; }
+    if (isPlaying())
+    {
+        return;
+    }
 
-    LayerManager* layerMgr = editor()->layers();
+    LayerManager *layerMgr = editor()->layers();
     int start = editor()->currentFrame();
 
     int prev = layerMgr->currentLayer()->getPreviousKeyFramePosition(start);
     int next = layerMgr->currentLayer()->getNextKeyFramePosition(start);
 
-    if (prev < start && next > start &&
-            layerMgr->currentLayer()->keyExists(prev) &&
-            layerMgr->currentLayer()->keyExists(next))
+    if (prev < start && next > start && layerMgr->currentLayer()->keyExists(prev) &&
+        layerMgr->currentLayer()->keyExists(next))
     {
         mFlipList.clear();
         mFlipList.append(prev);
@@ -202,24 +212,30 @@ void PlaybackManager::playFlipInBetween()
 
 void PlaybackManager::playScrub(int frame)
 {
-    if (!mSoundScrub || !mSoundclipsToPLay.isEmpty()) {return; }
+    if (!mSoundScrub || !mSoundclipsToPLay.isEmpty())
+    {
+        return;
+    }
 
     auto layerMan = editor()->layers();
     for (int i = 0; i < layerMan->count(); i++)
     {
-        Layer* layer = layerMan->getLayer(i);
+        Layer *layer = layerMan->getLayer(i);
         if (layer->type() == Layer::SOUND && layer->visible())
         {
-            KeyFrame* key = layer->getKeyFrameWhichCovers(frame);
+            KeyFrame *key = layer->getKeyFrameWhichCovers(frame);
             if (key != nullptr)
             {
-                SoundClip* clip = static_cast<SoundClip*>(key);
+                SoundClip *clip = static_cast<SoundClip *>(key);
                 mSoundclipsToPLay.append(clip);
             }
         }
     }
 
-    if (mSoundclipsToPLay.isEmpty()) { return; }
+    if (mSoundclipsToPLay.isEmpty())
+    {
+        return;
+    }
 
     mScrubTimer->singleShot(mMsecSoundScrub, this, &PlaybackManager::stopScrubPlayback);
     for (int i = 0; i < mSoundclipsToPLay.count(); i++)
@@ -233,7 +249,7 @@ void PlaybackManager::setFps(int fps)
     if (mFps != fps)
     {
         mFps = fps;
-        QSettings settings (PENCIL2D, PENCIL2D);
+        QSettings settings(PENCIL2D, PENCIL2D);
         settings.setValue(SETTING_FPS, fps);
         emit fpsChanged(mFps);
 
@@ -241,7 +257,7 @@ void PlaybackManager::setFps(int fps)
         // since the length depends on fps.
         for (int i = 0; i < object()->getLayerCount(); ++i)
         {
-            Layer* layer = object()->getLayer(i);
+            Layer *layer = object()->getLayer(i);
             if (layer->type() == Layer::SOUND)
             {
                 auto soundLayer = dynamic_cast<LayerSound *>(layer);
@@ -259,19 +275,19 @@ void PlaybackManager::playSounds(int frame)
         return;
     }
 
-    std::vector< LayerSound* > kSoundLayers;
+    std::vector<LayerSound *> kSoundLayers;
     for (int i = 0; i < object()->getLayerCount(); ++i)
     {
-        Layer* layer = object()->getLayer(i);
+        Layer *layer = object()->getLayer(i);
         if (layer->type() == Layer::SOUND)
         {
-            kSoundLayers.push_back(static_cast<LayerSound*>(layer));
+            kSoundLayers.push_back(static_cast<LayerSound *>(layer));
         }
     }
 
-    for (LayerSound* layer : kSoundLayers)
+    for (LayerSound *layer : kSoundLayers)
     {
-        KeyFrame* key = layer->getLastKeyFrameAtPosition(frame);
+        KeyFrame *key = layer->getLastKeyFrameAtPosition(frame);
 
         if (!layer->getVisibility())
         {
@@ -299,7 +315,7 @@ void PlaybackManager::playSounds(int frame)
                 if (layer->keyExistsWhichCovers(listPosition))
                 {
                     key = layer->getKeyFrameWhichCovers(listPosition);
-                    SoundClip* clip = static_cast<SoundClip*>(key);
+                    SoundClip *clip = static_cast<SoundClip *>(key);
                     clip->playFromPosition(frame, mFps);
                 }
             }
@@ -307,7 +323,7 @@ void PlaybackManager::playSounds(int frame)
         else if (layer->keyExists(frame))
         {
             key = layer->getKeyFrameAt(frame);
-            SoundClip* clip = static_cast<SoundClip*>(key);
+            SoundClip *clip = static_cast<SoundClip *>(key);
 
             clip->play();
 
@@ -320,7 +336,7 @@ void PlaybackManager::playSounds(int frame)
             if (layer->keyExists(mActiveSoundFrame))
             {
                 key = layer->getKeyFrameWhichCovers(mActiveSoundFrame);
-                SoundClip* clip = static_cast<SoundClip*>(key);
+                SoundClip *clip = static_cast<SoundClip *>(key);
                 clip->stop();
 
                 // make sure list is cleared on end
@@ -343,9 +359,9 @@ void PlaybackManager::playSounds(int frame)
 bool PlaybackManager::skipFrame()
 {
     // uncomment these debug outputs to see what happens
-    //float expectedTime = (mPlayingFrameCounter) * (1000.f / mFps);
-    //qDebug("Expected:  %.2f ms", expectedTime);
-    //qDebug("Actual:    %d   ms", mElapsedTimer->elapsed());
+    // float expectedTime = (mPlayingFrameCounter) * (1000.f / mFps);
+    // qDebug("Expected:  %.2f ms", expectedTime);
+    // qDebug("Actual:    %d   ms", mElapsedTimer->elapsed());
 
     int t = qRound((mPlayingFrameCounter - 1) * (1000.f / mFps));
     if (mElapsedTimer->elapsed() < t)
@@ -360,22 +376,21 @@ bool PlaybackManager::skipFrame()
 
 void PlaybackManager::stopSounds()
 {
-    std::vector<LayerSound*> kSoundLayers;
+    std::vector<LayerSound *> kSoundLayers;
 
     for (int i = 0; i < object()->getLayerCount(); ++i)
     {
-        Layer* layer = object()->getLayer(i);
+        Layer *layer = object()->getLayer(i);
         if (layer->type() == Layer::SOUND)
         {
-            kSoundLayers.push_back(static_cast<LayerSound*>(layer));
+            kSoundLayers.push_back(static_cast<LayerSound *>(layer));
         }
     }
 
-    for (LayerSound* layer : kSoundLayers)
+    for (LayerSound *layer : kSoundLayers)
     {
-        layer->foreachKeyFrame([](KeyFrame* key)
-        {
-            SoundClip* clip = static_cast<SoundClip*>(key);
+        layer->foreachKeyFrame([](KeyFrame *key) {
+            SoundClip *clip = static_cast<SoundClip *>(key);
             clip->stop();
         });
     }

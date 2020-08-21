@@ -18,14 +18,13 @@ GNU General Public License for more details.
 #ifndef STROKEMANAGER_H
 #define STROKEMANAGER_H
 
-#include <ctime>
-#include <QQueue>
-#include <QPointF>
-#include <QList>
-#include <QTimer>
-#include <QElapsedTimer>
 #include "object.h"
-
+#include <QElapsedTimer>
+#include <QList>
+#include <QPointF>
+#include <QQueue>
+#include <QTimer>
+#include <ctime>
 
 class PointerEvent;
 
@@ -34,9 +33,9 @@ class StrokeManager : public QObject
 public:
     StrokeManager();
 
-    void pointerPressEvent(PointerEvent* event);
-    void pointerMoveEvent(PointerEvent* event);
-    void pointerReleaseEvent(PointerEvent* event);
+    void pointerPressEvent(PointerEvent *event);
+    void pointerMoveEvent(PointerEvent *event);
+    void pointerReleaseEvent(PointerEvent *event);
     void setPressure(float pressure);
     void setStabilizerLevel(int level);
 
@@ -75,21 +74,21 @@ private:
     QTimer timer;
 
     QElapsedTimer mSingleshotTime;
-    QPointF mCurrentPressPixel = { 0, 0 };
-    QPointF mLastPressPixel2 = { 0, 0 };
-    QPointF mLastPressPixel = { 0, 0 };
-    QPointF mCurrentPixel = { 0, 0 };
-    QPointF mLastPixel = { 0, 0 };
-    QPointF mLastInterpolated = { 0, 0 };
-    QPointF mousePos = { 0, 0 };
+    QPointF mCurrentPressPixel = {0, 0};
+    QPointF mLastPressPixel2 = {0, 0};
+    QPointF mLastPressPixel = {0, 0};
+    QPointF mCurrentPixel = {0, 0};
+    QPointF mLastPixel = {0, 0};
+    QPointF mLastInterpolated = {0, 0};
+    QPointF mousePos = {0, 0};
 
     QPointF m_previousTangent;
-    bool    mHasTangent = false;
-    int     previousTime = 0;
-    bool    mStrokeStarted = false;
-    bool    mTabletInUse = false;
-    float   mTabletPressure = 1.f;
-    int     mStabilizerLevel = 0;
+    bool mHasTangent = false;
+    int previousTime = 0;
+    bool mStrokeStarted = false;
+    bool mTabletInUse = false;
+    float mTabletPressure = 1.f;
+    int mStabilizerLevel = 0;
 
     clock_t m_timeshot;
 };

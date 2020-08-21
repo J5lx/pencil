@@ -17,25 +17,24 @@ GNU General Public License for more details.
 #ifndef COMMANDCENTER_H
 #define COMMANDCENTER_H
 
-#include <QObject>
 #include "pencilerror.h"
+#include <QObject>
 
 class Editor;
 class QWidget;
 class ExportMovieDialog;
-
 
 class ActionCommands : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit ActionCommands(QWidget* parent = nullptr);
+    explicit ActionCommands(QWidget *parent = nullptr);
     virtual ~ActionCommands();
 
-    void setCore(Editor* e) { mEditor = e; }
+    void setCore(Editor *e) { mEditor = e; }
 
-    // file 
+    // file
     Status importMovieVideo();
     Status importMovieAudio();
     Status importSound();
@@ -94,11 +93,10 @@ public:
     void about();
 
 private:
+    Status convertSoundToWav(const QString &filePath);
 
-    Status convertSoundToWav(const QString& filePath);
-
-    Editor* mEditor = nullptr;
-    QWidget* mParent = nullptr;
+    Editor *mEditor = nullptr;
+    QWidget *mParent = nullptr;
 };
 
 #endif // COMMANDCENTER_H

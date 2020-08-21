@@ -18,24 +18,24 @@ GNU General Public License for more details.
 #include "fileformat.h"
 #include <QDir>
 
-bool removePFFTmpDirectory (const QString& dirName)
+bool removePFFTmpDirectory(const QString &dirName)
 {
-    if ( dirName.isEmpty() )
+    if (dirName.isEmpty())
     {
         return false;
     }
 
-    QDir dir( dirName );
-	
-    if ( !dir.exists() )
+    QDir dir(dirName);
+
+    if (!dir.exists())
     {
-        Q_ASSERT( false );
+        Q_ASSERT(false);
         return false;
     }
 
     bool result = dir.removeRecursively();
-	
-	return result;
+
+    return result;
 }
 
 QString uniqueString(int len)
@@ -43,7 +43,8 @@ QString uniqueString(int len)
     static const char alphanum[] = "0123456789abcdefghijklmnopqrstuvwxyz";
     const int alphanum_len = sizeof(alphanum);
 
-    if (len > 128) len = 128;
+    if (len > 128)
+        len = 128;
 
     char s[128 + 1];
     for (int i = 0; i < len; ++i)

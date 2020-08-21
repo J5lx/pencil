@@ -20,8 +20,7 @@ GNU General Public License for more details.
 
 #include "pencilapplication.h"
 
-PencilApplication::PencilApplication(int& argc, char** argv) :
-    QApplication(argc, argv)
+PencilApplication::PencilApplication(int &argc, char **argv) : QApplication(argc, argv)
 {
     // Set organization and application name
     setOrganizationName("Pencil2D");
@@ -36,16 +35,18 @@ PencilApplication::PencilApplication(int& argc, char** argv) :
     setWindowIcon(QIcon(":/icons/icon.png"));
 }
 
-bool PencilApplication::event(QEvent* event)
+bool PencilApplication::event(QEvent *event)
 {
-    if(event->type() == QEvent::ApplicationStateChange && static_cast<QApplicationStateChangeEvent*>(event)->applicationState() == Qt::ApplicationInactive) {
+    if (event->type() == QEvent::ApplicationStateChange &&
+        static_cast<QApplicationStateChangeEvent *>(event)->applicationState() == Qt::ApplicationInactive)
+    {
         emit lostFocus();
         return true;
     }
 
     if (event->type() == QEvent::FileOpen)
     {
-        mStartPath = static_cast<QFileOpenEvent*>(event)->file();
+        mStartPath = static_cast<QFileOpenEvent *>(event)->file();
         emit openFileRequested(mStartPath);
         return true;
     }

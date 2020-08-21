@@ -15,57 +15,58 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 */
-#include <QFile>
-#include <QProcess>
-#include <QDir>
-#include <QString>
-#include <QImageWriter>
-#include <QImageReader>
-#include <QProgressDialog>
-#include <QDebug>
-#include <QSettings>
-#include "object.h"
 #include "editor.h"
 #include "layersound.h"
+#include "object.h"
 #include "pencildef.h"
 #include "platformhandler.h"
+#include <QDebug>
+#include <QDir>
+#include <QFile>
+#include <QImageReader>
+#include <QImageWriter>
+#include <QProcess>
+#include <QProgressDialog>
+#include <QSettings>
+#include <QString>
 
-#define MIN(a,b) ((a)>(b)?(b):(a))
+#define MIN(a, b) ((a) > (b) ? (b) : (a))
 
 namespace PlatformHandler
 {
-    void configurePlatformSpecificSettings() {}
+void configurePlatformSpecificSettings() {}
 
-    void initialise()
+void initialise()
+{
+    /* If running as an AppImage, sets GStreamer environment variables to ensure
+     * the plugins contained in the AppImage are found
+     */
+    QString appDir = QString::fromLocal8Bit(qgetenv("APPDIR"));
+    if (!appDir.isEmpty())
     {
-        /* If running as an AppImage, sets GStreamer environment variables to ensure
-         * the plugins contained in the AppImage are found
-         */
-        QString appDir = QString::fromLocal8Bit(qgetenv("APPDIR"));
-        if (!appDir.isEmpty())
+        bool success = qputenv("GST_PLUGIN_SYSTEM_PATH_1_0",
+                               QString("%1/usr/lib/gstreamer-1.0:%2")
+                                   .arg(appDir, QString::fromLocal8Bit(qgetenv("GST_PLUGIN_SYSTEM_PATH_1_0")))
+                                   .toLocal8Bit());
+        success =
+            qputenv("GST_PLUGIN_SCANNER_1_0",
+                    QString("%1/usr/lib/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner").arg(appDir).toLocal8Bit()) &&
+            success;
+        if (!success)
         {
-            bool success = qputenv("GST_PLUGIN_SYSTEM_PATH_1_0",
-                                   QString("%1/usr/lib/gstreamer-1.0:%2")
-                                       .arg(appDir, QString::fromLocal8Bit(qgetenv("GST_PLUGIN_SYSTEM_PATH_1_0")))
-                                       .toLocal8Bit());
-            success = qputenv("GST_PLUGIN_SCANNER_1_0",
-                              QString("%1/usr/lib/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner")
-                                 .arg(appDir).toLocal8Bit()) && success;
-            if (!success)
-            {
-                qWarning() << "Unable to set up GStreamer environment";
-            }
+            qWarning() << "Unable to set up GStreamer environment";
         }
     }
 }
+} // namespace PlatformHandler
 
-qint16 safeSum ( qint16 a, qint16 b)
+qint16 safeSum(qint16 a, qint16 b)
 {
     if (((int)a + (int)b) > 32767)
         return 32767;
     if (((int)a + (int)b) < -32768)
         return -32768;
-    return a+b;
+    return a + b;
 }
 
 void initialise()
@@ -76,10 +77,14 @@ void initialise()
     // QImageReader capabilities
     QList<QByteArray> formats = QImageReader::supportedImageFormats();
     foreach (QString format, formats)
-    {qDebug() << "QImageReader capability: " << format;}
+    {
+        qDebug() << "QImageReader capability: " << format;
+    }
 
     // QImageWriter capabilities
     formats = QImageWriter::supportedImageFormats();
     foreach (QString format, formats)
-    {qDebug() << "QImageWriter capability: " << format;}
+    {
+        qDebug() << "QImageWriter capability: " << format;
+    }
 }

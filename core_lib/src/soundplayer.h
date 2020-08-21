@@ -17,10 +17,10 @@ GNU General Public License for more details.
 #ifndef SOUNDPLAYER_H
 #define SOUNDPLAYER_H
 
-#include <memory>
-#include <QObject>
-#include "pencilerror.h"
 #include "keyframe.h"
+#include "pencilerror.h"
+#include <QObject>
+#include <memory>
 
 class SoundClip;
 class QMediaPlayer;
@@ -32,28 +32,28 @@ public:
     SoundPlayer();
     ~SoundPlayer() override;
 
-    void init( SoundClip* );
-    void onKeyFrameDestroy( KeyFrame* ) override;
+    void init(SoundClip *);
+    void onKeyFrameDestroy(KeyFrame *) override;
     bool isValid();
 
     void play();
     void pause();
     void stop();
-    
-    int64_t duration();
-    SoundClip* clip() { return mSoundClip; }
 
-    void setMediaPlayerPosition( qint64 pos );
+    int64_t duration();
+    SoundClip *clip() { return mSoundClip; }
+
+    void setMediaPlayerPosition(qint64 pos);
 
 Q_SIGNALS:
-    void corruptedSoundFile( SoundClip* );
-    void durationChanged( SoundPlayer*, int64_t duration );
+    void corruptedSoundFile(SoundClip *);
+    void durationChanged(SoundPlayer *, int64_t duration);
 
 private:
     void makeConnections();
 
-    SoundClip* mSoundClip = nullptr;
-    QMediaPlayer* mMediaPlayer = nullptr;
+    SoundClip *mSoundClip = nullptr;
+    QMediaPlayer *mMediaPlayer = nullptr;
 };
 
 #endif // SOUNDPLAYER_H

@@ -27,30 +27,29 @@ class BucketTool : public StrokeTool
 {
     Q_OBJECT
 public:
-    explicit BucketTool(QObject* parent = nullptr);
+    explicit BucketTool(QObject *parent = nullptr);
     ToolType type() override;
     void loadSettings() override;
     void resetToDefault() override;
     QCursor cursor() override;
 
-    void pointerPressEvent(PointerEvent*) override;
-    void pointerMoveEvent(PointerEvent*) override;
-    void pointerReleaseEvent(PointerEvent*) override;
+    void pointerPressEvent(PointerEvent *) override;
+    void pointerMoveEvent(PointerEvent *) override;
+    void pointerReleaseEvent(PointerEvent *) override;
 
     bool startAdjusting(Qt::KeyboardModifiers modifiers, qreal argStep) override;
 
     void setTolerance(const int tolerance) override;
     void setWidth(const qreal width) override;
 
-    void paintBitmap(Layer* layer);
-    void paintVector(Layer* layer);
+    void paintBitmap(Layer *layer);
+    void paintVector(Layer *layer);
     void drawStroke();
 
     void applyChanges();
 
 private:
-
-    VectorImage* vectorImage = nullptr;
+    VectorImage *vectorImage = nullptr;
 };
 
 #endif // BUCKETTOOL_H

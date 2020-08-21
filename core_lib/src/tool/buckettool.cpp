@@ -16,27 +16,24 @@ GNU General Public License for more details.
 */
 #include "buckettool.h"
 
-#include <QPixmap>
-#include <QPainter>
-#include <QtMath>
-#include <QSettings>
 #include "pointerevent.h"
+#include <QPainter>
+#include <QPixmap>
+#include <QSettings>
+#include <QtMath>
 
+#include "colormanager.h"
+#include "editor.h"
 #include "layer.h"
-#include "layervector.h"
 #include "layerbitmap.h"
 #include "layermanager.h"
-#include "colormanager.h"
-#include "strokemanager.h"
-#include "viewmanager.h"
-#include "vectorimage.h"
-#include "editor.h"
+#include "layervector.h"
 #include "scribblearea.h"
+#include "strokemanager.h"
+#include "vectorimage.h"
+#include "viewmanager.h"
 
-
-BucketTool::BucketTool(QObject* parent) : StrokeTool(parent)
-{
-}
+BucketTool::BucketTool(QObject *parent) : StrokeTool(parent) {}
 
 ToolType BucketTool::type()
 {
@@ -106,7 +103,7 @@ void BucketTool::setTolerance(const int tolerance)
     settings.sync();
 }
 
-void BucketTool::pointerPressEvent(PointerEvent* event)
+void BucketTool::pointerPressEvent(PointerEvent *event)
 {
     startStroke();
     if (event->button() == Qt::LeftButton)
@@ -116,11 +113,11 @@ void BucketTool::pointerPressEvent(PointerEvent* event)
     startStroke();
 }
 
-void BucketTool::pointerMoveEvent(PointerEvent* event)
+void BucketTool::pointerMoveEvent(PointerEvent *event)
 {
     if (event->buttons() & Qt::LeftButton)
     {
-        Layer* layer = mEditor->layers()->currentLayer();
+        Layer *layer = mEditor->layers()->currentLayer();
         if (layer->type() == Layer::VECTOR)
         {
             drawStroke();
@@ -128,10 +125,13 @@ void BucketTool::pointerMoveEvent(PointerEvent* event)
     }
 }
 
-void BucketTool::pointerReleaseEvent(PointerEvent* event)
+void BucketTool::pointerReleaseEvent(PointerEvent *event)
 {
-    Layer* layer = editor()->layers()->currentLayer();
-    if (layer == nullptr) { return; }
+    Layer *layer = editor()->layers()->currentLayer();
+    if (layer == nullptr)
+    {
+        return;
+    }
 
     if (event->button() == Qt::LeftButton)
     {
@@ -139,8 +139,12 @@ void BucketTool::pointerReleaseEvent(PointerEvent* event)
 
         switch (layer->type())
         {
-        case Layer::BITMAP: paintBitmap(layer); break;
-        case Layer::VECTOR: paintVector(layer); break;
+        case Layer::BITMAP:
+            paintBitmap(layer);
+            break;
+        case Layer::VECTOR:
+            paintVector(layer);
+            break;
         default:
             break;
         }
@@ -162,13 +166,17 @@ bool BucketTool::startAdjusting(Qt::KeyboardModifiers modifiers, qreal argStep)
     return BaseTool::startAdjusting(modifiers, argStep);
 }
 
-void BucketTool::paintBitmap(Layer* layer)
+void BucketTool::paintBitmap(Layer *layer)
 {
-    Layer* targetLayer = layer; // by default
+    Layer *targetLayer = layer;                                // by default
     int layerNumber = editor()->layers()->currentLayerIndex(); // by default
 
-    BitmapImage* targetImage = static_cast<LayerBitmap*>(targetLayer)->getLastBitmapImageAtFrame(editor()->currentFrame(), 0);
-    if (targetImage == nullptr) { return; } // Can happen if the first frame is deleted while drawing
+    BitmapImage *targetImage =
+        static_cast<LayerBitmap *>(targetLayer)->getLastBitmapImageAtFrame(editor()->currentFrame(), 0);
+    if (targetImage == nullptr)
+    {
+        return;
+    } // Can happen if the first frame is deleted while drawing
 
     QPoint point = QPoint(qFloor(getLastPoint().x()), qFloor(getLastPoint().y()));
     QRect cameraRect = mScribbleArea->getCameraRect().toRect();
@@ -182,12 +190,15 @@ void BucketTool::paintBitmap(Layer* layer)
     mScribbleArea->setAllDirty();
 }
 
-void BucketTool::paintVector(Layer* layer)
+void BucketTool::paintVector(Layer *layer)
 {
     mScribbleArea->clearBitmapBuffer();
 
-    VectorImage* vectorImage = static_cast<LayerVector*>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
-    if (vectorImage == nullptr) { return; } // Can happen if the first frame is deleted while drawing
+    VectorImage *vectorImage = static_cast<LayerVector *>(layer)->getLastVectorImageAtFrame(mEditor->currentFrame(), 0);
+    if (vectorImage == nullptr)
+    {
+        return;
+    } // Can happen if the first frame is deleted while drawing
 
     if (!vectorImage->isPathFilled())
     {
@@ -220,7 +231,7 @@ void BucketTool::drawStroke()
 
     QList<QPointF> p = strokeManager()->interpolateStroke();
 
-    Layer* layer = mEditor->layers()->currentLayer();
+    Layer *layer = mEditor->layers()->currentLayer();
 
     if (layer->type() == Layer::VECTOR)
     {
@@ -228,13 +239,9 @@ void BucketTool::drawStroke()
         int rad = qRound((mCurrentWidth / 2 + 2) * mEditor->view()->scaling());
 
         QColor pathColor = qPremultiply(mEditor->color()->frontColor().rgba());
-        //pathColor.setAlpha(255);
+        // pathColor.setAlpha(255);
 
-        QPen pen(pathColor,
-                 mCurrentWidth * mEditor->view()->scaling(),
-                 Qt::NoPen,
-                 Qt::RoundCap,
-                 Qt::RoundJoin);
+        QPen pen(pathColor, mCurrentWidth * mEditor->view()->scaling(), Qt::NoPen, Qt::RoundCap, Qt::RoundJoin);
 
         if (p.size() == 4)
         {

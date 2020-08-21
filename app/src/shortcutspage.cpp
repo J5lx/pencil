@@ -17,61 +17,62 @@ GNU General Public License for more details.
 #include "shortcutspage.h"
 #include "ui_shortcutspage.h"
 
+#include "pencilsettings.h"
 #include <QDebug>
-#include <QStringRef>
-#include <QSettings>
-#include <QStandardItemModel>
+#include <QFile>
+#include <QFileDialog>
 #include <QKeyEvent>
 #include <QKeySequence>
 #include <QMessageBox>
-#include "pencilsettings.h"
-#include <QFile>
-#include <QFileDialog>
-
+#include <QSettings>
+#include <QStandardItemModel>
+#include <QStringRef>
 
 static const int ACT_NAME_COLUMN = 0;
-static const int KEY_SEQ_COLUMN  = 1;
+static const int KEY_SEQ_COLUMN = 1;
 
-static QString getHumanReadableShortcutName(const QString&);
+static QString getHumanReadableShortcutName(const QString &);
 
-ShortcutsPage::ShortcutsPage( QWidget* parent )
-    : QWidget(parent),
-    ui( new Ui::ShortcutsPage )
+ShortcutsPage::ShortcutsPage(QWidget *parent) : QWidget(parent), ui(new Ui::ShortcutsPage)
 {
     ui->setupUi(this);
     m_treeModel = new QStandardItemModel(this);
     m_treeModel->setColumnCount(2);
-    m_treeModel->setHorizontalHeaderLabels({ tr("Action", "Shortcut table header"), tr("Shortcut", "Shortcut table header") });
+    m_treeModel->setHorizontalHeaderLabels(
+        {tr("Action", "Shortcut table header"), tr("Shortcut", "Shortcut table header")});
     treeModelLoadShortcutsSetting();
 
     ui->treeView->setModel(m_treeModel);
     ui->treeView->resizeColumnToContents(0);
 
-    connect( ui->treeView, &QTreeView::clicked, this, &ShortcutsPage::tableItemClicked );
-    connect( ui->keySequenceEdit, &QKeySequenceEdit::editingFinished, this, &ShortcutsPage::keyCapLineEditTextChanged );
-    connect( ui->restoreShortcutsButton, &QPushButton::clicked, this, &ShortcutsPage::restoreShortcutsButtonClicked );
+    connect(ui->treeView, &QTreeView::clicked, this, &ShortcutsPage::tableItemClicked);
+    connect(ui->keySequenceEdit, &QKeySequenceEdit::editingFinished, this, &ShortcutsPage::keyCapLineEditTextChanged);
+    connect(ui->restoreShortcutsButton, &QPushButton::clicked, this, &ShortcutsPage::restoreShortcutsButtonClicked);
     connect(ui->btnSaveShortcuts, &QPushButton::clicked, this, &ShortcutsPage::saveShortcutsButtonClicked);
     connect(ui->btnLoadShortcuts, &QPushButton::clicked, this, &ShortcutsPage::loadShortcutsButtonClicked);
-    connect( ui->clearButton, &QPushButton::clicked, this, &ShortcutsPage::clearButtonClicked );
+    connect(ui->clearButton, &QPushButton::clicked, this, &ShortcutsPage::clearButtonClicked);
 
-    ui->treeView->selectionModel()->select(QItemSelection(m_treeModel->index(0, 0), m_treeModel->index(0, m_treeModel->columnCount() - 1)), QItemSelectionModel::Select);
+    ui->treeView->selectionModel()->select(
+        QItemSelection(m_treeModel->index(0, 0), m_treeModel->index(0, m_treeModel->columnCount() - 1)),
+        QItemSelectionModel::Select);
     tableItemClicked(m_treeModel->index(0, 0));
 }
 
-ShortcutsPage::~ShortcutsPage() {
+ShortcutsPage::~ShortcutsPage()
+{
     delete ui;
 }
 
-void ShortcutsPage::tableItemClicked( const QModelIndex& modelIndex )
+void ShortcutsPage::tableItemClicked(const QModelIndex &modelIndex)
 {
     int row = modelIndex.row();
 
     // extract action name
-    QStandardItem* actionItem = m_treeModel->item(row, ACT_NAME_COLUMN);
+    QStandardItem *actionItem = m_treeModel->item(row, ACT_NAME_COLUMN);
     ui->actionNameLabel->setText(actionItem->text());
 
     // extract key sequence
-    QStandardItem* keySeqItem = m_treeModel->item(row, KEY_SEQ_COLUMN);
+    QStandardItem *keySeqItem = m_treeModel->item(row, KEY_SEQ_COLUMN);
     ui->keySequenceEdit->setKeySequence(keySeqItem->text());
 
     qDebug() << "Command Selected:" << actionItem->text();
@@ -90,29 +91,30 @@ void ShortcutsPage::keyCapLineEditTextChanged()
     }
 
     int row = m_currentItemIndex.row();
-    QStandardItem* actionItem = m_treeModel->item(row, ACT_NAME_COLUMN);
-    QStandardItem* keySeqItem = m_treeModel->item(row, KEY_SEQ_COLUMN);
+    QStandardItem *actionItem = m_treeModel->item(row, ACT_NAME_COLUMN);
+    QStandardItem *keySeqItem = m_treeModel->item(row, KEY_SEQ_COLUMN);
 
     QString strCmdName = actionItem->data().toString();
-    QString strKeySeq  = keySequence.toString( QKeySequence::PortableText );
+    QString strKeySeq = keySequence.toString(QKeySequence::PortableText);
 
-    QSettings setting( PENCIL2D, PENCIL2D );
+    QSettings setting(PENCIL2D, PENCIL2D);
     setting.beginGroup("shortcuts");
 
     if (isKeySequenceExist(setting, strCmdName, keySequence))
     {
         QMessageBox msgBox(this);
-        msgBox.setText( tr("Shortcut Conflict!"));
-        msgBox.setInformativeText( tr("%1 is already used, overwrite?").arg(keySequence.toString(QKeySequence::NativeText)) );
+        msgBox.setText(tr("Shortcut Conflict!"));
+        msgBox.setInformativeText(
+            tr("%1 is already used, overwrite?").arg(keySequence.toString(QKeySequence::NativeText)));
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setDefaultButton(QMessageBox::No);
-        msgBox.setIcon( QMessageBox::Warning );
+        msgBox.setIcon(QMessageBox::Warning);
 
         int result = msgBox.exec();
 
-        if ( result != QMessageBox::Yes )
+        if (result != QMessageBox::Yes)
         {
-            ui->keySequenceEdit->setKeySequence( keySeqItem->text() );
+            ui->keySequenceEdit->setKeySequence(keySeqItem->text());
             return;
         }
         removeDuplicateKeySequence(&setting, keySequence);
@@ -129,8 +131,8 @@ void ShortcutsPage::keyCapLineEditTextChanged()
 
 void ShortcutsPage::saveShortcutsButtonClicked()
 {
-    QSettings settings( PENCIL2D, PENCIL2D );
-    settings.beginGroup( "LastSavePath" );
+    QSettings settings(PENCIL2D, PENCIL2D);
+    settings.beginGroup("LastSavePath");
 
     QString fDir = settings.value("Shortcuts").toString();
     if (fDir.isEmpty())
@@ -144,7 +146,7 @@ void ShortcutsPage::saveShortcutsButtonClicked()
     settings.endGroup();
 
     QSettings out(fileName, QSettings::IniFormat);
-    settings.beginGroup( "shortcuts" );
+    settings.beginGroup("shortcuts");
     out.beginGroup("shortcuts");
 
     foreach (QString key, settings.allKeys())
@@ -155,7 +157,7 @@ void ShortcutsPage::saveShortcutsButtonClicked()
 
 void ShortcutsPage::loadShortcutsButtonClicked()
 {
-    QSettings settings( PENCIL2D, PENCIL2D );
+    QSettings settings(PENCIL2D, PENCIL2D);
     settings.beginGroup("LastSavePath");
     QString fDir = settings.value("Shortcuts").toString();
     settings.endGroup();
@@ -196,7 +198,7 @@ void ShortcutsPage::restoreShortcutsButtonClicked()
     treeModelLoadShortcutsSetting();
 }
 
-bool ShortcutsPage::isKeySequenceExist(const QSettings& settings, QString strTargetCmdName, QKeySequence targetkeySeq)
+bool ShortcutsPage::isKeySequenceExist(const QSettings &settings, QString strTargetCmdName, QKeySequence targetkeySeq)
 {
     foreach (QString strCmdName, settings.allKeys())
     {
@@ -214,13 +216,13 @@ bool ShortcutsPage::isKeySequenceExist(const QSettings& settings, QString strTar
     return false;
 }
 
-void ShortcutsPage::removeDuplicateKeySequence(QSettings* settings, QKeySequence keySeq)
+void ShortcutsPage::removeDuplicateKeySequence(QSettings *settings, QKeySequence keySeq)
 {
-    foreach(QString strCmdName, settings->allKeys())
+    foreach (QString strCmdName, settings->allKeys())
     {
         QString strCmdKeySeq = settings->value(strCmdName).toString();
 
-        if ( strCmdKeySeq == keySeq.toString(QKeySequence::PortableText))
+        if (strCmdKeySeq == keySeq.toString(QKeySequence::PortableText))
         {
             settings->setValue(strCmdName, "");
         }
@@ -230,7 +232,7 @@ void ShortcutsPage::removeDuplicateKeySequence(QSettings* settings, QKeySequence
 void ShortcutsPage::treeModelLoadShortcutsSetting()
 {
     // Load shortcuts from settings
-    QSettings settings( PENCIL2D, PENCIL2D );
+    QSettings settings(PENCIL2D, PENCIL2D);
     settings.beginGroup("shortcuts");
 
     m_treeModel->setRowCount(settings.allKeys().size());
@@ -241,10 +243,10 @@ void ShortcutsPage::treeModelLoadShortcutsSetting()
     {
         QString strKeySequence = settings.value(strCmdName).toString();
 
-        //convert to native format
+        // convert to native format
         strKeySequence = QKeySequence(strKeySequence).toString(QKeySequence::NativeText);
 
-        if (m_treeModel->item(row , ACT_NAME_COLUMN) == nullptr)
+        if (m_treeModel->item(row, ACT_NAME_COLUMN) == nullptr)
             m_treeModel->setItem(row, ACT_NAME_COLUMN, new QStandardItem());
         if (m_treeModel->item(row, KEY_SEQ_COLUMN) == nullptr)
             m_treeModel->setItem(row, KEY_SEQ_COLUMN, new QStandardItem());
@@ -259,23 +261,23 @@ void ShortcutsPage::treeModelLoadShortcutsSetting()
     }
     settings.endGroup();
 
-    ui->treeView->resizeColumnToContents( 0 );
+    ui->treeView->resizeColumnToContents(0);
 }
 
 void ShortcutsPage::clearButtonClicked()
 {
-    if ( !m_currentItemIndex.isValid() )
+    if (!m_currentItemIndex.isValid())
     {
         return;
     }
 
     int row = m_currentItemIndex.row();
-    QStandardItem* actionItem = m_treeModel->item(row, ACT_NAME_COLUMN);
+    QStandardItem *actionItem = m_treeModel->item(row, ACT_NAME_COLUMN);
 
-    QString strCmdName = QString("shortcuts/%1").arg( actionItem->data().toString() );
+    QString strCmdName = QString("shortcuts/%1").arg(actionItem->data().toString());
 
-    QSettings setting( PENCIL2D, PENCIL2D );
-    setting.setValue( strCmdName, "" );
+    QSettings setting(PENCIL2D, PENCIL2D);
+    setting.setValue(strCmdName, "");
     setting.sync();
 
     ui->keySequenceEdit->clear();
@@ -289,7 +291,7 @@ void ShortcutsPage::clearButtonClicked()
  * @param[in] cmdName The name of the setting corresponding to the shortcut
  * @return The translated, human-readable name of the shortcut
  */
-static QString getHumanReadableShortcutName(const QString& cmdName)
+static QString getHumanReadableShortcutName(const QString &cmdName)
 {
     static QHash<QString, QString> humanReadableShortcutNames = QHash<QString, QString>{
         {CMD_ADD_FRAME, QObject::tr("Add Frame", "Shortcut")},

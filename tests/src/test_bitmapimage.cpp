@@ -50,14 +50,14 @@ TEST_CASE("BitmapImage constructors")
 
         REQUIRE(b->pos() == b2->pos());
         REQUIRE(b->length() == b2->length());
-        
+
         REQUIRE(b->left() == b2->left());
         REQUIRE(b->right() == b2->right());
         REQUIRE(b->width() == b2->width());
         REQUIRE(b->height() == b2->height());
-        
-        QImage* img1 = b->image();
-        QImage* img2 = b2->image();
+
+        QImage *img1 = b->image();
+        QImage *img2 = b2->image();
         REQUIRE(img1 != img2);
         REQUIRE((*img1) == (*img2));
     }

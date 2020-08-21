@@ -21,15 +21,14 @@ GNU General Public License for more details.
 #include <QSettings>
 
 #include "editor.h"
-#include "playbackmanager.h"
 #include "layermanager.h"
 #include "pencildef.h"
-#include "util.h"
+#include "playbackmanager.h"
 #include "preferencemanager.h"
 #include "timeline.h"
+#include "util.h"
 
-
-TimeControls::TimeControls(TimeLine* parent) : QToolBar(parent)
+TimeControls::TimeControls(TimeLine *parent) : QToolBar(parent)
 {
     mTimeline = parent;
 }
@@ -104,7 +103,6 @@ void TimeControls::initUI()
     mSoundScrubButton->setCheckable(true);
     mSoundScrubButton->setChecked(mEditor->preference()->isOn(SETTING::SOUND_SCRUB_ACTIVE));
 
-
     addWidget(mJumpToStartButton);
     addWidget(mPlayButton);
     addWidget(mJumpToEndButton);
@@ -123,9 +121,10 @@ void TimeControls::initUI()
 
 void TimeControls::updateUI()
 {
-    PlaybackManager* playback = mEditor->playback();
+    PlaybackManager *playback = mEditor->playback();
 
-    mPlaybackRangeCheckBox->setChecked(playback->isRangedPlaybackOn()); // don't block this signal since it enables start/end range spinboxes.
+    mPlaybackRangeCheckBox->setChecked(
+        playback->isRangedPlaybackOn()); // don't block this signal since it enables start/end range spinboxes.
 
     QSignalBlocker b1(mLoopStartSpinBox);
     mLoopStartSpinBox->setValue(playback->markInFrame());
@@ -140,7 +139,7 @@ void TimeControls::updateUI()
     mLoopButton->setChecked(playback->isLooping());
 }
 
-void TimeControls::setEditor(Editor* editor)
+void TimeControls::setEditor(Editor *editor)
 {
     Q_ASSERT(editor != nullptr);
     mEditor = editor;

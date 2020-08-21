@@ -18,13 +18,13 @@ GNU General Public License for more details.
 #ifndef BASETOOL_H
 #define BASETOOL_H
 
-#include <QObject>
-#include <QString>
-#include <QCursor>
-#include <QPointF>
-#include <QHash>
 #include "movemode.h"
 #include "pencildef.h"
+#include <QCursor>
+#include <QHash>
+#include <QObject>
+#include <QPointF>
+#include <QString>
 
 class QPixmap;
 class Editor;
@@ -40,47 +40,46 @@ class Properties
 public:
     qreal width = 1.f;
     qreal feather = 1.f;
-    bool  pressure = true;
-    int   invisibility = 0;
-    int   preserveAlpha = 0;
-    bool  vectorMergeEnabled = false;
-    bool  bezier_state = false;
-    bool  useFeather = true;
-    int   useAA = 0;
-    int   stabilizerLevel = 0;
+    bool pressure = true;
+    int invisibility = 0;
+    int preserveAlpha = 0;
+    bool vectorMergeEnabled = false;
+    bool bezier_state = false;
+    bool useFeather = true;
+    int useAA = 0;
+    int stabilizerLevel = 0;
     qreal tolerance = 0;
-    bool  useFillContour = false;
+    bool useFillContour = false;
 };
 
 const int ON = 1;
 const int OFF = 0;
 const int DISABLED = -1;
 
-
 class BaseTool : public QObject
 {
     Q_OBJECT
 protected:
-    explicit BaseTool(QObject* parent);
+    explicit BaseTool(QObject *parent);
 
 public:
     static QString TypeName(ToolType);
     QString typeName() { return TypeName(type()); }
 
-    void initialize(Editor* editor);
-    
+    void initialize(Editor *editor);
+
     virtual ToolType type() = 0;
     virtual void loadSettings() = 0;
     virtual QCursor cursor();
 
-    virtual void pointerPressEvent(PointerEvent*) = 0;
-    virtual void pointerMoveEvent(PointerEvent*) = 0;
-    virtual void pointerReleaseEvent(PointerEvent*) = 0;
-    virtual void pointerDoubleClickEvent(PointerEvent*);
+    virtual void pointerPressEvent(PointerEvent *) = 0;
+    virtual void pointerMoveEvent(PointerEvent *) = 0;
+    virtual void pointerReleaseEvent(PointerEvent *) = 0;
+    virtual void pointerDoubleClickEvent(PointerEvent *);
 
     // return true if handled
-    virtual bool keyPressEvent(QKeyEvent*) { return false; }
-    virtual bool keyReleaseEvent(QKeyEvent*) { return false; }
+    virtual bool keyPressEvent(QKeyEvent *) { return false; }
+    virtual bool keyReleaseEvent(QKeyEvent *) { return false; }
 
     // dynamic cursor adjustment
     virtual bool startAdjusting(Qt::KeyboardModifiers modifiers, qreal argStep);
@@ -90,7 +89,11 @@ public:
     virtual void clearToolData() {}
     virtual void resetToDefault() {}
 
-    static QPixmap canvasCursor(float brushWidth, float brushFeather, bool useFeather, float scalingFac, int windowWidth);
+    static QPixmap canvasCursor(float brushWidth,
+                                float brushFeather,
+                                bool useFeather,
+                                float scalingFac,
+                                int windowWidth);
     QPixmap quickSizeCursor(qreal scalingFac);
     static QCursor selectMoveCursor(MoveMode mode, ToolType type);
     static bool isAdjusting() { return msIsAdjusting; }
@@ -135,22 +138,22 @@ public:
     bool isDrawingTool();
 
 protected:
-    StrokeManager* strokeManager() { return mStrokeManager; }
-    Editor* editor() { return mEditor; }
+    StrokeManager *strokeManager() { return mStrokeManager; }
+    Editor *editor() { return mEditor; }
 
     QHash<ToolPropertyType, bool> mPropertyEnabled;
 
-    Editor* mEditor = nullptr;
-    ScribbleArea* mScribbleArea = nullptr;
+    Editor *mEditor = nullptr;
+    ScribbleArea *mScribbleArea = nullptr;
 
     QHash<Qt::KeyboardModifiers, ToolPropertyType> mQuickSizingProperties;
 
 private:
-    StrokeManager* mStrokeManager = nullptr;
+    StrokeManager *mStrokeManager = nullptr;
     qreal mAdjustmentStep = 0.0f;
 
     static bool msIsAdjusting;
-    static qreal msOriginalPropertyValue;  // start from previous value (width, or feather ...)
+    static qreal msOriginalPropertyValue; // start from previous value (width, or feather ...)
 };
 
 #endif // BASETOOL_H
