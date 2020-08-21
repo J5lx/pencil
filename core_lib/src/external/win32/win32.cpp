@@ -36,5 +36,5 @@ namespace PlatformHandler
 {
 void configurePlatformSpecificSettings() {}
 
-void initialise(){};
+void initialise() {};
 } // namespace PlatformHandler

@@ -138,7 +138,7 @@ QTransform LayerCamera::getViewAtFrame(int frameNumber)
     qreal c2 = (frameNumber - frame1) / (frame2 - frame1);
     qreal c1 = 1.0 - c2;
 
-    auto interpolation = [=](double f1, double f2) -> double { return f1 * c1 + f2 * c2; };
+    auto interpolation = [ = ](double f1, double f2) -> double { return f1 * c1 + f2 * c2; };
 
     return QTransform(interpolation(camera1->view.m11(), camera2->view.m11()),
                       interpolation(camera1->view.m12(), camera2->view.m12()),
@@ -151,7 +151,9 @@ QTransform LayerCamera::getViewAtFrame(int frameNumber)
 void LayerCamera::linearInterpolateTransform(Camera *cam)
 {
     if (keyFrameCount() == 0)
+    {
         return;
+    }
 
     int frameNumber = cam->pos();
     Camera *camera1 = static_cast<Camera *>(getLastKeyFrameAtPosition(frameNumber - 1));
@@ -257,7 +259,8 @@ QDomElement LayerCamera::createDomElement(QDomDocument &doc)
     layerElem.setAttribute("width", viewRect.width());
     layerElem.setAttribute("height", viewRect.height());
 
-    foreachKeyFrame([&](KeyFrame *pKeyFrame) {
+    foreachKeyFrame([&](KeyFrame * pKeyFrame)
+    {
         Camera *camera = static_cast<Camera *>(pKeyFrame);
         QDomElement keyTag = doc.createElement("camera");
         keyTag.setAttribute("frame", camera->pos());

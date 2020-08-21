@@ -54,11 +54,11 @@ Object *FileManager::load(QString sFileName)
     {
         FILEMANAGER_LOG("ERROR - File doesn't exist");
         return cleanUpWithErrorCode(
-            Status(Status::FILE_NOT_FOUND,
-                   dd,
-                   tr("Could not open file"),
-                   tr("The file does not exist, so we are unable to open it. Please check "
-                      "to make sure the path is correct and that the file is accessible and try again.")));
+                   Status(Status::FILE_NOT_FOUND,
+                          dd,
+                          tr("Could not open file"),
+                          tr("The file does not exist, so we are unable to open it. Please check "
+                             "to make sure the path is correct and that the file is accessible and try again.")));
     }
 
     progressForward();
@@ -106,16 +106,16 @@ Object *FileManager::load(QString sFileName)
     {
         dd << "Main XML file does not exist";
         return cleanUpWithErrorCode(
-            Status(Status::ERROR_INVALID_XML_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
+                   Status(Status::ERROR_INVALID_XML_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
     }
     if (!file.open(QFile::ReadOnly))
     {
         return cleanUpWithErrorCode(
-            Status(Status::ERROR_FILE_CANNOT_OPEN,
-                   dd,
-                   tr("Could not open file"),
-                   tr("This program does not have permission to read the file you have selected. "
-                      "Please check that you have read permissions for this file and try again.")));
+                   Status(Status::ERROR_FILE_CANNOT_OPEN,
+                          dd,
+                          tr("Could not open file"),
+                          tr("This program does not have permission to read the file you have selected. "
+                             "Please check that you have read permissions for this file and try again.")));
     }
 
     QDomDocument xmlDoc;
@@ -124,7 +124,7 @@ Object *FileManager::load(QString sFileName)
         FILEMANAGER_LOG("Couldn't open the main XML file");
         dd << "Error parsing or opening the main XML file";
         return cleanUpWithErrorCode(
-            Status(Status::ERROR_INVALID_XML_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
+                   Status(Status::ERROR_INVALID_XML_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
     }
 
     QDomDocumentType type = xmlDoc.doctype();
@@ -133,7 +133,7 @@ Object *FileManager::load(QString sFileName)
         FILEMANAGER_LOG("Invalid main XML doctype");
         dd << QString("Invalid main XML doctype: ").append(type.name());
         return cleanUpWithErrorCode(
-            Status(Status::ERROR_INVALID_PENCIL_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
+                   Status(Status::ERROR_INVALID_PENCIL_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
     }
 
     QDomElement root = xmlDoc.documentElement();
@@ -141,7 +141,7 @@ Object *FileManager::load(QString sFileName)
     {
         dd << "Main XML root node is null";
         return cleanUpWithErrorCode(
-            Status(Status::ERROR_INVALID_PENCIL_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
+                   Status(Status::ERROR_INVALID_PENCIL_FILE, dd, openErrorTitle, openErrorDesc + contactLinks));
     }
 
     loadPalette(obj);
@@ -173,7 +173,9 @@ bool FileManager::loadObject(Object *object, const QDomElement &root)
 {
     QDomElement e = root.firstChildElement("object");
     if (e.isNull())
+    {
         return false;
+    }
 
     bool ok = true;
     for (QDomNode node = root.firstChild(); !node.isNull(); node = node.nextSibling())
@@ -188,7 +190,9 @@ bool FileManager::loadObject(Object *object, const QDomElement &root)
         {
             ok = object->loadXML(element, [this] { progressForward(); });
             if (!ok)
+            {
                 FILEMANAGER_LOG("Failed to Load object");
+            }
         }
         else if (element.tagName() == "editor" || element.tagName() == "projectdata")
         {
@@ -294,7 +298,7 @@ Status FileManager::save(Object *object, QString sFileName)
                           dd,
                           tr("Cannot Create Data Directory"),
                           tr("Failed to create directory \"%1\". Please make sure you have sufficient permissions.")
-                              .arg(sDataFolder));
+                          .arg(sDataFolder));
         }
     }
     if (!dataInfo.isDir())
@@ -324,10 +328,10 @@ Status FileManager::save(Object *object, QString sFileName)
         Layer *layer = object->getLayer(i);
 
         dd << QString("Layer[%1] = [id=%2, name=%3, type=%4]")
-                  .arg(i)
-                  .arg(layer->id())
-                  .arg(layer->name())
-                  .arg(layer->type());
+           .arg(i)
+           .arg(layer->id())
+           .arg(layer->name())
+           .arg(layer->type());
 
         Status st = layer->save(sDataFolder, zippedFiles, [this] { progressForward(); });
         if (!st.ok())
@@ -342,9 +346,13 @@ Status FileManager::save(Object *object, QString sFileName)
     // save palette
     QString sPaletteFile = object->savePalette(sDataFolder);
     if (!sPaletteFile.isEmpty())
+    {
         zippedFiles.append(sPaletteFile);
+    }
     else
+    {
         dd << "Failed to save the palette xml";
+    }
 
     progressForward();
 
@@ -405,7 +413,9 @@ Status FileManager::save(Object *object, QString sFileName)
         dd << "Zip file saved successfully";
 
         if (s.ok() && saveLayersOK)
+        {
             deleteBackupFile(sBackupFile);
+        }
     }
 
     progressForward();
@@ -570,7 +580,9 @@ Object *FileManager::cleanUpWithErrorCode(Status error)
 QString FileManager::backupPreviousFile(const QString &fileName)
 {
     if (!QFile::exists(fileName))
+    {
         return "";
+    }
 
     QFileInfo info(fileName);
     QString sBackupFile = info.completeBaseName() + ".backup." + info.suffix();

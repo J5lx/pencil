@@ -61,7 +61,9 @@ public:
     void clearCache()
     {
         if (mCache)
+        {
             delete mCache;
+        }
         mCache = new QPixmap(size());
     }
     void paintLayerGutter(QPainter &painter);

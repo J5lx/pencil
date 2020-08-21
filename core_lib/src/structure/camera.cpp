@@ -54,7 +54,9 @@ void Camera::assign(const Camera &rhs)
 QTransform Camera::getView()
 {
     if (mNeedUpdateView)
+    {
         updateViewTransform();
+    }
     return view;
 }
 

@@ -86,12 +86,12 @@ void ToolBoxWidget::initUI()
         tr("Brush Tool (%1): Paint smooth stroke with a brush").arg(GetToolTips(CMD_TOOL_BRUSH)));
     ui->eyedropperButton->setToolTip(tr("Eyedropper Tool (%1): "
                                         "Set color from the stage<br>[ALT] for instant access")
-                                         .arg(GetToolTips(CMD_TOOL_EYEDROPPER)));
+                                     .arg(GetToolTips(CMD_TOOL_EYEDROPPER)));
     ui->clearButton->setToolTip(
         tr("Clear Frame (%1): Erases content of selected frame").arg(GetToolTips(CMD_CLEAR_FRAME)));
     ui->smudgeButton->setToolTip(tr("Smudge Tool (%1):<br>Edit polyline/curves<br>"
                                     "Liquify bitmap pixels<br> (%1)+[Alt]: Smooth")
-                                     .arg(GetToolTips(CMD_TOOL_SMUDGE)));
+                                 .arg(GetToolTips(CMD_TOOL_SMUDGE)));
 
     ui->pencilButton->setWhatsThis(tr("Pencil Tool (%1)").arg(GetToolTips(CMD_TOOL_PENCIL)));
     ui->selectButton->setWhatsThis(tr("Select Tool (%1)").arg(GetToolTips(CMD_TOOL_SELECT)));

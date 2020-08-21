@@ -26,7 +26,7 @@ const static qreal mMinScale = 0.01;
 const static qreal mMaxScale = 100.0;
 
 const std::vector<qreal> gZoomLevels{0.01, 0.02, 0.04, 0.06, 0.08, 0.12, 0.16, 0.25, 0.33, 0.5,  0.75, 1.0,
-                                     1.5,  2.0,  3.0,  4.0,  5.0,  6.0,  8.0,  16.0, 32.0, 48.0, 64.0, 96.0};
+          1.5,  2.0,  3.0,  4.0,  5.0,  6.0,  8.0,  16.0, 32.0, 48.0, 64.0, 96.0};
 
 ViewManager::ViewManager(Editor *editor) : BaseManager(editor)
 {

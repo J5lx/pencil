@@ -162,7 +162,9 @@ void EraserTool::pointerMoveEvent(PointerEvent *event)
         mCurrentPressure = strokeManager()->getPressure();
         updateStrokes();
         if (properties.stabilizerLevel != strokeManager()->getStabilizerLevel())
+        {
             strokeManager()->setStabilizerLevel(properties.stabilizerLevel);
+        }
     }
 }
 

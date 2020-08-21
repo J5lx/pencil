@@ -267,7 +267,7 @@ void MainWindow2::createMenus()
     connect(ui->actionPegbarAlignment, &QAction::triggered, this, &MainWindow2::openPegAlignDialog);
     connect(ui->actionSelect_All, &QAction::triggered, mCommands, &ActionCommands::selectAll);
     connect(ui->actionDeselect_All, &QAction::triggered, mCommands, &ActionCommands::deselectAll);
-    connect(ui->actionPreference, &QAction::triggered, [=] { preferences(); });
+    connect(ui->actionPreference, &QAction::triggered, [ = ] { preferences(); });
 
     //--- Layer Menu ---
     connect(ui->actionNew_Bitmap_Layer, &QAction::triggered, mCommands, &ActionCommands::addNewBitmapLayer);
@@ -291,10 +291,11 @@ void MainWindow2::createMenus()
     {
         QAction *action = visibilityActions[i];
         visibilityGroup->addAction(action);
-        connect(action, &QAction::triggered, [=] { mCommands->setLayerVisibilityIndex(i); });
+        connect(action, &QAction::triggered, [ = ] { mCommands->setLayerVisibilityIndex(i); });
     }
     visibilityActions[mEditor->preference()->getInt(SETTING::LAYER_VISIBILITY)]->setChecked(true);
-    connect(mEditor->preference(), &PreferenceManager::optionChanged, [=](SETTING e) {
+    connect(mEditor->preference(), &PreferenceManager::optionChanged, [ = ](SETTING e)
+    {
         if (e == SETTING::LAYER_VISIBILITY)
         {
             visibilityActions[mEditor->preference()->getInt(SETTING::LAYER_VISIBILITY)]->setChecked(true);
@@ -590,7 +591,7 @@ bool MainWindow2::openObject(QString strFilePath)
             tr("This program does not have permission to read the file you have selected. "
                "Please check that you have read permissions for this file and try again."),
             QString("Raw file path: %1\nResolved file path: %2\nPermissions: 0x%3")
-                .arg(strFilePath, fileInfo.absoluteFilePath(), QString::number(fileInfo.permissions(), 16)));
+            .arg(strFilePath, fileInfo.absoluteFilePath(), QString::number(fileInfo.permissions(), 16)));
         errorDialog.exec();
         return false;
     }
@@ -616,7 +617,8 @@ bool MainWindow2::openObject(QString strFilePath)
     }
 
     FileManager fm(this);
-    connect(&fm, &FileManager::progressChanged, [&progress](int p) {
+    connect(&fm, &FileManager::progressChanged, [&progress](int p)
+    {
         progress.setValue(p);
         QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     });
@@ -686,7 +688,8 @@ bool MainWindow2::saveObject(QString strSavedFileName)
 
     FileManager fm(this);
 
-    connect(&fm, &FileManager::progressChanged, [&progress](int p) {
+    connect(&fm, &FileManager::progressChanged, [&progress](int p)
+    {
         progress.setValue(p);
         QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     });
@@ -754,9 +757,13 @@ bool MainWindow2::saveObject(QString strSavedFileName)
 bool MainWindow2::saveDocument()
 {
     if (!mEditor->object()->filePath().isEmpty())
+    {
         return saveObject(mEditor->object()->filePath());
+    }
     else
+    {
         return saveAsNewDocument();
+    }
 }
 
 bool MainWindow2::maybeSave()
@@ -768,11 +775,17 @@ bool MainWindow2::maybeSave()
                                        tr("This animation has been modified.\n Do you want to save your changes?"),
                                        QMessageBox::Discard | QMessageBox::Save | QMessageBox::Cancel);
         if (ret == QMessageBox::Save)
+        {
             return saveDocument();
+        }
         else if (ret == QMessageBox::Discard)
+        {
             return true;
+        }
         else
+        {
             return false;
+        }
     }
     return true;
 }
@@ -785,10 +798,14 @@ bool MainWindow2::autoSave()
     }
 
     if (mEditor->autoSaveNeverAskAgain())
+    {
         return false;
+    }
 
     if (mIsImportingImageSequence)
+    {
         return false;
+    }
 
     QMessageBox msgBox(this);
     msgBox.setIcon(QMessageBox::Question);
@@ -970,7 +987,9 @@ void MainWindow2::importGIF()
     {
         bool ok = mEditor->importGIF(strImgFileLower, space);
         if (!ok)
+        {
             importOK = false;
+        }
 
         progress.setValue(50);
         QApplication::processEvents(QEventLoop::ExcludeUserInputEvents); // Required to make progress bar update
@@ -1036,7 +1055,8 @@ void MainWindow2::preferences()
     connect(mPrefDialog, &PreferencesDialog::windowOpacityChange, this, &MainWindow2::setOpacity);
     connect(mPrefDialog, &PreferencesDialog::soundScrubChanged, this, &MainWindow2::setSoundScrubActive);
     connect(mPrefDialog, &PreferencesDialog::soundScrubMsecChanged, this, &MainWindow2::setSoundScrubMsec);
-    connect(mPrefDialog, &PreferencesDialog::finished, [&] {
+    connect(mPrefDialog, &PreferencesDialog::finished, [&]
+    {
         clearKeyboardShortcuts();
         setupKeyboardShortcuts();
         ui->scribbleArea->updateCanvasCursor();
@@ -1074,7 +1094,9 @@ bool MainWindow2::newObjectFromPresets(int presetIndex)
         FileManager fm(this);
         object = fm.load(presetFilePath);
         if (fm.error().ok() == false)
+        {
             object = nullptr;
+        }
     }
     if (object == nullptr)
     {
@@ -1097,7 +1119,8 @@ void MainWindow2::tryLoadPreset()
     {
         PresetDialog *presetDialog = new PresetDialog(mEditor->preference(), this);
         presetDialog->setAttribute(Qt::WA_DeleteOnClose);
-        connect(presetDialog, &PresetDialog::finished, [=](int result) {
+        connect(presetDialog, &PresetDialog::finished, [ = ](int result)
+        {
             if (result == QDialog::Accepted)
             {
                 int presetIndex = presetDialog->getPresetIndex();
@@ -1149,7 +1172,8 @@ void MainWindow2::setupKeyboardShortcuts()
 {
     checkExistingShortcuts();
 
-    auto cmdKeySeq = [](QString strCommandName) -> QKeySequence {
+    auto cmdKeySeq = [](QString strCommandName) -> QKeySequence
+    {
         strCommandName = QString("shortcuts/") + strCommandName;
         QKeySequence keySequence(pencilSettings().value(strCommandName).toString());
         return keySequence;
@@ -1286,18 +1310,18 @@ void MainWindow2::undoActSetText()
     else
     {
         ui->actionUndo->setText(QString("%1   %2 %3")
-                                    .arg(tr("Undo", "Menu item text"))
-                                    .arg(QString::number(mEditor->mBackupIndex + 1))
-                                    .arg(mEditor->mBackupList.at(mEditor->mBackupIndex)->undoText));
+                                .arg(tr("Undo", "Menu item text"))
+                                .arg(QString::number(mEditor->mBackupIndex + 1))
+                                .arg(mEditor->mBackupList.at(mEditor->mBackupIndex)->undoText));
         ui->actionUndo->setEnabled(true);
     }
 
     if (mEditor->mBackupIndex + 2 < mEditor->mBackupList.size())
     {
         ui->actionRedo->setText(QString("%1   %2 %3")
-                                    .arg(tr("Redo", "Menu item text"))
-                                    .arg(QString::number(mEditor->mBackupIndex + 2))
-                                    .arg(mEditor->mBackupList.at(mEditor->mBackupIndex + 1)->undoText));
+                                .arg(tr("Redo", "Menu item text"))
+                                .arg(QString::number(mEditor->mBackupIndex + 2))
+                                .arg(mEditor->mBackupList.at(mEditor->mBackupIndex + 1)->undoText));
         ui->actionRedo->setEnabled(true);
     }
     else
@@ -1472,9 +1496,10 @@ void MainWindow2::bindActionWithSetting(QAction *action, const SETTING &setting)
     action->setChecked(prefs->isOn(setting));
 
     // 2-way binding
-    connect(action, &QAction::triggered, prefs, [=](bool b) { prefs->set(setting, b); });
+    connect(action, &QAction::triggered, prefs, [ = ](bool b) { prefs->set(setting, b); });
 
-    connect(prefs, &PreferenceManager::optionChanged, action, [=](SETTING s) {
+    connect(prefs, &PreferenceManager::optionChanged, action, [ = ](SETTING s)
+    {
         if (s == setting)
         {
             action->setChecked(prefs->isOn(setting));

@@ -46,8 +46,8 @@ void initialise()
     {
         bool success = qputenv("GST_PLUGIN_SYSTEM_PATH_1_0",
                                QString("%1/usr/lib/gstreamer-1.0:%2")
-                                   .arg(appDir, QString::fromLocal8Bit(qgetenv("GST_PLUGIN_SYSTEM_PATH_1_0")))
-                                   .toLocal8Bit());
+                               .arg(appDir, QString::fromLocal8Bit(qgetenv("GST_PLUGIN_SYSTEM_PATH_1_0")))
+                               .toLocal8Bit());
         success =
             qputenv("GST_PLUGIN_SCANNER_1_0",
                     QString("%1/usr/lib/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner").arg(appDir).toLocal8Bit()) &&
@@ -63,9 +63,13 @@ void initialise()
 qint16 safeSum(qint16 a, qint16 b)
 {
     if (((int)a + (int)b) > 32767)
+    {
         return 32767;
+    }
     if (((int)a + (int)b) < -32768)
+    {
         return -32768;
+    }
     return a + b;
 }
 

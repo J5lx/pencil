@@ -53,7 +53,8 @@ Status LayerSound::loadSoundClipAtFrame(const QString &sSoundClipName, const QSt
 
 void LayerSound::updateFrameLengths(int fps)
 {
-    foreachKeyFrame([&fps](KeyFrame *pKeyFrame) {
+    foreachKeyFrame([&fps](KeyFrame * pKeyFrame)
+    {
         auto soundClip = dynamic_cast<SoundClip *>(pKeyFrame);
         soundClip->updateLength(fps);
     });
@@ -63,7 +64,8 @@ QDomElement LayerSound::createDomElement(QDomDocument &doc)
 {
     QDomElement layerElem = this->createBaseDomElement(doc);
 
-    foreachKeyFrame([&doc, &layerElem](KeyFrame *pKeyFrame) {
+    foreachKeyFrame([&doc, &layerElem](KeyFrame * pKeyFrame)
+    {
         SoundClip *clip = static_cast<SoundClip *>(pKeyFrame);
 
         QDomElement imageTag = doc.createElement("sound");
@@ -128,7 +130,9 @@ Status LayerSound::saveKeyFrameFile(KeyFrame *key, QString path)
     if (sDestFileLocation != key->fileName())
     {
         if (QFile::exists(sDestFileLocation))
+        {
             QFile::remove(sDestFileLocation);
+        }
 
         bool ok = QFile::copy(key->fileName(), sDestFileLocation);
         if (!ok)

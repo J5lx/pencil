@@ -51,7 +51,9 @@ Object::~Object()
     mActiveFramePool->clear();
 
     for (Layer *layer : mLayers)
+    {
         delete layer;
+    }
     mLayers.clear();
 
     deleteWorkingDir();
@@ -180,10 +182,10 @@ void Object::createWorkingDir()
     do
     {
         strWorkingDir = QString("%1/Pencil2D/%2_%3_%4/")
-                            .arg(QDir::tempPath())
-                            .arg(strFolderName)
-                            .arg(PFF_TMP_DECOMPRESS_EXT)
-                            .arg(uniqueString(8));
+                        .arg(QDir::tempPath())
+                        .arg(strFolderName)
+                        .arg(PFF_TMP_DECOMPRESS_EXT)
+                        .arg(uniqueString(8));
     } while (dir.exists(strWorkingDir));
 
     dir.mkpath(strWorkingDir);
@@ -396,7 +398,9 @@ QString Object::savePalette(QString dataFolder)
     QString fullPath = QDir(dataFolder).filePath("palette.xml");
     bool ok = exportPalette(fullPath);
     if (ok)
+    {
         return fullPath;
+    }
     return "";
 }
 
@@ -480,7 +484,9 @@ void Object::importPaletteGPL(QFile &file)
     // Displaying an error here would be nice
     in.readLineInto(&line);
     if (!line.startsWith("GIMP Palette"))
+    {
         return;
+    }
 
     in.readLineInto(&line);
 
@@ -504,7 +510,9 @@ void Object::importPaletteGPL(QFile &file)
     {
         // Ignore comments and empty lines
         if (line.isEmpty() || line.startsWith("#"))
+        {
             continue;
+        }
 
         int red = 0;
         int green = 0;
@@ -537,15 +545,21 @@ void Object::importPaletteGPL(QFile &file)
 
         // Get values from previous color if necessary
         if (countInLine < 2)
+        {
             green = prevColor.green();
+        }
         if (countInLine < 3)
+        {
             blue = prevColor.blue();
+        }
 
         // GIMP assigns colors the name "Untitled" by default now
         // so in addition to missing names, we also use automatic
         // naming for this
         if (name.isEmpty() || name == "Untitled")
+        {
             name = QString();
+        }
 
         QColor color(red, green, blue);
         if (color.isValid())
@@ -801,7 +815,9 @@ bool Object::exportFrames(int frameStart,
         if (exportKeyframesOnly)
         {
             if (layer->keyExists(currentFrame))
+            {
                 exportIm(currentFrame, view, camSize, exportSize, sFileName, format, antialiasing, transparency);
+            }
         }
         else
         {
@@ -872,7 +888,9 @@ bool Object::exportIm(int frame,
 
     QColor bgColor = Qt::white;
     if (transparency)
+    {
         bgColor.setAlpha(0);
+    }
     imageToExport.fill(bgColor);
 
     QTransform centralizeCamera;

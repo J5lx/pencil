@@ -77,10 +77,14 @@ bool VectorImage::read(QString filePath)
 
     QDomDocument doc;
     if (!doc.setContent(&file))
-        return false; // this is not a XML file
+    {
+        return false;    // this is not a XML file
+    }
     QDomDocumentType type = doc.doctype();
     if (type.name() != "PencilVectorImage")
-        return false; // this is not a Pencil document
+    {
+        return false;    // this is not a Pencil document
+    }
 
     QDomElement element = doc.documentElement();
     if (element.tagName() == "image")
@@ -292,7 +296,9 @@ void VectorImage::removeCurveAt(int i)
 void VectorImage::insertCurve(int position, BezierCurve &newCurve, qreal factor, bool interacts)
 {
     if (newCurve.getVertexSize() < 1) // security - a new curve should have a least 2 vertices
+    {
         return;
+    }
 
     // Does the curve interact with others or with itself?
     if (interacts)
@@ -484,7 +490,7 @@ void VectorImage::checkCurveIntersections(BezierCurve &newCurve, qreal tolerance
             if (dist1 < 0.2 * tolerance)
             {
                 mCurves[i].setVertex(-1, P1); // memo: curve.at(i) is just a copy which can be read, curve[i] is a
-                                              // reference which can be modified
+                // reference which can be modified
             }
             else
             {
@@ -628,12 +634,16 @@ void VectorImage::select(QRectF rectangle)
 void VectorImage::setSelected(int curveNumber, bool YesOrNo)
 {
     if (mCurves.isEmpty())
+    {
         return;
+    }
 
     mCurves[curveNumber].setSelected(YesOrNo);
 
     if (YesOrNo)
+    {
         mSelectionRect |= mCurves[curveNumber].getBoundingRect();
+    }
     modification();
 }
 
@@ -646,11 +656,15 @@ void VectorImage::setSelected(int curveNumber, bool YesOrNo)
 void VectorImage::setSelected(int curveNumber, int vertexNumber, bool YesOrNo)
 {
     if (mCurves.isEmpty())
+    {
         return;
+    }
     mCurves[curveNumber].setSelected(vertexNumber, YesOrNo);
     QPointF vertex = getVertex(curveNumber, vertexNumber);
     if (YesOrNo)
+    {
         mSelectionRect |= QRectF(vertex.x(), vertex.y(), 0.0, 0.0);
+    }
 
     modification();
 }
@@ -700,7 +714,9 @@ void VectorImage::setAreaSelected(int areaNumber, bool YesOrNo)
 {
     mArea[areaNumber].setSelected(YesOrNo);
     if (YesOrNo)
+    {
         mSelectionRect |= mArea[areaNumber].mPath.boundingRect();
+    }
     modification();
 }
 
@@ -805,7 +821,9 @@ int VectorImage::getFirstSelectedCurve()
     for (int i = 0; i < mCurves.size() && result == -1; i++)
     {
         if (isSelected(i))
+        {
             result = i;
+        }
     }
     return result;
 }
@@ -820,7 +838,9 @@ int VectorImage::getFirstSelectedArea()
     for (int i = 0; i < mArea.size() && result == -1; i++)
     {
         if (isAreaSelected(i))
+        {
             result = i;
+        }
     }
     return result;
 }
@@ -844,11 +864,15 @@ void VectorImage::selectAll()
 bool VectorImage::isAnyCurveSelected()
 {
     if (mCurves.isEmpty())
+    {
         return false;
+    }
     for (int curve = 0; curve < mCurves.size(); curve++)
     {
         if (mCurves[curve].isSelected())
+        {
             return true;
+        }
     }
     return false;
 }
@@ -859,7 +883,9 @@ bool VectorImage::isAnyCurveSelected()
 void VectorImage::deselectAll()
 {
     if (mCurves.empty())
+    {
         return;
+    }
     for (int i = 0; i < mCurves.size(); i++)
     {
         mCurves[i].setSelected(false);
@@ -892,7 +918,9 @@ void VectorImage::calculateSelectionRect()
     for (int i = 0; i < mCurves.size(); i++)
     {
         if (mCurves.at(i).isPartlySelected())
+        {
             mSelectionRect |= mCurves[i].getBoundingRect();
+        }
     }
 }
 
@@ -1014,7 +1042,9 @@ void VectorImage::removeVertex(int curve, int vertex)
             }
             // if (newCurve.getVertexSize() > 0) curve.insert(i+1, newCurve);
             if (newCurve.getVertexSize() > 0)
-                mCurves.append(newCurve); // insert the right part if it has more than one point
+            {
+                mCurves.append(newCurve);    // insert the right part if it has more than one point
+            }
             // we also need to update the areas
             for (int j = 0; j < mArea.size(); j++)
             {
@@ -1103,7 +1133,9 @@ void VectorImage::paste(VectorImage &vectorImage)
             }
         }
         if (ok)
+        {
             mArea.append(newArea);
+        }
     }
     modification();
 }
@@ -1167,12 +1199,16 @@ bool VectorImage::usesColor(int index)
     for (int i = 0; i < mArea.size(); i++)
     {
         if (mArea[i].mColorNumber == index)
+        {
             return true;
+        }
     }
     for (int i = 0; i < mCurves.size(); i++)
     {
         if (mCurves[i].getColorNumber() == index)
+        {
             return true;
+        }
     }
     return false;
 }
@@ -1186,12 +1222,16 @@ void VectorImage::removeColor(int index)
     for (int i = 0; i < mArea.size(); i++)
     {
         if (mArea[i].getColorNumber() > index)
+        {
             mArea[i].decreaseColorNumber();
+        }
     }
     for (int i = 0; i < mCurves.size(); i++)
     {
         if (mCurves[i].getColorNumber() > index)
+        {
             mCurves[i].decreaseColorNumber();
+        }
     }
 }
 
@@ -1200,12 +1240,16 @@ void VectorImage::moveColor(int start, int end)
     for (int i = 0; i < mArea.size(); i++)
     {
         if (mArea[i].getColorNumber() == start)
+        {
             mArea[i].setColorNumber(end);
+        }
     }
     for (int i = 0; i < mCurves.size(); i++)
     {
         if (mCurves[i].getColorNumber() == start)
+        {
             mCurves[i].setColorNumber(end);
+        }
     }
 }
 
@@ -1349,7 +1393,9 @@ void VectorImage::applyColorToSelectedCurve(int colorNumber)
     for (int i = 0; i < mCurves.size(); i++)
     {
         if (mCurves.at(i).isSelected())
+        {
             mCurves[i].setColorNumber(colorNumber);
+        }
     }
     modification();
 }
@@ -1363,7 +1409,9 @@ void VectorImage::applyColorToSelectedArea(int colorNumber)
     for (int i = 0; i < mArea.size(); i++)
     {
         if (mArea.at(i).isSelected())
+        {
             mArea[i].setColorNumber(colorNumber);
+        }
     }
     modification();
 }
@@ -1377,7 +1425,9 @@ void VectorImage::applyWidthToSelection(qreal width)
     for (int i = 0; i < mCurves.size(); i++)
     {
         if (mCurves.at(i).isSelected())
+        {
             mCurves[i].setWidth(width);
+        }
     }
     modification();
 }
@@ -1391,7 +1441,9 @@ void VectorImage::applyFeatherToSelection(qreal feather)
     for (int i = 0; i < mCurves.size(); i++)
     {
         if (mCurves.at(i).isSelected())
+        {
             mCurves[i].setFeather(feather);
+        }
     }
     modification();
 }
@@ -1419,7 +1471,9 @@ void VectorImage::applyInvisibilityToSelection(bool YesOrNo)
     for (int i = 0; i < mCurves.size(); i++)
     {
         if (mCurves.at(i).isSelected())
+        {
             mCurves[i].setInvisibility(YesOrNo);
+        }
     }
     modification();
 }
@@ -1658,7 +1712,9 @@ QPointF VectorImage::getC1(int curveNumber, int vertexNumber)
     {
         BezierCurve myCurve = mCurves.at(curveNumber);
         if (myCurve.isPartlySelected())
+        {
             myCurve = myCurve.transformed(mSelectionTransformation);
+        }
         if (vertexNumber > -1 && vertexNumber < myCurve.getVertexSize())
         {
             result = myCurve.getC1(vertexNumber);
@@ -1690,7 +1746,9 @@ QPointF VectorImage::getC2(int curveNumber, int vertexNumber)
     {
         BezierCurve myCurve = mCurves.at(curveNumber);
         if (myCurve.isPartlySelected())
+        {
             myCurve = myCurve.transformed(mSelectionTransformation);
+        }
         if (vertexNumber > -1 && vertexNumber < myCurve.getVertexSize())
         {
             result = myCurve.getC2(vertexNumber);

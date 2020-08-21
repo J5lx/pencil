@@ -93,18 +93,20 @@ Status ActionCommands::importMovieVideo()
     connect(&progressDialog, &QProgressDialog::canceled, &importer, &MovieImporter::cancel);
 
     Status st = importer.run(
-        filePath,
-        mEditor->playback()->fps(),
-        FileType::MOVIE,
-        [&progressDialog](int prog) {
-            progressDialog.setValue(prog);
-            QApplication::processEvents();
-        },
-        [&progressDialog](QString progMessage) { progressDialog.setLabelText(progMessage); },
-        [&information]() {
-            int ret = information.exec();
-            return ret == QMessageBox::Yes;
-        });
+                    filePath,
+                    mEditor->playback()->fps(),
+                    FileType::MOVIE,
+                    [&progressDialog](int prog)
+    {
+        progressDialog.setValue(prog);
+        QApplication::processEvents();
+    },
+    [&progressDialog](QString progMessage) { progressDialog.setLabelText(progMessage); },
+    [&information]()
+    {
+        int ret = information.exec();
+        return ret == QMessageBox::Yes;
+    });
 
     if (!st.ok() && st != Status::CANCELED)
     {
@@ -141,18 +143,20 @@ Status ActionCommands::importMovieAudio()
     connect(&progressDialog, &QProgressDialog::canceled, &importer, &MovieImporter::cancel);
 
     Status st = importer.run(
-        filePath,
-        mEditor->playback()->fps(),
-        FileType::SOUND,
-        [&progressDialog](int prog) {
-            progressDialog.setValue(prog);
-            QApplication::processEvents();
-        },
-        [](QString progressMessage) {
-            Q_UNUSED(progressMessage)
-            // Not neeeded
-        },
-        []() { return true; });
+                    filePath,
+                    mEditor->playback()->fps(),
+                    FileType::SOUND,
+                    [&progressDialog](int prog)
+    {
+        progressDialog.setValue(prog);
+        QApplication::processEvents();
+    },
+    [](QString progressMessage)
+    {
+        Q_UNUSED(progressMessage)
+        // Not neeeded
+    },
+    []() { return true; });
 
     if (!st.ok() && st != Status::CANCELED)
     {
@@ -262,18 +266,20 @@ Status ActionCommands::convertSoundToWav(const QString &filePath)
     importer.setCore(mEditor);
 
     Status st = importer.run(
-        filePath,
-        mEditor->playback()->fps(),
-        FileType::SOUND,
-        [&progressDialog](int prog) {
-            progressDialog.setValue(prog);
-            QApplication::processEvents();
-        },
-        [](QString progressMessage) {
-            Q_UNUSED(progressMessage)
-            // Not needed
-        },
-        []() { return true; });
+                    filePath,
+                    mEditor->playback()->fps(),
+                    FileType::SOUND,
+                    [&progressDialog](int prog)
+    {
+        progressDialog.setValue(prog);
+        QApplication::processEvents();
+    },
+    [](QString progressMessage)
+    {
+        Q_UNUSED(progressMessage)
+        // Not needed
+    },
+    []() { return true; });
 
     connect(&progressDialog, &QProgressDialog::canceled, &importer, &MovieImporter::cancel);
 
@@ -317,7 +323,8 @@ Status ActionCommands::exportMovie(bool isGif)
     if (currLayer->type() == Layer::CAMERA)
     {
         QString strName = currLayer->name();
-        auto it = std::find_if(camerasInfo.begin(), camerasInfo.end(), [strName](std::pair<QString, QSize> p) {
+        auto it = std::find_if(camerasInfo.begin(), camerasInfo.end(), [strName](std::pair<QString, QSize> p)
+        {
             return p.first == strName;
         });
 
@@ -365,27 +372,30 @@ Status ActionCommands::exportMovie(bool isGif)
     float minorStart, minorLength;
 
     Status st = ex.run(
-        mEditor->object(),
-        desc,
-        [&progressDlg, &minorStart, &minorLength](float f, float final) {
-            progressDlg.major->setValue(f);
+                    mEditor->object(),
+                    desc,
+                    [&progressDlg, &minorStart, &minorLength](float f, float final)
+    {
+        progressDlg.major->setValue(f);
 
-            minorStart = f;
-            minorLength = qMax(0.f, final - minorStart);
+        minorStart = f;
+        minorLength = qMax(0.f, final - minorStart);
 
-            QApplication::processEvents();
-        },
-        [&progressDlg, &minorStart, &minorLength](float f) {
-            progressDlg.minor->setValue(f);
+        QApplication::processEvents();
+    },
+    [&progressDlg, &minorStart, &minorLength](float f)
+    {
+        progressDlg.minor->setValue(f);
 
-            progressDlg.major->setValue(minorStart + f * minorLength);
+        progressDlg.major->setValue(minorStart + f * minorLength);
 
-            QApplication::processEvents();
-        },
-        [&progressDlg](QString s) {
-            progressDlg.setStatus(s);
-            QApplication::processEvents();
-        });
+        QApplication::processEvents();
+    },
+    [&progressDlg](QString s)
+    {
+        progressDlg.setStatus(s);
+        QApplication::processEvents();
+    });
 
     if (st.ok())
     {
@@ -446,7 +456,8 @@ Status ActionCommands::exportImageSequence()
     if (currLayer->type() == Layer::CAMERA)
     {
         QString strName = currLayer->name();
-        auto it = std::find_if(camerasInfo.begin(), camerasInfo.end(), [strName](std::pair<QString, QSize> p) {
+        auto it = std::find_if(camerasInfo.begin(), camerasInfo.end(), [strName](std::pair<QString, QSize> p)
+        {
             return p.first == strName;
         });
 
@@ -522,7 +533,8 @@ Status ActionCommands::exportImage()
     if (currLayer->type() == Layer::CAMERA)
     {
         QString strName = currLayer->name();
-        auto it = std::find_if(camerasInfo.begin(), camerasInfo.end(), [strName](std::pair<QString, QSize> p) {
+        auto it = std::find_if(camerasInfo.begin(), camerasInfo.end(), [strName](std::pair<QString, QSize> p)
+        {
             return p.first == strName;
         });
 
@@ -627,9 +639,13 @@ void ActionCommands::showGrid(bool bShow)
 {
     auto prefs = mEditor->preference();
     if (bShow)
+    {
         prefs->turnOn(SETTING::GRID);
+    }
     else
+    {
         prefs->turnOff(SETTING::GRID);
+    }
 }
 
 void ActionCommands::PlayStop()
@@ -712,7 +728,9 @@ void ActionCommands::duplicateKey()
 {
     Layer *layer = mEditor->layers()->currentLayer();
     if (layer == nullptr)
+    {
         return;
+    }
     if (!layer->visible())
     {
         mEditor->getScribbleArea()->showLayerNotVisibleWarning();
@@ -721,7 +739,9 @@ void ActionCommands::duplicateKey()
 
     KeyFrame *key = layer->getKeyFrameAt(mEditor->currentFrame());
     if (key == nullptr)
+    {
         return;
+    }
 
     KeyFrame *dupKey = key->clone();
 
@@ -888,7 +908,9 @@ void ActionCommands::changeallKeyframeLineColor()
         for (int i = layer->firstKeyFramePosition(); i <= layer->getMaxKeyFramePosition(); i++)
         {
             if (layer->keyExists(i))
+            {
                 layer->getBitmapImageAtFrame(i)->fillNonAlphaPixels(color);
+            }
         }
         mEditor->updateFrame(mEditor->currentFrame());
     }

@@ -82,7 +82,9 @@ void PreferencesDialog::closeEvent(QCloseEvent *)
 void PreferencesDialog::changePage(QListWidgetItem *current, QListWidgetItem *previous)
 {
     if (!current)
+    {
         current = previous;
+    }
 
     ui->pagesWidget->setCurrentIndex(ui->contentsWidget->row(current));
 }
@@ -101,7 +103,8 @@ GeneralPage::GeneralPage() : ui(new Ui::GeneralPage)
 
     QSettings settings(PENCIL2D, PENCIL2D);
 
-    QString languages[][3]{
+    QString languages[][3]
+    {
         // translatable string, endonym, locale code
         {tr("Arabic"), QStringLiteral("العربية"), "ar"},
         {tr("Catalan"), QStringLiteral("Català"), "ca"},
@@ -246,17 +249,29 @@ void GeneralPage::updateValues()
 
     int buttonIdx = 1;
     if (bgName == "checkerboard")
+    {
         buttonIdx = 1;
+    }
     else if (bgName == "white")
+    {
         buttonIdx = 2;
+    }
     else if (bgName == "grey")
+    {
         buttonIdx = 3;
+    }
     else if (bgName == "dots")
+    {
         buttonIdx = 4;
+    }
     else if (bgName == "weave")
+    {
         buttonIdx = 5;
+    }
     else
+    {
         Q_ASSERT(false);
+    }
 
     ui->backgroundButtons->button(buttonIdx)->setChecked(true);
 }
@@ -429,7 +444,9 @@ void TimelinePage::updateValues()
     QSignalBlocker b3(ui->timelineLength);
     ui->timelineLength->setValue(mManager->getInt(SETTING::TIMELINE_SIZE));
     if (mManager->getString(SETTING::TIMELINE_SIZE).toInt() <= 0)
+    {
         ui->timelineLength->setValue(240);
+    }
 
     QSignalBlocker b4(ui->radioButtonAddNewKey);
     QSignalBlocker b5(ui->radioButtonDuplicate);
@@ -569,7 +586,9 @@ void TimelinePage::soundScrubActiveChanged(int i)
 {
     bool b = true;
     if (i == 0)
+    {
         b = false;
+    }
     mManager->set(SETTING::SOUND_SCRUB_ACTIVE, b);
     emit soundScrubChanged(b);
 }
@@ -627,13 +646,17 @@ void FilesPage::initPreset()
     {
         int index = key.toInt(&ok);
         if (!ok || index == 0 || !mPresetDir.exists(QString("%1.pclx").arg(index)))
+        {
             continue;
+        }
 
         mMaxPresetIndex = qMax(index, mMaxPresetIndex);
 
         QString name = mPresetSettings->value(key).toString();
         if (name.isEmpty())
+        {
             continue;
+        }
 
         QListWidgetItem *item = new QListWidgetItem(name);
         item->setFlags(item->flags() | Qt::ItemIsEditable);

@@ -111,9 +111,13 @@ int TimeLineCells::getLayerNumber(int y)
     // Layers numbers are displayed in descending order
     // The last row is layer 0
     if (layerNumber <= totalLayerCount)
+    {
         layerNumber = (totalLayerCount - 1) - layerNumber;
+    }
     else
+    {
         layerNumber = 0;
+    }
 
     if (y < mOffsetY)
     {
@@ -196,7 +200,9 @@ void TimeLineCells::drawContent()
 
     Layer *layer = mEditor->layers()->currentLayer();
     if (layer == nullptr)
+    {
         return;
+    }
 
     // grey background of the view
     painter.setPen(Qt::NoPen);
@@ -731,14 +737,18 @@ void TimeLineCells::mouseMoveEvent(QMouseEvent *event)
 void TimeLineCells::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() != primaryButton)
+    {
         return;
+    }
 
     primaryButton = Qt::NoButton;
     mEndY = mStartY;
     mTimeLine->scrubbing = false;
     int frameNumber = getFrameNumber(event->pos().x());
     if (frameNumber < 1)
+    {
         frameNumber = -1;
+    }
     int layerNumber = getLayerNumber(event->pos().y());
     if (mType == TIMELINE_CELL_TYPE::Tracks && primaryButton != Qt::MidButton && layerNumber != -1 &&
         layerNumber < mEditor->object()->getLayerCount())
@@ -764,12 +774,16 @@ void TimeLineCells::mouseReleaseEvent(QMouseEvent *event)
             if (mToLayer < mFromLayer) // bubble up
             {
                 for (int i = mFromLayer - 1; i >= mToLayer; i--)
+                {
                     mEditor->swapLayers(i, i + 1);
+                }
             }
             else // bubble down
             {
                 for (int i = mFromLayer + 1; i <= mToLayer; i++)
+                {
                     mEditor->swapLayers(i, i - 1);
+                }
             }
         }
     }
@@ -859,9 +873,13 @@ void TimeLineCells::trackScrubber()
     {
         // Move timeline forward if the scrubber is offscreen to the right
         if (mEditor->playback()->isPlaying())
+        {
             mFrameOffset = mFrameOffset + ((mEditor->currentFrame() - mFrameOffset) / 2);
+        }
         else
+        {
             mFrameOffset = mEditor->currentFrame() - width() / mFrameSize;
+        }
         emit offsetChanged(mFrameOffset);
         mTimeLine->updateContent();
     }

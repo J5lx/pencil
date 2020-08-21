@@ -30,7 +30,9 @@ bool MiniZ::isZip(const QString &sZipFilePath)
 
     mz_bool ok = mz_zip_reader_init_file(mz, sZipFilePath.toUtf8().data(), 0);
     if (!ok)
+    {
         return false;
+    }
 
     int num = mz_zip_reader_get_num_files(mz);
 
@@ -73,9 +75,9 @@ Status MiniZ::compressFolder(QString zipFilePath, QString srcFolderPath, const Q
         {
             mz_zip_error err = mz_zip_get_last_error(mz);
             dd << QString("  Cannot add %1: error %2, %3")
-                      .arg(sRelativePath)
-                      .arg((int)err)
-                      .arg(mz_zip_get_error_string(err));
+               .arg(sRelativePath)
+               .arg((int)err)
+               .arg(mz_zip_get_error_string(err));
         }
     }
     ok &= mz_zip_writer_finalize_archive(mz);
@@ -115,7 +117,9 @@ Status MiniZ::uncompressFolder(QString zipFilePath, QString destPath)
 
     mz_bool ok = mz_zip_reader_init_file(mz, zipFilePath.toUtf8().data(), 0);
     if (!ok)
+    {
         return Status(Status::FAIL, dd);
+    }
 
     int num = mz_zip_reader_get_num_files(mz);
 
@@ -134,7 +138,9 @@ Status MiniZ::uncompressFolder(QString zipFilePath, QString destPath)
             bool mkDirOK = baseDir.mkpath(sFolderPath);
             Q_ASSERT(mkDirOK);
             if (!mkDirOK)
+            {
                 dd << "  Make Dir failed.";
+            }
         }
     }
 

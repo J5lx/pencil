@@ -90,7 +90,8 @@ bool Editor::init()
                     mViewManager,
                     mPreferenceManager,
                     mSoundManager,
-                    mSelectionManager};
+                    mSelectionManager
+                   };
 
     for (BaseManager *pManager : mAllManagers)
     {
@@ -139,7 +140,9 @@ void Editor::dropEvent(QDropEvent *event)
         for (int i = 0; i < event->mimeData()->urls().size(); i++)
         {
             if (i > 0)
+            {
                 scrubForward();
+            }
             QUrl url = event->mimeData()->urls()[i];
             QString filePath = url.toLocalFile();
             if (filePath.endsWith(".png") || filePath.endsWith(".jpg") || filePath.endsWith(".jpeg"))
@@ -511,7 +514,9 @@ void Editor::clearUndoStack()
 void Editor::updateAutoSaveCounter()
 {
     if (mIsAutosave == false)
+    {
         return;
+    }
 
     mAutosaveCounter++;
     if (mAutosaveCounter >= mAutosaveNumber)
@@ -559,7 +564,9 @@ void Editor::copy()
         }
         clipboardBitmapOk = true;
         if (g_clipboardBitmapImage.image() != nullptr)
+        {
             QApplication::clipboard()->setImage(*g_clipboardBitmapImage.image());
+        }
     }
     if (layer->type() == Layer::VECTOR)
     {
@@ -843,9 +850,9 @@ bool Editor::exportMovieCLI(QString filePath,
     ex.run(
         object(),
         desc,
-        [](float, float) {},
-        [](float) {},
-        [](QString) {});
+    [](float, float) {},
+    [](float) {},
+    [](QString) {});
     return true;
 }
 
@@ -1204,7 +1211,9 @@ void Editor::switchVisibilityOfLayer(int layerNumber)
 {
     Layer *layer = mObject->getLayer(layerNumber);
     if (layer != nullptr)
+    {
         layer->switchVisibility();
+    }
     mScribbleArea->updateAllFrames();
 
     emit updateTimeLine();

@@ -170,11 +170,13 @@ Status MovieExporter::assembleAudio(const Object *obj, QString ffmpegPath, std::
     for (LayerSound *layer : allSoundLayers)
     {
         layer->foreachKeyFrame(
-            [&allSoundClips](KeyFrame *key) { allSoundClips.push_back(static_cast<SoundClip *>(key)); });
+        [&allSoundClips](KeyFrame * key) { allSoundClips.push_back(static_cast<SoundClip *>(key)); });
     }
 
     if (allSoundClips.empty())
+    {
         return Status::SAFE;
+    }
 
     int clipCount = 0;
 
@@ -197,9 +199,9 @@ Status MovieExporter::assembleAudio(const Object *obj, QString ffmpegPath, std::
         filterComplex += QString("[%1:a:0] "
                                  "aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=mono,volume=1,adelay=%2S|"
                                  "%2S,apad=whole_len=%3[ad%1];")
-                             .arg(clipCount)
-                             .arg(qRound(44100.0 * (clip->pos() - 1) / fps))
-                             .arg(wholeLen);
+                         .arg(clipCount)
+                         .arg(qRound(44100.0 * (clip->pos() - 1) / fps))
+                         .arg(wholeLen);
         amergeInput += QString("[ad%1]").arg(clipCount);
         panChannelLayout += QString("c%1+").arg(clipCount);
 
@@ -211,10 +213,10 @@ Status MovieExporter::assembleAudio(const Object *obj, QString ffmpegPath, std::
     // Mix audio
     args << "-filter_complex"
          << QString("%1%2 amerge=inputs=%3, pan=mono|c0=%4 [out]")
-                .arg(filterComplex)
-                .arg(amergeInput)
-                .arg(clipCount)
-                .arg(panChannelLayout);
+         .arg(filterComplex)
+         .arg(amergeInput)
+         .arg(clipCount)
+         .arg(panChannelLayout);
     // Convert audio file: 44100Hz sampling rate, stereo, signed 16 bit little endian
     // Supported audio file types: wav, mp3, ogg... ( all file types supported by ffmpeg )
     args << "-ar"
@@ -232,7 +234,8 @@ Status MovieExporter::assembleAudio(const Object *obj, QString ffmpegPath, std::
     // Output path
     args << tempAudioPath;
 
-    STATUS_CHECK(MovieExporter::executeFFmpeg(ffmpegPath, args, [&progress, this](int frame) {
+    STATUS_CHECK(MovieExporter::executeFFmpeg(ffmpegPath, args, [&progress, this](int frame)
+    {
         progress(frame / static_cast<float>(mDesc.endFrame - mDesc.startFrame));
         return !mCanceled;
     }))
@@ -351,7 +354,8 @@ Status MovieExporter::generateMovie(const Object *obj,
 
     // Run FFmpeg command
 
-    STATUS_CHECK(executeFFMpegPipe(ffmpegPath, args, progress, [&](QProcess &ffmpeg, int framesProcessed) {
+    STATUS_CHECK(executeFFMpegPipe(ffmpegPath, args, progress, [&](QProcess & ffmpeg, int framesProcessed)
+    {
         if (framesProcessed < 0)
         {
             failCounter++;
@@ -468,7 +472,8 @@ Status MovieExporter::generateGif(const Object *obj,
 
     // Run FFmpeg command
 
-    STATUS_CHECK(executeFFMpegPipe(ffmpegPath, args, progress, [&](QProcess &ffmpeg, int framesProcessed) {
+    STATUS_CHECK(executeFFMpegPipe(ffmpegPath, args, progress, [&](QProcess & ffmpeg, int framesProcessed)
+    {
         /* The GIF FFmpeg command requires the entires stream to be
          * written before FFmpeg can encode the GIF. This is because
          * the generated pallete is based off of the colors in all
@@ -539,7 +544,9 @@ Status MovieExporter::executeFFmpeg(const QString &cmd, const QStringList &args,
         while (ffmpeg.state() == QProcess::Running)
         {
             if (!ffmpeg.waitForReadyRead())
+            {
                 break;
+            }
 
             QString output(ffmpeg.readAll());
             QStringList sList = output.split(QRegExp("[\r\n]"), QString::SkipEmptyParts);
@@ -559,7 +566,9 @@ Status MovieExporter::executeFFmpeg(const QString &cmd, const QStringList &args,
                     ffmpeg.terminate();
                     ffmpeg.waitForFinished(3000);
                     if (ffmpeg.state() == QProcess::Running)
+                    {
                         ffmpeg.kill();
+                    }
                     ffmpeg.waitForFinished();
                     return Status::CANCELED;
                 }
@@ -669,7 +678,9 @@ Status MovieExporter::executeFFMpegPipe(const QString &cmd,
             {
                 ffmpeg.terminate();
                 if (ffmpeg.state() == QProcess::Running)
+                {
                     ffmpeg.kill();
+                }
                 return Status::CANCELED;
             }
 

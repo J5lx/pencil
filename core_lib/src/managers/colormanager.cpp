@@ -56,9 +56,13 @@ void ColorManager::workingLayerChanged(Layer *layer)
 QColor ColorManager::frontColor()
 {
     if (mIsWorkingOnVectorLayer)
+    {
         return object()->getColor(mCurrentColorIndex).color;
+    }
     else
+    {
         return mCurrentFrontColor;
+    }
 }
 
 void ColorManager::setColorNumber(int n)

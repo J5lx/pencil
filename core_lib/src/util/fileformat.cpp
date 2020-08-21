@@ -44,7 +44,9 @@ QString uniqueString(int len)
     const int alphanum_len = sizeof(alphanum);
 
     if (len > 128)
+    {
         len = 128;
+    }
 
     char s[128 + 1];
     for (int i = 0; i < len; ++i)

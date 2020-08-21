@@ -134,7 +134,9 @@ BitmapImage BitmapImage::copy()
 BitmapImage BitmapImage::copy(QRect rectangle)
 {
     if (rectangle.isEmpty() || mBounds.isEmpty())
+    {
         return BitmapImage();
+    }
 
     QRect intersection2 = rectangle.translated(-mBounds.topLeft());
     BitmapImage result = BitmapImage(rectangle.topLeft(), image()->copy(intersection2));
@@ -226,7 +228,9 @@ void BitmapImage::updateBounds(QRect newBoundaries)
 {
     // Check to make sure changes actually need to be made
     if (mBounds == newBoundaries)
+    {
         return;
+    }
 
     QImage *newImage = new QImage(newBoundaries.size(), QImage::Format_ARGB32_Premultiplied);
     newImage->fill(Qt::transparent);
@@ -254,9 +258,13 @@ void BitmapImage::extend(const QPoint &p)
 void BitmapImage::extend(QRect rectangle)
 {
     if (rectangle.width() <= 0)
+    {
         rectangle.setWidth(1);
+    }
     if (rectangle.height() <= 0)
+    {
         rectangle.setHeight(1);
+    }
     if (mBounds.contains(rectangle))
     {
         // Do nothing
@@ -361,17 +369,25 @@ void BitmapImage::setCompositionModeBounds(QRect sourceBounds, bool isSourceMinB
 void BitmapImage::autoCrop()
 {
     if (!mEnableAutoCrop)
+    {
         return;
+    }
     if (mBounds.isEmpty())
-        return; // Exit if current bounds are null
+    {
+        return;    // Exit if current bounds are null
+    }
     if (!mImage)
+    {
         return;
+    }
 
     Q_ASSERT(mBounds.size() == mImage->size());
 
     // Exit if already min bounded
     if (mMinBound)
+    {
         return;
+    }
 
     // Get image properties
     const int width = mImage->width();
@@ -528,7 +544,9 @@ QRgb BitmapImage::pixel(QPoint p)
 {
     QRgb result = qRgba(0, 0, 0, 0); // black
     if (mBounds.contains(p))
+    {
         result = image()->pixel(p - mBounds.topLeft());
+    }
     return result;
 }
 
@@ -800,10 +818,14 @@ bool BitmapImage::compareColor(QRgb newColor, QRgb oldColor, int tolerance, QHas
 {
     // Handle trivial case
     if (newColor == oldColor)
+    {
         return true;
+    }
 
     if (cache && cache->contains(newColor))
+    {
         return cache->value(newColor);
+    }
 
     // Get Eulcidian distance between colors
     // Not an accurate representation of human perception,
@@ -873,7 +895,9 @@ void BitmapImage::floodFill(BitmapImage *targetImage, QRect cameraRect, QPoint p
         newPlacedColor = replaceImage->constScanLine(xTemp, point.y());
         while (xTemp >= targetImage->mBounds.left() &&
                compareColor(targetImage->constScanLine(xTemp, point.y()), oldColor, tolerance, cache.data()))
+        {
             xTemp--;
+        }
         xTemp++;
 
         spanLeft = spanRight = false;

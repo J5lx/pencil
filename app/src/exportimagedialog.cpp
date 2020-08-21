@@ -137,7 +137,11 @@ void ExportImageDialog::cameraComboChanged(int index)
 void ExportImageDialog::setTransparencyOptionVisibility(const QString &format)
 {
     if (format == "JPG" || format == "BMP")
+    {
         ui->cbTransparency->setDisabled(true);
+    }
     else
+    {
         ui->cbTransparency->setDisabled(false);
+    }
 }

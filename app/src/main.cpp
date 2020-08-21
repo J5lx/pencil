@@ -81,7 +81,7 @@ int handleArguments(PencilApplication &app)
     parser.addPositionalArgument("input", QObject::tr("Path to the input pencil file."));
 
     QCommandLineOption exportOutOption(QStringList() << "o"
-                                                     << "export",
+                                       << "export",
                                        QObject::tr("Render the file to <output_path>"),
                                        QObject::tr("output_path"));
     parser.addOption(exportOutOption);
@@ -191,7 +191,7 @@ int handleArguments(PencilApplication &app)
             if (!ok)
             {
                 err << QObject::tr("Warning: end value %1 is not an integer, last or last-sound, ignoring.")
-                           .arg(parser.value(endOption))
+                    .arg(parser.value(endOption))
                     << endl;
                 endFrame = -1;
             }
@@ -199,8 +199,8 @@ int handleArguments(PencilApplication &app)
         if (endFrame > -1 && endFrame < startFrame)
         {
             err << QObject::tr("Warning: end value %1 is smaller than start value %2, ignoring.")
-                       .arg(endFrame)
-                       .arg(startFrame)
+                .arg(endFrame)
+                .arg(startFrame)
                 << endl;
             endFrame = startFrame;
         }
@@ -253,11 +253,11 @@ int handleArguments(PencilApplication &app)
     if (!parser.value(cameraOption).isEmpty())
     {
         cameraLayer = dynamic_cast<LayerCamera *>(
-            mainWindow.mEditor->layers()->findLayerByName(parser.value(cameraOption), Layer::CAMERA));
+                          mainWindow.mEditor->layers()->findLayerByName(parser.value(cameraOption), Layer::CAMERA));
         if (cameraLayer == nullptr)
         {
             err << QObject::tr("Warning: the specified camera layer %1 was not found, ignoring.")
-                       .arg(parser.value(cameraOption))
+                .arg(parser.value(cameraOption))
                 << endl;
         }
     }
@@ -270,7 +270,8 @@ int handleArguments(PencilApplication &app)
     {
         // Detect format
         QString format;
-        QMap<QString, QString> extensionMapping{
+        QMap<QString, QString> extensionMapping
+        {
             {"png", "PNG"},
             {"jpg", "JPG"},
             {"jpeg", "JPG"},
@@ -296,7 +297,8 @@ int handleArguments(PencilApplication &app)
             format = "PNG";
         }
 
-        QMap<QString, bool> formatMapping{
+        QMap<QString, bool> formatMapping
+        {
             {"PNG", false},
             {"JPG", false},
             {"TIF", false},
@@ -325,7 +327,7 @@ int handleArguments(PencilApplication &app)
         {
             out << QObject::tr("Exporting image sequence...", "Command line task progress") << endl;
             mainWindow.mEditor
-                ->exportSeqCLI(outputPaths[i], cameraLayer, format, width, height, startFrame, endFrame, transparency);
+            ->exportSeqCLI(outputPaths[i], cameraLayer, format, width, height, startFrame, endFrame, transparency);
             out << QObject::tr("Done.", "Command line task done") << endl;
         }
     }

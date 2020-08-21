@@ -167,7 +167,9 @@ void PencilTool::pointerMoveEvent(PointerEvent *event)
         mCurrentPressure = strokeManager()->getPressure();
         drawStroke();
         if (properties.stabilizerLevel != strokeManager()->getStabilizerLevel())
+        {
             strokeManager()->setStabilizerLevel(properties.stabilizerLevel);
+        }
     }
 }
 
@@ -186,9 +188,13 @@ void PencilTool::pointerReleaseEvent(PointerEvent *)
 
     Layer *layer = mEditor->layers()->currentLayer();
     if (layer->type() == Layer::BITMAP)
+    {
         paintBitmapStroke();
+    }
     else if (layer->type() == Layer::VECTOR)
+    {
         paintVectorStroke(layer);
+    }
     endStroke();
 }
 
@@ -284,7 +290,9 @@ void PencilTool::paintBitmapStroke()
 void PencilTool::paintVectorStroke(Layer *layer)
 {
     if (mStrokePoints.empty())
+    {
         return;
+    }
 
     // Clear the temporary pixel path
     mScribbleArea->clearBitmapBuffer();

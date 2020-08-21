@@ -282,7 +282,9 @@ Status LayerManager::deleteLayer(int index)
     {
         std::vector<LayerCamera *> camLayers = object()->getLayersByType<LayerCamera>();
         if (camLayers.size() == 1)
+        {
             return Status::ERROR_NEED_AT_LEAST_ONE_CAMERA_LAYER;
+        }
     }
 
     object()->deleteLayer(layer);
@@ -307,7 +309,9 @@ Status LayerManager::deleteLayer(int index)
 Status LayerManager::renameLayer(Layer *layer, const QString &newName)
 {
     if (newName.isEmpty())
+    {
         return Status::FAIL;
+    }
 
     layer->setName(newName);
     currentLayerChanged(getIndex(layer));
@@ -333,10 +337,13 @@ int LayerManager::animationLength(bool includeSounds)
         if (o->getLayer(i)->type() == Layer::SOUND)
         {
             if (!includeSounds)
+            {
                 continue;
+            }
 
             Layer *soundLayer = o->getLayer(i);
-            soundLayer->foreachKeyFrame([&maxFrame](KeyFrame *keyFrame) {
+            soundLayer->foreachKeyFrame([&maxFrame](KeyFrame * keyFrame)
+            {
                 int endPosition = keyFrame->pos() + (keyFrame->length() - 1);
                 if (endPosition > maxFrame)
                 {
@@ -367,7 +374,9 @@ int LayerManager::getIndex(Layer *layer) const
     for (int i = 0; i < o->getLayerCount(); ++i)
     {
         if (layer == o->getLayer(i))
+        {
             return i;
+        }
     }
     return -1;
 }

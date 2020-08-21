@@ -47,7 +47,7 @@ Status MovieImporter::estimateFrames(const QString &filePath, int fps, int *fram
     if (QFileInfo::exists(ffprobePath))
     {
         QStringList probeArgs =
-            {"-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", filePath};
+        {"-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", filePath};
         QProcess ffprobe;
         ffprobe.setReadChannel(QProcess::StandardOutput);
         ffprobe.start(ffprobePath, probeArgs);
@@ -72,7 +72,7 @@ Status MovieImporter::estimateFrames(const QString &filePath, int fps, int *fram
             ffprobe.setProcessChannelMode(QProcess::MergedChannels);
             dd << "FFprobe did not exit normally"
                << QString("Exit status: ")
-                      .append(ffprobe.exitStatus() == QProcess::NormalExit ? "NormalExit" : "CrashExit")
+               .append(ffprobe.exitStatus() == QProcess::NormalExit ? "NormalExit" : "CrashExit")
                << QString("Exit code: %1").arg(ffprobe.exitCode()) << "Output:" << ffprobe.readAll();
         }
         if (frames < 0)
@@ -95,7 +95,9 @@ Status MovieImporter::estimateFrames(const QString &filePath, int fps, int *fram
             while (ffmpeg.state() == QProcess::Running)
             {
                 if (!ffmpeg.waitForReadyRead())
+                {
                     break;
+                }
 
                 QString output(ffmpeg.readAll());
                 QStringList sList = output.split(QRegExp("[\r\n]"), QString::SkipEmptyParts);
@@ -114,7 +116,9 @@ Status MovieImporter::estimateFrames(const QString &filePath, int fps, int *fram
                         ffmpeg.terminate();
                         ffmpeg.waitForFinished(3000);
                         if (ffmpeg.state() == QProcess::Running)
+                        {
                             ffmpeg.kill();
+                        }
                         ffmpeg.waitForFinished();
                         break;
                     }
@@ -128,7 +132,7 @@ Status MovieImporter::estimateFrames(const QString &filePath, int fps, int *fram
         status = Status::FAIL;
         status.setTitle(QObject::tr("Loading video failed"));
         status.setDescription(QObject::tr(
-            "Could not get duration from the specified video. Are you sure you are importing a valid video file?"));
+                                  "Could not get duration from the specified video. Are you sure you are importing a valid video file?"));
         status.setDetails(dd);
         return status;
     }
@@ -145,7 +149,9 @@ Status MovieImporter::run(const QString &filePath,
                           std::function<bool()> askPermission)
 {
     if (mCanceled)
+    {
         return Status::CANCELED;
+    }
 
     Status status = Status::OK;
     DebugDetails dd;
@@ -176,8 +182,8 @@ Status MovieImporter::run(const QString &filePath,
             status.setDescription(QObject::tr("The movie clip is too long. Pencil2D can only hold %1 frames, but this "
                                               "movie would go up to about frame %2. "
                                               "Please make your video shorter and try again.")
-                                      .arg(MaxFramesBound)
-                                      .arg(mEditor->currentFrame() + frames));
+                                  .arg(MaxFramesBound)
+                                  .arg(mEditor->currentFrame() + frames));
 
             return status;
         }
@@ -192,7 +198,8 @@ Status MovieImporter::run(const QString &filePath,
             }
         }
 
-        auto progressCallback = [&progress, this](int prog) -> bool {
+        auto progressCallback = [&progress, this](int prog) -> bool
+        {
             progress(prog);
             return !mCanceled;
         };
@@ -201,7 +208,8 @@ Status MovieImporter::run(const QString &filePath,
     }
     else if (type == FileType::SOUND)
     {
-        return importMovieAudio(filePath, [&progress, this](int prog) -> bool {
+        return importMovieAudio(filePath, [&progress, this](int prog) -> bool
+        {
             progress(prog);
             return !mCanceled;
         });
@@ -236,7 +244,8 @@ Status MovieImporter::importMovieVideo(const QString &filePath,
     args << "-r" << QString::number(fps);
     args << QDir(mTempDir->path()).filePath("%05d.png");
 
-    status = MovieExporter::executeFFmpeg(ffmpegLocation(), args, [&progress, frameEstimate, this](int frame) {
+    status = MovieExporter::executeFFmpeg(ffmpegLocation(), args, [&progress, frameEstimate, this](int frame)
+    {
         progress(qFloor(qMin(frame / static_cast<double>(frameEstimate), 1.0) * 50));
         return !mCanceled;
     });
@@ -247,13 +256,16 @@ Status MovieImporter::importMovieVideo(const QString &filePath,
     }
 
     if (mCanceled)
+    {
         return Status::CANCELED;
+    }
 
     progressMessage(tr("Video processed, adding frames..."));
 
     progress(50);
 
-    return generateFrames([this, &progress](int prog) -> bool {
+    return generateFrames([this, &progress](int prog) -> bool
+    {
         progress(prog);
         return mCanceled;
     });
@@ -292,7 +304,9 @@ Status MovieImporter::generateFrames(std::function<bool(int)> progress)
             mEditor->scrubTo(currentFrame + 1);
         }
         if (mCanceled)
+        {
             return Status::CANCELED;
+        }
         progress(qFloor(50 + i / static_cast<qreal>(amountOfFrames) * 50));
         i++;
         currentFile = tempDir.filePath(QString("%1.png").arg(i, 5, 10, QChar('0')));
@@ -341,14 +355,17 @@ Status MovieImporter::importMovieAudio(const QString &filePath, std::function<bo
 
     QStringList args = {"-i", filePath, audioPath};
 
-    status = MovieExporter::executeFFmpeg(ffmpegLocation(), args, [&progress, this](int frame) {
+    status = MovieExporter::executeFFmpeg(ffmpegLocation(), args, [&progress, this](int frame)
+    {
         Q_UNUSED(frame)
         progress(50);
         return !mCanceled;
     });
 
     if (mCanceled)
+    {
         return Status::CANCELED;
+    }
     progress(90);
 
     SoundClip *key = nullptr;

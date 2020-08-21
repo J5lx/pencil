@@ -147,12 +147,16 @@ QColor EyedropperTool::getBitmapColor(LayerBitmap *layer)
 {
     BitmapImage *targetImage = layer->getLastBitmapImageAtFrame(mEditor->currentFrame(), 0);
     if (targetImage == nullptr || !targetImage->contains(getLastPoint()))
+    {
         return QColor();
+    }
 
     QColor pickedColour;
     pickedColour.setRgba(qUnpremultiply(targetImage->pixel(getLastPoint().x(), getLastPoint().y())));
     if (pickedColour.alpha() <= 0)
+    {
         pickedColour = QColor();
+    }
     return pickedColour;
 }
 
@@ -160,13 +164,15 @@ int EyedropperTool::getVectorColor(LayerVector *layer)
 {
     auto vectorImage = static_cast<VectorImage *>(layer->getLastKeyFrameAtPosition(mEditor->currentFrame()));
     if (vectorImage == nullptr)
+    {
         return -1;
+    }
 
     // Check curves
     const qreal toleranceDistance = 10.0;
     const QList<int> closestCurves = vectorImage->getCurvesCloseTo(getCurrentPoint(), toleranceDistance);
     const QList<int> visibleClosestCurves =
-        filter(closestCurves, [vectorImage](int i) { return vectorImage->isCurveVisible(i); });
+    filter(closestCurves, [vectorImage](int i) { return vectorImage->isCurveVisible(i); });
 
     if (!visibleClosestCurves.isEmpty())
     {

@@ -69,14 +69,18 @@ public:
     {
         bool result = true;
         for (int i = 0; i < selected.size(); i++)
+        {
             result = result && selected[i];
+        }
         return result;
     }
     bool isPartlySelected() const
     {
         bool result = false;
         for (int i = 0; i < selected.size(); i++)
+        {
             result = result || selected[i];
+        }
         return result;
     }
     bool isInvisible() const { return invisible; }

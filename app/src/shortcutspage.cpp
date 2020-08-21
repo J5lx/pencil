@@ -39,7 +39,7 @@ ShortcutsPage::ShortcutsPage(QWidget *parent) : QWidget(parent), ui(new Ui::Shor
     m_treeModel = new QStandardItemModel(this);
     m_treeModel->setColumnCount(2);
     m_treeModel->setHorizontalHeaderLabels(
-        {tr("Action", "Shortcut table header"), tr("Shortcut", "Shortcut table header")});
+    {tr("Action", "Shortcut table header"), tr("Shortcut", "Shortcut table header")});
     treeModelLoadShortcutsSetting();
 
     ui->treeView->setModel(m_treeModel);
@@ -136,7 +136,9 @@ void ShortcutsPage::saveShortcutsButtonClicked()
 
     QString fDir = settings.value("Shortcuts").toString();
     if (fDir.isEmpty())
+    {
         fDir = QDir::homePath();
+    }
 
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save Pencil2D Shortcut file"),
@@ -162,7 +164,9 @@ void ShortcutsPage::loadShortcutsButtonClicked()
     QString fDir = settings.value("Shortcuts").toString();
     settings.endGroup();
     if (fDir.isEmpty())
+    {
         fDir = QDir::homePath();
+    }
 
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Open Pencil2D Shortcut file"),
@@ -247,9 +251,13 @@ void ShortcutsPage::treeModelLoadShortcutsSetting()
         strKeySequence = QKeySequence(strKeySequence).toString(QKeySequence::NativeText);
 
         if (m_treeModel->item(row, ACT_NAME_COLUMN) == nullptr)
+        {
             m_treeModel->setItem(row, ACT_NAME_COLUMN, new QStandardItem());
+        }
         if (m_treeModel->item(row, KEY_SEQ_COLUMN) == nullptr)
+        {
             m_treeModel->setItem(row, KEY_SEQ_COLUMN, new QStandardItem());
+        }
 
         m_treeModel->item(row, ACT_NAME_COLUMN)->setData(strCmdName);
         m_treeModel->item(row, ACT_NAME_COLUMN)->setText(getHumanReadableShortcutName(strCmdName));
@@ -293,7 +301,8 @@ void ShortcutsPage::clearButtonClicked()
  */
 static QString getHumanReadableShortcutName(const QString &cmdName)
 {
-    static QHash<QString, QString> humanReadableShortcutNames = QHash<QString, QString>{
+    static QHash<QString, QString> humanReadableShortcutNames = QHash<QString, QString>
+    {
         {CMD_ADD_FRAME, QObject::tr("Add Frame", "Shortcut")},
         {CMD_CLEAR_FRAME, QObject::tr("Clear Frame", "Shortcut")},
         {CMD_COPY, QObject::tr("Copy", "Shortcut")},

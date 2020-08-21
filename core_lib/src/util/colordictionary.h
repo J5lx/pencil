@@ -9,7 +9,8 @@
 // D65 white point and rounded.
 const int dictSize = 267;
 
-static const float colorDict[dictSize][3] = {
+static const float colorDict[dictSize][3] =
+{
     {129.44f, 17.49f, 4.51f},    {121.33f, 22.84f, 5.93f},    {113.18f, 33.56f, 8.5f},     {133.35f, 9.63f, 4.25f},
     {124.33f, 13.9f, 5.56f},     {114.29f, 18.26f, 6.35f},    {134.81f, 3.79f, 1.72f},     {124.74f, 5.33f, 2.33f},
     {136.75f, 1.26f, 1.15f},     {126.18f, 2.3f, 2.04f},      {72.24f, 105.85f, -3.37f},   {96.15f, 46.92f, 11.81f},
@@ -76,7 +77,8 @@ static const float colorDict[dictSize][3] = {
     {123.24f, 8.79f, -1.44f},    {100.92f, 52.89f, -7.53f},   {97.83f, 46.17f, -6.94f},    {74.84f, 63.03f, -20.4f},
     {66.3f, 54.43f, -22.03f},    {100.61f, 34.89f, -4.04f},   {82.95f, 30.99f, -6.26f},    {61.74f, 35.0f, -15.37f},
     {114.78f, 12.83f, 0.84f},    {102.51f, 19.54f, -0.93f},   {139.92f, -0.1f, -0.36f},    {126.14f, -0.15f, 1.16f},
-    {111.2f, -0.33f, 0.9f},      {93.88f, -0.0f, 0.0f},       {64.96f, -0.0f, 0.0f}};
+    {111.2f, -0.33f, 0.9f},      {93.88f, -0.0f, 0.0f},       {64.96f, -0.0f, 0.0f}
+};
 
 static const QString nameDict[dictSize] = {QObject::tr("Vivid Pink"),
                                            QObject::tr("Strong Pink"),
@@ -344,6 +346,7 @@ static const QString nameDict[dictSize] = {QObject::tr("Vivid Pink"),
                                            QObject::tr("Light Gray"),
                                            QObject::tr("Medium Gray"),
                                            QObject::tr("Dark Gray"),
-                                           QObject::tr("Black")};
+                                           QObject::tr("Black")
+                                          };
 
 #endif

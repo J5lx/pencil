@@ -75,7 +75,9 @@ void MoveTool::pointerPressEvent(PointerEvent *event)
 {
     mCurrentLayer = currentPaintableLayer();
     if (mCurrentLayer == nullptr)
+    {
         return;
+    }
 
     mEditor->select()->updatePolygons();
 
@@ -87,7 +89,9 @@ void MoveTool::pointerMoveEvent(PointerEvent *event)
 {
     mCurrentLayer = currentPaintableLayer();
     if (mCurrentLayer == nullptr)
+    {
         return;
+    }
 
     mEditor->select()->updatePolygons();
 
@@ -113,7 +117,9 @@ void MoveTool::pointerReleaseEvent(PointerEvent *)
 {
     auto selectMan = mEditor->select();
     if (!selectMan->somethingSelected())
+    {
         return;
+    }
 
     mRotatedAngle = selectMan->myRotation();
     updateTransformation();
@@ -388,9 +394,13 @@ Layer *MoveTool::currentPaintableLayer()
 {
     Layer *layer = mEditor->layers()->currentLayer();
     if (layer == nullptr)
+    {
         return nullptr;
+    }
     if (!layer->isPaintable())
+    {
         return nullptr;
+    }
     return layer;
 }
 

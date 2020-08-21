@@ -125,9 +125,13 @@ int Layer::getPreviousFrameNumber(int position, bool isAbsolute) const
     int prevNumber;
 
     if (isAbsolute)
+    {
         prevNumber = getPreviousKeyFramePosition(position);
+    }
     else
+    {
         prevNumber = position - 1;
+    }
 
     if (prevNumber >= position)
     {
@@ -141,12 +145,18 @@ int Layer::getNextFrameNumber(int position, bool isAbsolute) const
     int nextNumber;
 
     if (isAbsolute)
+    {
         nextNumber = getNextKeyFramePosition(position);
+    }
     else
+    {
         nextNumber = position + 1;
+    }
 
     if (nextNumber <= position)
-        return -1; // There is no next keyframe
+    {
+        return -1;    // There is no next keyframe
+    }
 
     return nextNumber;
 }
@@ -172,7 +182,9 @@ int Layer::getMaxKeyFramePosition() const
 bool Layer::addNewKeyFrameAt(int position)
 {
     if (position <= 0)
+    {
         return false;
+    }
 
     KeyFrame *key = createKeyFrame(position, mObject);
     return addKeyFrame(position, key);
@@ -266,10 +278,14 @@ bool Layer::swapKeyFrames(int position1, int position2) // Current behaviour, ne
     }
 
     if (pFirstFrame)
+    {
         pFirstFrame->modification();
+    }
 
     if (pSecondFrame)
+    {
         pSecondFrame->modification();
+    }
 
     return true;
 }
@@ -301,7 +317,9 @@ Status Layer::save(const QString &sDataFolder, QStringList &attachedFiles, Progr
         {
             // qDebug() << "Layer [" << name() << "] FN=" << keyFrame->fileName();
             if (!keyFrame->fileName().isEmpty())
+            {
                 attachedFiles.append(keyFrame->fileName());
+            }
         }
         else
         {
@@ -331,13 +349,21 @@ void Layer::paintTrack(QPainter &painter,
     {
         QColor col;
         if (type() == BITMAP)
+        {
             col = QColor(51, 155, 252);
+        }
         if (type() == VECTOR)
+        {
             col = QColor(70, 205, 123);
+        }
         if (type() == SOUND)
+        {
             col = QColor(255, 141, 112);
+        }
         if (type() == CAMERA)
+        {
             col = QColor(253, 202, 92);
+        }
 
         painter.save();
         painter.setBrush(col);
@@ -455,11 +481,17 @@ void Layer::paintLabel(QPainter &painter,
     if (mVisible)
     {
         if ((layerVisibility == LayerVisibility::ALL) || selected)
+        {
             painter.setBrush(Qt::black);
+        }
         else if (layerVisibility == LayerVisibility::CURRENTONLY)
+        {
             painter.setBrush(Qt::NoBrush);
+        }
         else if (layerVisibility == LayerVisibility::RELATED)
+        {
             painter.setBrush(Qt::darkGray);
+        }
     }
     else
     {
@@ -471,13 +503,21 @@ void Layer::paintLabel(QPainter &painter,
     painter.setRenderHint(QPainter::Antialiasing, false);
 
     if (type() == BITMAP)
+    {
         painter.drawPixmap(QPoint(20, y + 2), QPixmap(":/icons/layer-bitmap.png"));
+    }
     if (type() == VECTOR)
+    {
         painter.drawPixmap(QPoint(20, y + 2), QPixmap(":/icons/layer-vector.png"));
+    }
     if (type() == SOUND)
+    {
         painter.drawPixmap(QPoint(21, y + 2), QPixmap(":/icons/layer-sound.png"));
+    }
     if (type() == CAMERA)
+    {
         painter.drawPixmap(QPoint(21, y + 2), QPixmap(":/icons/layer-camera.png"));
+    }
 
     painter.setPen(Qt::black);
     painter.drawText(QPoint(45, y + (2 * height) / 3), mName);
@@ -641,7 +681,9 @@ bool Layer::moveSelectedFrames(int offset)
 
             // Check if we are not moving out of the timeline
             if (mSelectedFrames_byPosition[0] + offset < 1)
+            {
                 return false;
+            }
         }
 
         while (indexInSelection > -1 && indexInSelection < mSelectedFrames_byPosition.count())
@@ -677,9 +719,13 @@ bool Layer::moveSelectedFrames(int offset)
 
                     targetPosition = targetPosition - step;
                     if (fromPos < toPos && (targetPosition < fromPos || targetPosition >= toPos))
+                    {
                         isBetween = false;
+                    }
                     if (fromPos > toPos && (targetPosition > fromPos || targetPosition <= toPos))
+                    {
                         isBetween = false;
+                    }
                 }
 
                 if (fromPos == 1)

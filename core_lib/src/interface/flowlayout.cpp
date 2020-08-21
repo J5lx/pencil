@@ -73,7 +73,9 @@ FlowLayout::~FlowLayout()
 {
     QLayoutItem *item;
     while ((item = takeAt(0)))
+    {
         delete item;
+    }
 }
 //! [2]
 
@@ -124,9 +126,13 @@ QLayoutItem *FlowLayout::itemAt(int index) const
 QLayoutItem *FlowLayout::takeAt(int index)
 {
     if (index >= 0 && index < itemList.size())
+    {
         return itemList.takeAt(index);
+    }
     else
+    {
         return nullptr;
+    }
 }
 //! [5]
 
@@ -167,7 +173,9 @@ QSize FlowLayout::minimumSize() const
     QSize size;
     QLayoutItem *item;
     foreach (item, itemList)
+    {
         size = size.expandedTo(item->minimumSize());
+    }
 
     size += QSize(2 * margin(), 2 * margin());
     return size;
@@ -195,10 +203,14 @@ int FlowLayout::doLayout(const QRect &rect, bool testOnly) const
         QWidget *wid = item->widget();
         spaceX = horizontalSpacing();
         if (spaceX == -1)
+        {
             spaceX = wid->style()->layoutSpacing(QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Horizontal);
+        }
         int spaceY = verticalSpacing();
         if (spaceY == -1)
+        {
             spaceY = wid->style()->layoutSpacing(QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Vertical);
+        }
         //! [10]
         //! [11]
         int nextX = x + item->sizeHint().width() + spaceX;

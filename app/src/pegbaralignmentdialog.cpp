@@ -49,7 +49,9 @@ QStringList PegBarAlignmentDialog::getLayerList()
     for (int i = 0; i < ui->lwLayers->count(); i++)
     {
         if (ui->lwLayers->item(i)->isSelected())
+        {
             selectedLayers.append(ui->lwLayers->item(i)->text());
+        }
     }
     return selectedLayers;
 }
@@ -94,9 +96,13 @@ void PegBarAlignmentDialog::updatePegRegDialog()
 {
     // is something selected in scribblearea?
     if (mEditor->select()->somethingSelected())
+    {
         setAreaSelected(true);
+    }
     else
+    {
         setAreaSelected(false);
+    }
 
     // is the reference key valid?
     setRefLayer(mEditor->layers()->currentLayer()->name());
@@ -108,14 +114,18 @@ void PegBarAlignmentDialog::updatePegRegDialog()
         setReferenceSelected(true);
     }
     else
+    {
         setReferenceSelected(false);
+    }
 
     // has minimum one layer been selected?
     QStringList bitmaplayers;
     bitmaplayers = getLayerList();
 
     if (bitmaplayers.isEmpty())
+    {
         setLayerSelected(false);
+    }
     else
     {
         setRefLayer(mEditor->layers()->currentLayer()->name());
@@ -152,9 +162,13 @@ void PegBarAlignmentDialog::alignPegs()
 void PegBarAlignmentDialog::setBtnAlignEnabled()
 {
     if (areaSelected && referenceSelected && layerSelected)
+    {
         ui->btnAlign->setEnabled(true);
+    }
     else
+    {
         ui->btnAlign->setEnabled(false);
+    }
 }
 
 void PegBarAlignmentDialog::setRefLayer(QString s)

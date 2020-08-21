@@ -106,11 +106,13 @@ QCursor SmudgeTool::cursor()
 {
     qDebug() << "smudge tool";
     if (toolMode == 0)
-    { // normal mode
+    {
+        // normal mode
         return QCursor(QPixmap(":icons/smudge.png"), 0, 16);
     }
     else
-    { // blured mode
+    {
+        // blured mode
         return QCursor(QPixmap(":icons/liquify.png"), -4, 16);
     }
 }
@@ -294,7 +296,9 @@ void SmudgeTool::pointerReleaseEvent(PointerEvent *event)
 void SmudgeTool::drawStroke()
 {
     if (!mScribbleArea->isLayerPaintable())
+    {
         return;
+    }
 
     Layer *layer = mEditor->layers()->currentLayer();
     if (layer == nullptr)

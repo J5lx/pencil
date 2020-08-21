@@ -67,7 +67,8 @@ void AboutDialog::init()
     ui->devInfoText->setText(devText.join("<br>"));
 
     QPushButton *copyToClipboardButton = new QPushButton(tr("Copy to clipboard", "Copy system info from About Dialog"));
-    connect(copyToClipboardButton, &QPushButton::clicked, this, [devText] {
+    connect(copyToClipboardButton, &QPushButton::clicked, this, [devText]
+    {
         QApplication::clipboard()->setText(devText.join("\n"));
     });
     ui->buttonBox->addButton(copyToClipboardButton, QDialogButtonBox::ActionRole);

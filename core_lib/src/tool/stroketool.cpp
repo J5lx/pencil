@@ -24,15 +24,13 @@ GNU General Public License for more details.
 #include <QKeyEvent>
 
 #ifdef Q_OS_MAC
-extern "C"
-{
+extern "C" {
     void detectWhichOSX();
     void disableCoalescing();
     void enableCoalescing();
 }
 #else
-extern "C"
-{
+extern "C" {
     void detectWhichOSX() {}
     void disableCoalescing() {}
     void enableCoalescing() {}

@@ -380,11 +380,15 @@ TEST_CASE("FileManager File-saving")
 
         layer = dynamic_cast<LayerBitmap *>(o2->getLayer(2));
         for (int i = 1; i < 150; ++i)
+        {
             o2->updateActiveFrames(i);
+        }
 
         // 3. Move those unloaded frames around
         for (int i = 100; i < 150; ++i)
+        {
             layer->setFrameSelected(i, true);
+        }
 
         layer->moveSelectedFrames(-55);
         fm.save(o2, animationPath);

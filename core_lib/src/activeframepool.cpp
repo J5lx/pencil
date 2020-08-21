@@ -33,7 +33,9 @@ ActiveFramePool::~ActiveFramePool() {}
 void ActiveFramePool::put(KeyFrame *key)
 {
     if (key == nullptr)
+    {
         return;
+    }
 
     Q_ASSERT(key->pos() > 0);
 

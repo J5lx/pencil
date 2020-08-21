@@ -405,7 +405,9 @@ void ScribbleArea::wheelEvent(QWheelEvent *event)
 {
     // Don't change view if tool is in use
     if (isPointerInUse())
+    {
         return;
+    }
 
     Layer *layer = mEditor->layers()->currentLayer();
     if (layer->type() == Layer::CAMERA && !layer->visible())
@@ -1208,8 +1210,8 @@ void ScribbleArea::prepCanvas(int frame, QRect rect)
     o.onionWhilePlayback = mPrefs->getInt(SETTING::ONION_WHILE_PLAYBACK);
     o.isPlaying = mEditor->playback()->isPlaying() ? true : false;
     o.cmBufferBlendMode = mEditor->tools()->currentTool()->type() == ToolType::ERASER
-                              ? QPainter::CompositionMode_DestinationOut
-                              : QPainter::CompositionMode_SourceOver;
+                          ? QPainter::CompositionMode_DestinationOut
+                          : QPainter::CompositionMode_SourceOver;
     mCanvasPainter.setOptions(o);
 
     mCanvasPainter.setCanvas(&mCanvas);
@@ -1735,7 +1737,9 @@ void ScribbleArea::clearImage()
 
         BitmapImage *bitmapImage = currentBitmapImage(layer);
         if (bitmapImage == nullptr)
+        {
             return;
+        }
         bitmapImage->clear();
     }
     else

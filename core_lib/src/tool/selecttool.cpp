@@ -80,7 +80,9 @@ void SelectTool::pointerPressEvent(PointerEvent *event)
 {
     mCurrentLayer = mEditor->layers()->currentLayer();
     if (mCurrentLayer == nullptr)
+    {
         return;
+    }
     if (!mCurrentLayer->isPaintable())
     {
         return;
@@ -142,9 +144,13 @@ void SelectTool::pointerReleaseEvent(PointerEvent *event)
 {
     mCurrentLayer = mEditor->layers()->currentLayer();
     if (mCurrentLayer == nullptr)
+    {
         return;
+    }
     if (event->button() != Qt::LeftButton)
+    {
         return;
+    }
     auto selectMan = mEditor->select();
 
     // if there's a small very small distance between current and last point

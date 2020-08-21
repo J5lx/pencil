@@ -71,7 +71,9 @@ void BackgroundWidget::paintEvent(QPaintEvent *)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
 
     if (mHasShadow)
+    {
         drawShadow(painter);
+    }
 }
 
 void BackgroundWidget::loadBackgroundStyle()

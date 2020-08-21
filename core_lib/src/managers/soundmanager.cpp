@@ -48,7 +48,8 @@ Status SoundManager::load(Object *obj)
 
         LayerSound *soundLayer = static_cast<LayerSound *>(layer);
 
-        soundLayer->foreachKeyFrame([this](KeyFrame *key) {
+        soundLayer->foreachKeyFrame([this](KeyFrame * key)
+        {
             SoundClip *clip = dynamic_cast<SoundClip *>(key);
             Q_ASSERT(clip);
 

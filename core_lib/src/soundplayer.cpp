@@ -106,7 +106,8 @@ void SoundPlayer::makeConnections()
     auto errorSignal = static_cast<void (QMediaPlayer::*)(QMediaPlayer::Error)>(&QMediaPlayer::error);
     connect(mMediaPlayer, errorSignal, this, [](QMediaPlayer::Error err) { qDebug() << "MediaPlayer Error: " << err; });
 
-    connect(mMediaPlayer, &QMediaPlayer::durationChanged, [this](qint64 duration) {
+    connect(mMediaPlayer, &QMediaPlayer::durationChanged, [this](qint64 duration)
+    {
         qDebug() << "MediaPlayer durationChanged :" << duration;
         emit durationChanged(this, duration);
     });

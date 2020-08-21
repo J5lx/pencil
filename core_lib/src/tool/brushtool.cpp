@@ -158,7 +158,9 @@ void BrushTool::pointerMoveEvent(PointerEvent *event)
         mCurrentPressure = strokeManager()->getPressure();
         drawStroke();
         if (properties.stabilizerLevel != strokeManager()->getStabilizerLevel())
+        {
             strokeManager()->setStabilizerLevel(properties.stabilizerLevel);
+        }
     }
 }
 
@@ -178,9 +180,13 @@ void BrushTool::pointerReleaseEvent(PointerEvent *)
     }
 
     if (layer->type() == Layer::BITMAP)
+    {
         paintBitmapStroke();
+    }
     else if (layer->type() == Layer::VECTOR)
+    {
         paintVectorStroke();
+    }
 
     endStroke();
 }
@@ -241,7 +247,7 @@ void BrushTool::drawStroke()
 
             rect.extend(point.toPoint());
             mScribbleArea
-                ->drawBrush(point, brushWidth, properties.feather, mEditor->color()->frontColor(), opacity, true);
+            ->drawBrush(point, brushWidth, properties.feather, mEditor->color()->frontColor(), opacity, true);
             if (i == (steps - 1))
             {
                 mLastBrushPoint = getCurrentPoint();
@@ -304,7 +310,9 @@ void BrushTool::paintBitmapStroke()
 void BrushTool::paintVectorStroke()
 {
     if (mStrokePoints.empty())
+    {
         return;
+    }
 
     Layer *layer = mEditor->layers()->currentLayer();
 

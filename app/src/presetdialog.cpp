@@ -82,11 +82,15 @@ void PresetDialog::initPresets()
     {
         int index = key.toInt(&ok);
         if (!ok || index == 0 || !dataDir.exists(QString("%1.pclx").arg(index)))
+        {
             continue;
+        }
 
         QString name = presets.value(key, QString()).toString();
         if (name.isEmpty())
+        {
             continue;
+        }
         ui->presetComboBox->addItem(name, index);
         if (index == defaultIndex)
         {

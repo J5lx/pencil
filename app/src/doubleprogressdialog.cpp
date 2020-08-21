@@ -54,7 +54,9 @@ void DoubleProgressDialog::ProgressBarControl::setMin(float minimum)
 {
     min = minimum;
     if (max < min)
+    {
         setMax(min);
+    }
     bar->setMinimum(convertUnits(min));
 }
 
@@ -62,7 +64,9 @@ void DoubleProgressDialog::ProgressBarControl::setMax(float maximum)
 {
     max = maximum;
     if (min > max)
+    {
         setMin(max);
+    }
     bar->setMaximum(convertUnits(max));
 }
 

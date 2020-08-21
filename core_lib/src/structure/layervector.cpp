@@ -31,7 +31,8 @@ LayerVector::~LayerVector() {}
 bool LayerVector::usesColor(int colorIndex)
 {
     bool bUseColor = false;
-    foreachKeyFrame([&](KeyFrame *pKeyFrame) {
+    foreachKeyFrame([&](KeyFrame * pKeyFrame)
+    {
         auto pVecImage = static_cast<VectorImage *>(pKeyFrame);
 
         bUseColor = bUseColor || pVecImage->usesColor(colorIndex);
@@ -42,7 +43,8 @@ bool LayerVector::usesColor(int colorIndex)
 
 void LayerVector::removeColor(int colorIndex)
 {
-    foreachKeyFrame([=](KeyFrame *pKeyFrame) {
+    foreachKeyFrame([ = ](KeyFrame * pKeyFrame)
+    {
         auto pVecImage = static_cast<VectorImage *>(pKeyFrame);
         pVecImage->removeColor(colorIndex);
     });
@@ -50,7 +52,8 @@ void LayerVector::removeColor(int colorIndex)
 
 void LayerVector::moveColor(int start, int end)
 {
-    foreachKeyFrame([=](KeyFrame *pKeyFrame) {
+    foreachKeyFrame([ = ](KeyFrame * pKeyFrame)
+    {
         auto pVecImage = static_cast<VectorImage *>(pKeyFrame);
         pVecImage->moveColor(start, end);
     });
@@ -116,11 +119,17 @@ QString LayerVector::fileName(KeyFrame *key)
 bool LayerVector::needSaveFrame(KeyFrame *key, const QString &strSavePath)
 {
     if (key->isModified()) // keyframe was modified
+    {
         return true;
+    }
     if (QFile::exists(strSavePath) == false) // hasn't been saved before
+    {
         return true;
+    }
     if (strSavePath != key->fileName()) // key frame moved
+    {
         return true;
+    }
     return false;
 }
 
@@ -128,7 +137,8 @@ QDomElement LayerVector::createDomElement(QDomDocument &doc)
 {
     QDomElement layerElem = this->createBaseDomElement(doc);
 
-    foreachKeyFrame([&](KeyFrame *keyframe) {
+    foreachKeyFrame([&](KeyFrame * keyframe)
+    {
         QDomElement imageTag = doc.createElement("image");
         imageTag.setAttribute("frame", keyframe->pos());
         imageTag.setAttribute("src", fileName(keyframe));
@@ -158,7 +168,9 @@ void LayerVector::loadDomElement(const QDomElement &element, QString dataDirPath
                                    imageElement.attribute("src"); // the file is supposed to be in the data directory
                     QFileInfo fi(path);
                     if (!fi.exists())
+                    {
                         path = imageElement.attribute("src");
+                    }
                     int position = imageElement.attribute("frame").toInt();
                     loadImageAtFrame(path, position);
                 }

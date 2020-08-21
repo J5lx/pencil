@@ -68,9 +68,13 @@ void ColorPaletteWidget::initUI()
 
     QString sViewMode = settings.value("ColorPaletteViewMode", "ListMode").toString();
     if (sViewMode == "ListMode")
+    {
         setListMode();
+    }
     else
+    {
         setGridMode();
+    }
 
     buttonStylesheet =
         "::menu-indicator{ image: none; }"
@@ -392,18 +396,30 @@ void ColorPaletteWidget::palettePreferences()
     ui->palettePref->addAction(ui->fitSwatchAction);
 
     if (mFitSwatches)
+    {
         ui->fitSwatchAction->setChecked(true);
+    }
     else if (mIconSize.width() > MEDIUM_ICON_SIZE)
+    {
         ui->largeSwatchAction->setChecked(true);
+    }
     else if (mIconSize.width() > MIN_ICON_SIZE)
+    {
         ui->mediumSwatchAction->setChecked(true);
+    }
     else
+    {
         ui->smallSwatchAction->setChecked(true);
+    }
 
     if (ui->colorListWidget->viewMode() == QListView::ListMode)
+    {
         ui->listModeAction->setChecked(true);
+    }
     else
+    {
         ui->gridModeAction->setChecked(true);
+    }
 
     connect(ui->listModeAction, &QAction::triggered, this, &ColorPaletteWidget::setListMode);
     connect(ui->gridModeAction, &QAction::triggered, this, &ColorPaletteWidget::setGridMode);
@@ -489,7 +505,9 @@ void ColorPaletteWidget::setSwatchSizeLarge()
 void ColorPaletteWidget::adjustSwatches()
 {
     if (mFitSwatches)
+    {
         fitSwatchSize();
+    }
 }
 
 void ColorPaletteWidget::fitSwatchSize()
@@ -505,9 +523,13 @@ void ColorPaletteWidget::fitSwatchSize()
     {
         size = qFloor((height - hScrollBar - (4 * colorCount)) / colorCount);
         if (size < MIN_ICON_SIZE)
+        {
             size = MIN_ICON_SIZE;
+        }
         if (size > MAX_ICON_SIZE)
+        {
             size = MAX_ICON_SIZE;
+        }
     }
     else
     {
@@ -591,9 +613,13 @@ void ColorPaletteWidget::clickAddColorButton()
     QColor newColor;
 
     if (mIsColorDialog)
+    {
         newColor = QColorDialog::getColor(prevColor.rgba(), this, QString(), QColorDialog::ShowAlphaChannel);
+    }
     else
+    {
         newColor = mEditor->color()->frontColor();
+    }
 
     if (!newColor.isValid())
     {
@@ -627,7 +653,9 @@ void ColorPaletteWidget::clickRemoveColorButton()
         {
             bool accepted = false;
             if (!mMultipleSelected)
+            {
                 accepted = showPaletteWarning();
+            }
 
             if ((accepted || mMultipleSelected) && mObject->getColorCount() > 1)
             {

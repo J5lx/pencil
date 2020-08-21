@@ -212,10 +212,14 @@ void CanvasPainter::paintOnionSkin(QPainter &painter)
     Layer *layer = mObject->getLayer(mCurrentLayerIndex);
 
     if (layer->visible() == false)
+    {
         return;
+    }
 
     if (layer->keyFrameCount() == 0)
+    {
         return;
+    }
 
     qreal minOpacity = static_cast<qreal>(mOptions.fOnionSkinMinOpacity / 100);
     qreal maxOpacity = static_cast<qreal>(mOptions.fOnionSkinMaxOpacity / 100);
@@ -476,7 +480,9 @@ void CanvasPainter::paintTransformedSelection(QPainter &painter)
 {
     // Make sure there is something selected
     if (mSelection.width() == 0 || mSelection.height() == 0)
+    {
         return;
+    }
 
     Layer *layer = mObject->getLayer(mCurrentLayerIndex);
 
@@ -513,7 +519,9 @@ void CanvasPainter::paintCurrentFrame(QPainter &painter, int startLayer, int end
         Layer *layer = mObject->getLayer(i);
 
         if (layer->visible() == false)
+        {
             continue;
+        }
 
         if (mOptions.eLayerVisibility == LayerVisibility::RELATED && !isCameraLayer)
         {

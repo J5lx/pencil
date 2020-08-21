@@ -50,15 +50,21 @@ void ImportLayersDialog::getFileName()
     }
     getLayers();
     for (int i = 0; i < mImportObject->getLayerCount(); i++)
+    {
         ui->lwLayers->addItem(mImportObject->getLayer(i)->name());
+    }
 }
 
 void ImportLayersDialog::listWidgetChanged()
 {
     if (ui->lwLayers->count() > 0)
+    {
         ui->btnImportLayers->setEnabled(true);
+    }
     else
+    {
         ui->btnImportLayers->setEnabled(false);
+    }
 }
 
 void ImportLayersDialog::importLayers()
@@ -110,7 +116,8 @@ void ImportLayersDialog::getLayers()
     }
 
     FileManager fm;
-    connect(&fm, &FileManager::progressChanged, [&progress](int p) {
+    connect(&fm, &FileManager::progressChanged, [&progress](int p)
+    {
         progress.setValue(p);
         QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     });

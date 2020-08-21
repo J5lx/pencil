@@ -90,7 +90,9 @@ Status BezierCurve::createDomElement(QXmlStreamWriter &xmlStream)
     xmlStream.writeAttribute("width", QString::number(width));
     xmlStream.writeAttribute("variableWidth", variableWidth ? "true" : "false");
     if (feather > 0)
+    {
         xmlStream.writeAttribute("feather", QString::number(feather));
+    }
     xmlStream.writeAttribute("invisible", invisible ? "true" : "false");
     xmlStream.writeAttribute("filled", mFilled ? "true" : "false");
     xmlStream.writeAttribute("colourNumber", QString::number(colorNumber));
@@ -153,7 +155,9 @@ void BezierCurve::loadDomElement(const QDomElement &element)
     invisible = (element.attribute("invisible") == "1") || (element.attribute("invisible") == "true");
     mFilled = (element.attribute("filled") == "1") || (element.attribute("filled") == "true");
     if (width == 0)
+    {
         invisible = true;
+    }
 
     colorNumber = element.attribute("colourNumber").toInt();
     origin = QPointF(element.attribute("originX").toFloat(), element.attribute("originY").toFloat());
@@ -324,11 +328,15 @@ BezierCurve BezierCurve::transformed(QTransform transformation)
 void BezierCurve::transform(QTransform transformation)
 {
     if (isSelected(-1))
+    {
         setOrigin(transformation.map(origin));
+    }
     for (int i = 0; i < vertex.size(); i++)
     {
         if (isSelected(i - 1))
+        {
             c1[i] = transformation.map(c1.at(i));
+        }
         if (isSelected(i))
         {
             c2[i] = transformation.map(c2.at(i));
@@ -516,7 +524,9 @@ void BezierCurve::drawPath(QPainter &painter,
         lineWidth = fabs(lineWidth); // make sure line width is positive, otherwise nothing is drawn
         painter.setPen(QPen(QBrush(color), lineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         if (isSelected())
+        {
             painter.drawPath(myCurve.getSimplePath());
+        }
 
         for (int i = -1; i < vertex.size(); i++)
         {
@@ -586,9 +596,13 @@ QPainterPath BezierCurve::getStrokedPath(qreal width, bool usePressure)
     normalVec = QPointF(-(c1.at(0) - origin).y(), (c1.at(0) - origin).x());
     normalise(normalVec);
     if (usePressure)
+    {
         width2 = width * 0.5 * pressure.at(0);
+    }
     if (n == 1 && width2 == 0.0)
+    {
         width2 = 0.15 * width;
+    }
     path.moveTo(origin + width2 * normalVec);
     for (int i = 0; i < n; i++)
     {
@@ -606,9 +620,13 @@ QPainterPath BezierCurve::getStrokedPath(qreal width, bool usePressure)
         }
         normalise(normalVec2);
         if (usePressure)
+        {
             width2 = width * 0.5 * pressure.at(i);
+        }
         if (n == 1 && width2 == 0.0)
+        {
             width2 = 0.15 * width;
+        }
         // if (i==n-1) width2 = 0.0;
         path.cubicTo(c1.at(i) + width2 * normalVec, c2.at(i) + width2 * normalVec2, vertex.at(i) + width2 * normalVec2);
         // path.moveTo(vertex.at(i) + width*normalVec2);
@@ -616,9 +634,13 @@ QPainterPath BezierCurve::getStrokedPath(qreal width, bool usePressure)
         normalVec = normalVec2;
     }
     if (usePressure)
+    {
         width2 = width * 0.5 * pressure.at(n - 1);
+    }
     if (n == 1 && width2 == 0.0)
+    {
         width2 = 0.15 * width;
+    }
 
     // path.lineTo(vertex.at(n-1) - width2*normalVec);
     tangentVec = (vertex.at(n - 1) - c2.at(n - 1));
@@ -636,9 +658,13 @@ QPainterPath BezierCurve::getStrokedPath(qreal width, bool usePressure)
         normalVec2 = normalVec2_1 + normalVec2_2;
         normalise(normalVec2);
         if (usePressure)
+        {
             width2 = width * 0.5 * pressure.at(i);
+        }
         if (n == 1 && width2 == 0.0)
+        {
             width2 = 0.15 * width;
+        }
         path.cubicTo(c2.at(i + 1) - width2 * normalVec,
                      c1.at(i + 1) - width2 * normalVec2,
                      vertex.at(i) - width2 * normalVec2);
@@ -647,9 +673,13 @@ QPainterPath BezierCurve::getStrokedPath(qreal width, bool usePressure)
     normalVec2 = QPointF((origin - c1.at(0)).y(), -(origin - c1.at(0)).x());
     normalise(normalVec2);
     if (usePressure)
+    {
         width2 = width * 0.5 * pressure.at(0);
+    }
     if (n == 1 && width2 == 0.0)
+    {
         width2 = 0.15 * width;
+    }
     path.cubicTo(c2.at(0) - width2 * normalVec, c1.at(0) - width2 * normalVec2, origin - width2 * normalVec2);
 
     tangentVec = (origin - c1.at(0));
@@ -674,15 +704,25 @@ void BezierCurve::createCurve(const QList<QPointF> &pointList, const QList<qreal
     // generate the Bezier (cubic) curve from the simplified path and mouse pressure
     // first, empty everything
     while (c1.size() > 0)
+    {
         c1.removeAt(0);
+    }
     while (c2.size() > 0)
+    {
         c2.removeAt(0);
+    }
     while (vertex.size() > 0)
+    {
         vertex.removeAt(0);
+    }
     while (selected.size() > 0)
+    {
         selected.removeAt(0);
+    }
     while (pressure.size() > 0)
+    {
         pressure.removeAt(0);
+    }
 
     setOrigin(pointList.at(0));
     selected.append(false);
@@ -811,7 +851,9 @@ qreal BezierCurve::mLength(const QPointF point) // calculates the Manhattan Leng
 {
     qreal result = qAbs(point.x()) + qAbs(point.y());
     if (result == 0.0)
+    {
         result = 1.0;
+    }
     return result;
 }
 
@@ -878,7 +920,9 @@ bool BezierCurve::intersects(QRectF rectangle)
         for (int i = 0; i < vertex.size(); i++)
         {
             if (rectangle.contains(getVertex(i)))
+            {
                 return true;
+            }
         }
     }
     return result;
@@ -919,7 +963,7 @@ bool BezierCurve::findIntersection(
         // if (L2.intersect(L1, intersection) == QLineF::BoundedIntersection) {
         // qDebug() << "                   FOUND rectangle intersection ";
         // if (intersectionPoint != curve1.getVertex(i1-1) && intersectionPoint != curve1.getVertex(i1)) {
-        //	qDebug() << "                   it's not one of the points ";
+        //  qDebug() << "                   it's not one of the points ";
         // find the cubic intersection
         int nSteps = 24;
         P1 = curve1.getVertex(i1 - 1);

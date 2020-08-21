@@ -105,7 +105,9 @@ void PlaybackManager::play()
     // TODO make a new tool function to handle playing (or perhaps generic scrubbing)
     bool switchLayer = editor()->tools()->currentTool()->switchingLayer();
     if (!switchLayer)
+    {
         return;
+    }
 
     int frame = editor()->currentFrame();
     if (frame >= mEndFrame || frame < mStartFrame)
@@ -341,7 +343,9 @@ void PlaybackManager::playSounds(int frame)
 
                 // make sure list is cleared on end
                 if (!mListOfActiveSoundFrames.isEmpty())
+                {
                     mListOfActiveSoundFrames.clear();
+                }
             }
         }
     }
@@ -389,7 +393,8 @@ void PlaybackManager::stopSounds()
 
     for (LayerSound *layer : kSoundLayers)
     {
-        layer->foreachKeyFrame([](KeyFrame *key) {
+        layer->foreachKeyFrame([](KeyFrame * key)
+        {
             SoundClip *clip = static_cast<SoundClip *>(key);
             clip->stop();
         });
@@ -425,7 +430,9 @@ void PlaybackManager::timerTick()
     }
 
     if (skipFrame())
+    {
         return;
+    }
 
     // keep going
     editor()->scrubForward();

@@ -76,9 +76,13 @@ void TimeControls::initUI()
     mLoopIcon = QIcon(":icons/controls/loop.png");
     mSoundIcon = QIcon(":icons/controls/sound.png");
     if (mEditor->preference()->isOn(SETTING::SOUND_SCRUB_ACTIVE))
+    {
         mSoundScrubIcon = QIcon(":icons/controls/soundscrub.png");
+    }
     else
+    {
         mSoundScrubIcon = QIcon(":icons/controls/soundscrub-disabled.png");
+    }
     mJumpToEndIcon = QIcon(":icons/controls/endplay.png");
     mJumpToStartIcon = QIcon(":icons/controls/startplay.png");
     mStartIcon = QIcon(":icons/controls/play.png");

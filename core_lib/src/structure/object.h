@@ -127,7 +127,9 @@ public:
         {
             T *t = dynamic_cast<T *>(layer);
             if (t)
+            {
                 result.push_back(t);
+            }
         }
         return result;
     }

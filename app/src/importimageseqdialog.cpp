@@ -385,7 +385,7 @@ Status ImportImageSeqDialog::validateKeySet(const PredefinedKeySet &keySet, cons
         status.setTitle(tr("Invalid path"));
         status.setDescription(
             QString(tr("The following file did not meet the criteria: \n%1 \n\nRead the instructions and try again"))
-                .arg(failedPathsString));
+            .arg(failedPathsString));
     }
 
     return status;
@@ -406,7 +406,9 @@ Status ImportImageSeqDialog::validateFiles(const QStringList &filepaths)
     {
         QFileInfo file = filepaths.at(i);
         if (!file.exists())
+        {
             failedPathsString += filepaths.at(i) + "\n";
+        }
     }
 
     if (!failedPathsString.isEmpty())

@@ -46,11 +46,13 @@ void BaseDockWidget::resizeEvent(QResizeEvent *event)
     int minHeight = getMinHeightForWidth(event->size().width() - 2);
 
     if (minHeight < 0)
+    {
         return;
+    }
 
 #ifdef __APPLE__
-        // For some reason the behavior of minimumSize and the margin changes on mac when floating, so we need to do
-        // this
+    // For some reason the behavior of minimumSize and the margin changes on mac when floating, so we need to do
+    // this
 #else
     minHeight += layout()->margin() * 2;
 #endif

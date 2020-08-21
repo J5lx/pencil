@@ -54,7 +54,9 @@ DebugDetails &DebugDetails::operator<<(const QString &s)
 void DebugDetails::appendSystemInfo()
 {
     if (mDetails.empty() || mDetails.last() == "end")
+    {
         return;
+    }
 
 #if QT_VERSION >= 0x050400
     mDetails << "System Info";
@@ -88,7 +90,8 @@ Status::Status(Status::ErrorCode eCode, const DebugDetails &detailsList, QString
 
 QString Status::msg()
 {
-    static std::map<ErrorCode, QString> msgMap = {
+    static std::map<ErrorCode, QString> msgMap =
+    {
         // error messages.
         {OK, QObject::tr("Everything ok.")},
         {FAIL, QObject::tr("Ooops, Something went wrong.")},

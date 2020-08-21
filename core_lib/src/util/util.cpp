@@ -60,10 +60,10 @@ QString ffprobeLocation()
     return QApplication::applicationDirPath() + "/plugins/ffprobe";
 #else
     QString ffprobePath = QStandardPaths::findExecutable(
-        "ffprobe",
-        QStringList() << QApplication::applicationDirPath() + "/plugins"
-                      << QApplication::applicationDirPath() + "/../plugins" // linuxdeployqt in FHS-like mode
-    );
+                              "ffprobe",
+                              QStringList() << QApplication::applicationDirPath() + "/plugins"
+                              << QApplication::applicationDirPath() + "/../plugins" // linuxdeployqt in FHS-like mode
+                          );
     if (!ffprobePath.isEmpty())
     {
         return ffprobePath;
@@ -80,10 +80,10 @@ QString ffmpegLocation()
     return QApplication::applicationDirPath() + "/plugins/ffmpeg";
 #else
     QString ffmpegPath = QStandardPaths::findExecutable(
-        "ffmpeg",
-        QStringList() << QApplication::applicationDirPath() + "/plugins"
-                      << QApplication::applicationDirPath() + "/../plugins" // linuxdeployqt in FHS-like mode
-    );
+                             "ffmpeg",
+                             QStringList() << QApplication::applicationDirPath() + "/plugins"
+                             << QApplication::applicationDirPath() + "/../plugins" // linuxdeployqt in FHS-like mode
+                         );
     if (!ffmpegPath.isEmpty())
     {
         return ffmpegPath;
