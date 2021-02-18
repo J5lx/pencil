@@ -15,24 +15,26 @@ package_linux() {
   sed -i "/^Keywords\(\[[a-zA-Z_.@]\+\]\)\?=/d;/^Version=/cVersion=1.0" \
     Pencil2D/usr/share/applications/org.pencil2d.Pencil2D.desktop
   install -Dm755 /usr/bin/ffmpeg Pencil2D/usr/plugins/ffmpeg
-  install -Dm755 "/usr/lib/x86_64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner" \
-    "Pencil2D/usr/lib/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner"
-  local gst_executables="-executable=Pencil2D/usr/lib/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner"
-  for plugin in adpcmdec alsa app audioconvert audioparsers audioresample \
-      autodetect coreelements gsm id3demux jack mpg123 mulaw playback \
-      pulse typefindfunctions wavparse apetag; do
-    install -Dm755 "/usr/lib/x86_64-linux-gnu/gstreamer-1.0/libgst${plugin}.so" \
-      "Pencil2D/usr/lib/gstreamer-1.0/libgst${plugin}.so"
-    gst_executables="${gst_executables} -executable=Pencil2D/usr/lib/gstreamer-1.0/libgst${plugin}.so"
-  done
-  curl -fsSLO https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-  chmod 755 linuxdeployqt-continuous-x86_64.AppImage
-  LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/lib/x86_64-linux-gnu/pulseaudio" \
-    ./linuxdeployqt-continuous-x86_64.AppImage \
-    Pencil2D/usr/share/applications/org.pencil2d.Pencil2D.desktop \
-    -executable=Pencil2D/usr/plugins/ffmpeg \
-    ${gst_executables} \
-    -appimage
+  #install -Dm755 "/usr/lib/x86_64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner" \
+  #  "Pencil2D/usr/lib/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner"
+  #local gst_executables="-executable=Pencil2D/usr/lib/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner"
+  #for plugin in adpcmdec alsa app audioconvert audioparsers audioresample \
+  #    autodetect coreelements gsm id3demux jack mpg123 mulaw playback \
+  #    pulse typefindfunctions wavparse apetag; do
+  #  install -Dm755 "/usr/lib/x86_64-linux-gnu/gstreamer-1.0/libgst${plugin}.so" \
+  #    "Pencil2D/usr/lib/gstreamer-1.0/libgst${plugin}.so"
+  #  gst_executables="${gst_executables} -executable=Pencil2D/usr/lib/gstreamer-1.0/libgst${plugin}.so"
+  #done
+  curl -fsSLO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+  curl -fsSLO https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+  chmod 755 linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
+  ./linuxdeploy-x86_64.AppImage --appdir Pencil2D --executable=Pencil2D/usr/plugins/ffmpeg --plugin qt --output appimage
+  #LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/lib/x86_64-linux-gnu/pulseaudio" \
+  #  ./linuxdeployqt-continuous-x86_64.AppImage \
+  #  Pencil2D/usr/share/applications/org.pencil2d.Pencil2D.desktop \
+  #  -executable=Pencil2D/usr/plugins/ffmpeg \
+  #  ${gst_executables} \
+  #  -appimage
   mv Pencil2D*.AppImage* "pencil2d-linux-$(date +%F).AppImage"
   msg "AppImage created"
 }
